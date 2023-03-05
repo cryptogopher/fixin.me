@@ -1,21 +1,28 @@
+# Ignore bundler config.
 /.bundle
 /.cache
 /.gem
 
-config/initializers/secret_token.rb
-config/master.key
+# Ignore master key for decrypting credentials and more.
+/config/initializers/secret_token.rb
+/config/master.key
 
+# Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
 !/log/.keep
 !/tmp/.keep
 
-/public/packs
-/public/packs-test
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
 /public/assets
 
-tmp/restart.txt
+/tmp/restart.txt
 
-.bash_history
-.byebug_history
-.viminfo
+/.bash_history
+/.byebug_history
+/.lesshst
+/.viminfo
