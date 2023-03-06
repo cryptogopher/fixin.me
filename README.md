@@ -13,6 +13,16 @@ Quantified self
 Modify configuration settings below `SETUP` comment appropriately.
 
 
-* Database creation: ...
-* Database initialization: ...
-* How to run the test suite: ...
+## Database
+
+Create database ...
+
+Update database configuration in _config/database.yml_ if required.
+
+Password is expected to be provided in `FIXINME_DATABASE_PASSWORD` environment
+variable.
+
+Run migrations ...
+
+
+## How to run the test suite: ...
