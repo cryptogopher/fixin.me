@@ -8,9 +8,9 @@ Quantified self
 
 ## Configuration
 
-  cp -a config/application.rb.dist config/application.rb
+    cp -a config/application.rb.dist config/application.rb
 
-Modify configuration settings below @SETUP@ comment appropriately.
+Modify configuration settings below `SETUP` comment appropriately.
 
 
 * Database creation: ...
