@@ -4,6 +4,7 @@
 /.gem
 
 # Ignore master key for decrypting credentials and more.
+/config/application.rb
 /config/initializers/secret_token.rb
 /config/master.key
 
@@ -22,7 +23,10 @@
 
 /tmp/restart.txt
 
+# Ignore user files
 /.bash_history
 /.byebug_history
+/.config
 /.lesshst
+/.local
 /.viminfo
