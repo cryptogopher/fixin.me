@@ -15,12 +15,20 @@ Modify configuration settings below `SETUP` comment appropriately.
 
 ## Database
 
-Create database ...
+    cp -a config/database.yml.dist config/database.yml
 
-Update database configuration in _config/database.yml_ if required.
+Update database configuration.
 
-Password is expected to be provided in `FIXINME_DATABASE_PASSWORD` environment
-variable.
+Create database user and grant privileges:
+
+    > mysql -p
+    mysql> create user fixinme@localhost identified by '<some password>';
+    mysql> grant all privileges on fixinme.* to fixinme@localhost;
+    mysql> flush privileges;
+
+Run database creation task:
+
+    RAILS_ENV="production" bundle exec rake db:create 
 
 Run migrations ...
 

@@ -5,6 +5,7 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/application.rb
+/config/database.yml
 /config/initializers/secret_token.rb
 /config/master.key
 

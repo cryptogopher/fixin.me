@@ -1,20 +1,10 @@
-# MySQL. Versions 5.5.8 and up are supported.
+# If you don't want to store sensitive information, like your database password,
+# in your source code, provide the password or a full connection URL as an
+# environment variable when you boot the app. For example:
 #
-# Install the MySQL driver
-#   gem install mysql2
+#   DATABASE_PASSWORD="some-password"
 #
-# Ensure the MySQL gem is defined in your Gemfile
-#   gem "mysql2"
-#
-# And be sure to use new-style password hashing:
-#   https://dev.mysql.com/doc/refman/5.7/en/password-hashing.html
-#
-# As with config/credentials.yml, you never want to store sensitive information,
-# like your database password, in your source code. If your source code is
-# ever seen by anyone, they now have access to your database.
-#
-# Instead, provide the password or a full connection URL as an environment
-# variable when you boot the app. For example:
+# or
 #
 #   DATABASE_URL="mysql2://myuser:mypass@localhost/somedatabase"
 #
@@ -26,6 +16,11 @@
 #   production:
 #     url: <%= ENV["MY_APP_DATABASE_URL"] %>
 #
+# You can specify password environment variable in a similar way:
+#   
+#   production:
+#     password: <%= ENV["DATABASE_PASSWORD"] %>
+#
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 default: &default
@@ -33,13 +28,15 @@ default: &default
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: fixinme
-  password: <%= ENV["FIXINME_DATABASE_PASSWORD"] %>
+  password:
   socket: /run/mysqld/mysqld.sock
 
 production:
   <<: *default
   database: fixinme_production
 
+# Unless you're planning on developing the application, you can skip/remove
+# configurations for development and test databases altogether.
 development:
   <<: *default
   database: fixinme_dev
