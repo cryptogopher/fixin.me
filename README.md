@@ -15,10 +15,6 @@ Modify configuration settings below `SETUP` comment appropriately.
 
 ## Database
 
-    cp -a config/database.yml.dist config/database.yml
-
-Update database configuration.
-
 Create database user and grant privileges:
 
     > mysql -p
@@ -26,11 +22,12 @@ Create database user and grant privileges:
     mysql> grant all privileges on fixinme.* to fixinme@localhost;
     mysql> flush privileges;
 
-Run database creation task:
+Copy config template and update database configuration:
 
-    RAILS_ENV="production" bundle exec rake db:create 
+    cp -a config/database.yml.dist config/database.yml
 
-Run migrations ...
+Run database creation and migration tasks:
 
+    RAILS_ENV="production" bundle exec rake db:create db:migrate
 
 ## How to run the test suite: ...
