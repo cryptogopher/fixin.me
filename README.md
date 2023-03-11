@@ -30,4 +30,10 @@ Run database creation and migration tasks:
 
     RAILS_ENV="production" bundle exec rake db:create db:migrate
 
+
+## Running
+
+Apache configuration for: Puma+mod_proxy, mod_passenger ...
+
+
 ## How to run the test suite: ...
