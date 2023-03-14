@@ -33,7 +33,10 @@ module FixinMe
 
     # SETUP: Below settings need to be updated on a per-installation basis.
     #
-    # URL to use in sent e-mails
+    # URL to use in sent e-mails.
     config.action_mailer.default_url_options = {host: 'localhost'}
+    # List of hosts this app is available at.
+    # https://guides.rubyonrails.org/configuring.html#actiondispatch-hostauthorization
+    config.hosts << 'localhost'
   end
 end
