@@ -28,7 +28,7 @@ Copy config template and update database configuration:
 
 Run database creation and migration tasks:
 
-    RAILS_ENV="production" bundle exec rake db:create db:migrate
+    RAILS_ENV="production" bundle exec rake db:create db:migrate db:seed
 
 
 ## Running

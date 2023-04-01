@@ -35,8 +35,12 @@ module FixinMe
     #
     # URL to use in sent e-mails.
     config.action_mailer.default_url_options = {host: 'localhost'}
+
     # List of hosts this app is available at.
     # https://guides.rubyonrails.org/configuring.html#actiondispatch-hostauthorization
     config.hosts << 'localhost'
+
+    # Email address of admin account
+    config.admin = 'admin@localhost'
   end
 end
