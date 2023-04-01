@@ -11,6 +11,20 @@
   </head>
 
   <body>
+    <div class="app-menu">
+      <%= link_to_if user_signed_in?, t(:sign_out), destroy_user_session_path,
+                     data: { turbo_method: :delete }  do
+            link_to t(:sign_in), new_user_session_path
+          end %>
+    </div>
+
+    <% if flash[:notice] %>
+      <div style="border: green"><%= flash[:notice] %></div>
+    <% end %>
+    <% if flash[:alert] %>
+      <div style="border: red"><%= flash[:alert] %></div>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

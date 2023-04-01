@@ -13,3 +13,24 @@
  *= require_tree .
  *= require_self
  */
+
+.app-menu {
+  height: 2.1em;
+}
+.app-menu a {
+  color: black;
+  float: right;
+  font-size: 0.9em;
+  padding: 0.6em;
+}
+.app-menu a:hover {
+  background-color: #009ade;
+  border-radius: 0.2em;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+a:not(:hover) {
+  text-decoration: none;
+}
