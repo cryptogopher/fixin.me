@@ -18,10 +18,15 @@
   font-family: system-ui;
 }
 
-.app-menu {
-  height: 2.1em;
+body {
+  margin: 0 0.5em;
 }
-.app-menu a {
+
+.application-menu {
+  height: 2.1em;
+  margin: 0.5em 0;
+}
+.application-menu a {
   border: 0.1em solid;
   border-color: #a0a0a0;
   border-radius: 0.2em;
@@ -31,7 +36,7 @@
   font-weight: bold;
   padding: 0.6em;
 }
-.app-menu a:hover {
+.application-menu a:hover {
   background-color: #009ade;
   border-color: #009ade;
   color: white;
@@ -41,4 +46,50 @@
 
 a:not(:hover) {
   text-decoration: none;
+}
+
+.flashes {
+  height: 2.1em;
+}
+.flash {
+  align-items: center;
+  border-radius: 0.2em;
+  color: white;
+  display: flex;
+  font-size: 1.0em;
+}
+.flash.alert:before {
+  content: url('pictograms/check-circle-outline.svg');
+  height: 1.4em;
+  margin: 0 0.5em;
+  width: 1.4em;
+}
+.flash.alert {
+  border-color: #ff1f5b;
+  background-color: #ff1f5b;
+}
+.flash.notice:before {
+  content: url('pictograms/information-slab-circle-outline.svg');
+  height: 1.4em;
+  margin: 0 0.5em;
+  width: 1.4em;
+}
+.flash.notice {
+  border-color: #00cd6c;
+  background-color: #00cd6c;
+}
+.flash button {
+  background-color: inherit;
+  border: inherit;
+  border-radius: inherit;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-left:auto;
+  opacity: 0.6;
+  padding: 0.1em 0.2em;
+}
+.flash button:hover {
+  opacity: 1;
 }

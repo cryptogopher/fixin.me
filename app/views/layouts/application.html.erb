@@ -11,19 +11,21 @@
   </head>
 
   <body>
-    <div class="app-menu">
+    <div class="application-menu">
       <%= link_to_if user_signed_in?, t(:sign_out), destroy_user_session_path,
-                     data: { turbo_method: :delete }  do
-            link_to t(:sign_in), new_user_session_path
-          end %>
+                       data: { turbo_method: :delete } do %>
+        <%= link_to t(:sign_in), new_user_session_path %>
+      <% end %>
     </div>
 
-    <% if flash[:notice] %>
-      <div style="border: green"><%= flash[:notice] %></div>
-    <% end %>
-    <% if flash[:alert] %>
-      <div style="border: red"><%= flash[:alert] %></div>
-    <% end %>
+    <div class="flashes">
+      <% flash.each do |entry, message| %>
+        <div class="flash <%= entry %>">
+          <div><%= message %></div>
+          <button onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+      <% end %>
+    </div>
 
     <%= yield %>
   </body>
