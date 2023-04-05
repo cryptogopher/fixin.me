@@ -59,7 +59,7 @@ a:not(:hover) {
   font-size: 1.0em;
 }
 .flash.alert:before {
-  content: url('pictograms/check-circle-outline.svg');
+  content: url('pictograms/alert-outline.svg');
   height: 1.4em;
   margin: 0 0.5em;
   width: 1.4em;
@@ -69,7 +69,7 @@ a:not(:hover) {
   background-color: #ff1f5b;
 }
 .flash.notice:before {
-  content: url('pictograms/information-slab-circle-outline.svg');
+  content: url('pictograms/check-circle-outline.svg');
   height: 1.4em;
   margin: 0 0.5em;
   width: 1.4em;
