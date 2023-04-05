@@ -16,6 +16,8 @@
                        data: { turbo_method: :delete } do %>
         <%= link_to t(:sign_in), new_user_session_path %>
       <% end %>
+
+      <%= link_to_unless(user_signed_in?, t(:register), new_user_registration_path) { } %>
     </div>
 
     <div class="flashes">

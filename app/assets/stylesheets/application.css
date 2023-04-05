@@ -34,6 +34,7 @@ body {
   float: right;
   font-size: 0.8em;
   font-weight: bold;
+  margin-left: 1em;
   padding: 0.6em;
 }
 .application-menu a:hover {
