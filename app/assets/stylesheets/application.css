@@ -22,12 +22,29 @@ body {
   margin: 0 0.5em;
 }
 
+input {
+  border: 1px solid;
+  border-radius: 0.2em;
+  border-color: #cccccc;
+  font-size: 0.9em;
+  padding: 0.1em 0.4em;
+}
+input[type=checkbox] {
+  height: 1em;
+  margin: 0;
+  width: 1em;
+}
+input:focus:not([type=checkbox]) {
+  outline: none;
+}
+
 .application-menu {
   height: 2.1em;
   margin: 0.5em 0;
 }
-.application-menu a {
-  border: 0.1em solid;
+.application-menu a, input[type=submit] {
+  border: 1px solid;
+  background-color: #ffffff;
   border-color: #a0a0a0;
   border-radius: 0.2em;
   color: #a0a0a0;
@@ -37,7 +54,10 @@ body {
   margin-left: 1em;
   padding: 0.6em;
 }
-.application-menu a:hover {
+.application-menu a:hover,
+.application-menu a:focus-visible,
+input[type=submit]:hover,
+input[type=submit]:focus-visible {
   background-color: #009ade;
   border-color: #009ade;
   color: white;
@@ -93,4 +113,22 @@ a:not(:hover) {
 }
 .flash button:hover {
   opacity: 1;
+}
+
+.field + .field, .field + .actions {
+  margin-top: 0.8em;
+}
+form label {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 0.9em;
+  padding-right: 0.25em;
+  text-align: right;
+  width: 50%;
+}
+form input[type=submit] {
+  display: block;
+  float: none;
+  font-size: 0.9em;
+  margin: 0 auto;
 }

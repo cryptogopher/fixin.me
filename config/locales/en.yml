@@ -1,3 +1,7 @@
 en:
+  email: "E-mail"
+  password: "Password"
+  register: "Register"
+  remember_me: "Remember me"
   sign_in: "Sign in"
   sign_out: "Sign out"
