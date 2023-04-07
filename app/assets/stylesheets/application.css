@@ -115,16 +115,31 @@ a:not(:hover) {
   opacity: 1;
 }
 
-.field + .field, .field + .actions {
-  margin-top: 0.8em;
+form {
+  margin: 0 auto;
+  display: table;
+  border-spacing: 0.8em;
 }
-form label {
-  display: inline-block;
-  font-weight: bold;
+.form-row {
+  display: table-row;
+}
+.form-label, .form-field {
+  display: table-cell;
+}
+.form-label {
   font-size: 0.9em;
   padding-right: 0.25em;
   text-align: right;
-  width: 50%;
+}
+.form-label.required {
+  font-weight: bold;
+}
+.form-label.error {
+  color: #ff1f5b;
+}
+.form-actions {
+  caption-side: bottom;
+  display: table-caption;
 }
 form input[type=submit] {
   display: block;

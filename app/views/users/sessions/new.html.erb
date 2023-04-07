@@ -1,26 +1,12 @@
-<h2 style="text-align:center;"><%= t :sign_in %></h2>
-
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label t(:email) -%>
-    <%= f.email_field :email, size: 32, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label t(:password) -%>
-    <%= f.password_field :password, size: 32, autocomplete: "current-password" %>
-  </div>
+<%= tabular_form_for resource, as: resource_name, url: session_path(resource_name) do |f| %>
+  <%= f.email_field :email, required: true, size: 32, autofocus: true, autocomplete: "email" %>
+  <%= f.password_field :password, required: true, size: 32, autocomplete: "current-password" %>
 
   <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.label t(:remember_me) -%>
-      <%= f.check_box :remember_me %>
-    </div>
+    <%= f.check_box :remember_me %>
   <% end %>
 
-  <div class="actions">
-    <%= f.submit t(:sign_in) %>
-  </div>
+  <%= f.submit t(:sign_in) %>
 <% end %>
 
 <%= render "users/shared/links" %>
