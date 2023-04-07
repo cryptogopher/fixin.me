@@ -17,7 +17,7 @@
 * {
   font-family: system-ui;
 }
-
+// TODO: convert em to rem
 body {
   margin: 0 0.5em;
 }
@@ -48,12 +48,20 @@ input:focus:not([type=checkbox]) {
   border-color: #a0a0a0;
   border-radius: 0.2em;
   color: #a0a0a0;
+  display: flex;
+  fill: #a0a0a0;
   float: right;
   font-size: 0.8em;
   font-weight: bold;
   margin-left: 1em;
   padding: 0.6em;
 }
+.application-menu a svg {
+  height: 1rem;
+  padding-right: 0.4rem;
+  width: 1rem;
+}
+.application-menu a.active,
 .application-menu a:hover,
 .application-menu a:focus-visible,
 input[type=submit]:hover,
@@ -62,6 +70,7 @@ input[type=submit]:focus-visible {
   border-color: #009ade;
   color: white;
   cursor: pointer;
+  fill: white;
   text-decoration: none;
 }
 

@@ -25,4 +25,11 @@ module ApplicationHelper
     options.merge! builder: TabularFormBuilder
     form_for(record, **options, &block)
   end
+
+  def svg_tag(source, options = {})
+    image_name, id = source.split('#')
+    content_tag :svg, options do
+      tag.use href: "#{image_path(image_name)}##{id}"
+    end
+  end
 end
