@@ -26,6 +26,11 @@ module ApplicationHelper
     form_for(record, **options, &block)
   end
 
+  def image_link_to(name, image = nil, options = nil, html_options = nil)
+    name = svg_tag("pictograms/#{image}.svg#icon") + name if image
+    link_to name, options, html_options
+  end
+
   def svg_tag(source, options = {})
     image_name, id = source.split('#')
     content_tag :svg, options do
