@@ -18,8 +18,11 @@
   font-family: system-ui;
 }
 ::selection {
-  background-color: #006c9b;
+  background-color: #009ade;
   color: white;
+}
+:focus-visible {
+  outline: none;
 }
 
 // TODO: convert em to rem
@@ -28,7 +31,7 @@ body {
 }
 
 input {
-  background-color: #ffffff;
+  background-color: white;
   border: 1px solid;
   border-radius: 0.2rem;
   border-color: #cccccc;
@@ -46,9 +49,8 @@ input[type=checkbox] {
   width: 1.1rem;
   -webkit-appearance: none;
 }
-input:focus, input:hover {
+input:focus-visible, input:hover {
   accent-color: #006c9b;
-  outline: none;
   background-color: #f3f3f3;
 }
 input[type=checkbox]:checked {
@@ -60,10 +62,11 @@ input[type=checkbox]:checked {
   height: 2.1em;
   margin: 0.5em 0;
 }
-.application-menu a, input[type=submit] {
+.application-menu a,
+input[type=submit] {
   align-items: center;
   border: 1px solid;
-  background-color: #ffffff;
+  background-color: white;
   border-color: #a0a0a0;
   border-radius: 0.2em;
   color: #a0a0a0;
@@ -83,6 +86,7 @@ input[type=checkbox]:checked {
 }
 .application-menu a.active,
 .application-menu a:hover,
+.application-menu a:hover:focus-visible,
 input[type=submit]:hover {
   background-color: #009ade;
   border-color: #009ade;
@@ -90,13 +94,12 @@ input[type=submit]:hover {
   cursor: pointer;
   fill: white;
 }
-.application-menu a:focus-visible,
-input[type=submit]:focus-visible {
+.application-menu a:focus-visible {
+  background-color: #f3f3f3;
+}
+.application-menu a.active:focus-visible {
   background-color: #006c9b;
   border-color: #006c9b;
-  color: white;
-  fill: white;
-  outline: none;
 }
 
 .flashes {
