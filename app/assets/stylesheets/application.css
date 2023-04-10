@@ -87,14 +87,16 @@ input[type=submit] {
 .application-menu a.active,
 .application-menu a:hover,
 .application-menu a:hover:focus-visible,
-input[type=submit]:hover {
+input[type=submit]:hover,
+input[type=submit]:hover:focus-visible {
   background-color: #009ade;
   border-color: #009ade;
   color: white;
   cursor: pointer;
   fill: white;
 }
-.application-menu a:focus-visible {
+.application-menu a:focus-visible,
+input[type=submit]:focus-visible {
   background-color: #f3f3f3;
 }
 .application-menu a.active:focus-visible {
@@ -148,35 +150,22 @@ input[type=submit]:hover {
   opacity: 1;
 }
 
-form {
+form table {
+  border-spacing: 0.8rem;
   margin: 0 auto;
-  display: table;
-  border-spacing: 0.8em;
 }
-.form-row {
-  display: table-row;
-}
-.form-label, .form-field {
-  display: table-cell;
-  vertical-align: middle;
-}
-.form-label {
+form tr td:first-child {
   font-size: 0.9em;
   padding-right: 0.25em;
   text-align: right;
 }
-.form-label.required {
+form td.required {
   font-weight: bold;
 }
-.form-label.error {
+form td.error {
   color: #ff1f5b;
 }
-.form-actions {
-  caption-side: bottom;
-  display: table-caption;
-}
 form input[type=submit] {
-  display: block;
   float: none;
   font-size: 0.9em;
   margin: 0 auto;
