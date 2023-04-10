@@ -27,7 +27,7 @@
       <% flash.each do |entry, message| %>
         <div class="flash <%= entry %>">
           <div><%= sanitize message %></div>
-          <button onclick="this.parentElement.style.display='none';">&times;</button>
+          <button tabindex="-1" onclick="this.parentElement.style.display='none';">&times;</button>
         </div>
       <% end %>
     </div>
