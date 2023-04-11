@@ -33,3 +33,5 @@
 /.lesshst
 /.local
 /.viminfo
+/.webdrivers
+*.swp

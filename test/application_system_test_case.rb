@@ -1,5 +1,8 @@
 require "test_helper"
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-  driven_by :selenium, using: :chrome, screen_size: [1400, 1400]
+  # NOTE: remove when capabilities no longer used by Rails
+  Selenium::WebDriver.logger.ignore(:capabilities)
+
+  driven_by :selenium, using: :headless_firefox, screen_size: [1600, 900]
 end
