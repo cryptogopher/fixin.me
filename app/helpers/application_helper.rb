@@ -33,6 +33,11 @@ module ApplicationHelper
 
   def image_link_to(name, image = nil, options = nil, html_options = nil)
     name = svg_tag("pictograms/#{image}.svg#icon") + name if image
+    if html_options.delete(:hide)
+      # NOTE: current_path? does not work for POST
+      visibility = (url_for(options) == request.path) ? 'hidden' : 'visible'
+      html_options.merge!(style: "visibility: #{visibility}") { |k, v1, v2| v1 + v2 }
+    end
     link_to name, options, html_options
   end
 

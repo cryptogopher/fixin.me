@@ -3,7 +3,7 @@
   <%= f.password_field :password, required: true, size: 32, autocomplete: "current-password" %>
 
   <% if devise_mapping.rememberable? %>
-    <%= f.check_box :remember_me %>
+    <%= f.check_box :remember_me, label: t('.remember_me') %>
   <% end %>
 
   <%= f.submit t(:sign_in) %>

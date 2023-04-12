@@ -7,6 +7,11 @@ class UsersTest < ApplicationSystemTestCase
 
   test "sign in" do
     visit new_user_session_url
+    fill_in User.human_attribute_name(:email), with: @admin.email
+    fill_in User.human_attribute_name(:password), with: 'admin'
+    click_on t(:sign_in)
+    assert_no_current_path new_user_session_path
+    assert_text t('devise.sessions.signed_in')
   end
 
   #test "visiting the index" do

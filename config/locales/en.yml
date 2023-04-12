@@ -1,7 +1,13 @@
 en:
-  email: "E-mail"
-  password: "Password"
+  activerecord:
+    attributes:
+      user:
+        email: "E-mail"
+        password: "Password"
+  users:
+    sessions:
+      new:
+        remember_me: "Remember me"
   register: "Register"
-  remember_me: "Remember me"
   sign_in: "Sign in"
   sign_out: "Sign out"
