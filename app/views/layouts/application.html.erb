@@ -16,9 +16,11 @@
         <%= image_link_to t(:sign_out), "logout", destroy_user_session_path,
               data: { turbo_method: :delete } %>
       <% else %>
-        <%= image_link_to t(:sign_in), "login", new_user_session_path, hide: true %>
         <%= image_link_to t(:register), "account-plus-outline", new_user_registration_path,
-              hide: true %>
+              unless_current: true %>
+        <%= image_link_to t(:recover_password), "lock-reset", new_user_password_path,
+              unless_current: true %>
+        <%= image_link_to t(:sign_in), "login", new_user_session_path, unless_current: true %>
       <% end %>
     </div>
 
