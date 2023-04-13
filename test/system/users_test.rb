@@ -14,6 +14,15 @@ class UsersTest < ApplicationSystemTestCase
     assert_text t('devise.sessions.signed_in')
   end
 
+  test "sign in fails with invalid credentials" do
+    visit new_user_session_url
+    fill_in User.human_attribute_name(:email), with: @admin.email
+    fill_in User.human_attribute_name(:password), with: 'badpass'
+    click_on t(:sign_in)
+    assert_current_path new_user_session_path
+    assert_text t('devise.failure.invalid', authentication_keys: User.human_attribute_name(:email))
+  end
+
   #test "visiting the index" do
   #  visit users_url
   #  assert_selector "h1", text: "Users"
