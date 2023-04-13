@@ -5,6 +5,9 @@ module ApplicationHelper
         def #{selector}(method, options = {})
           @template.content_tag :tr do
             label_text = label(method, options.delete(:label))
+            if options[:hint]
+              label_text += @template.tag(:br) + @template.content_tag(:em, options.delete(:hint))
+            end
             label_class = @template.class_names(required: options[:required],
                                                 error: @object&.errors[method].present?)
 

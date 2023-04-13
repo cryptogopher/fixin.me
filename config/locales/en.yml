@@ -2,13 +2,16 @@ en:
   activerecord:
     attributes:
       user:
-        email: "E-mail"
-        password: "Password"
+        email: E-mail
+        password: Password
   users:
+    registrations:
+      new:
+        password_confirmation: Retype password
     sessions:
       new:
-        remember_me: "Remember me"
-  register: "Register"
-  sign_in: "Sign in"
-  sign_out: "Sign out"
-  recover_password: "Recover password"
+        remember_me: Remember me
+  register: Register
+  sign_in: Sign in
+  sign_out: Sign out
+  recover_password: Recover password

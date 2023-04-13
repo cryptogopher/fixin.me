@@ -32,6 +32,7 @@
 /.irb_history
 /.lesshst
 /.local
+/.vim
 /.viminfo
 /.webdrivers
 *.swp

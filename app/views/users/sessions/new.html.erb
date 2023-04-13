@@ -1,6 +1,6 @@
-<%= tabular_form_for resource, as: resource_name, url: session_path(resource_name) do |f| %>
-  <%= f.email_field :email, required: true, size: 32, autofocus: true, autocomplete: "email" %>
-  <%= f.password_field :password, required: true, size: 32, autocomplete: "current-password" %>
+<%= tabular_form_for resource, url: user_session_path do |f| %>
+  <%= f.email_field :email, required: true, size: 30, autofocus: true, autocomplete: "email" %>
+  <%= f.password_field :password, required: true, size: 30, autocomplete: "current-password" %>
 
   <% if devise_mapping.rememberable? %>
     <%= f.check_box :remember_me, label: t('.remember_me') %>
@@ -8,5 +8,3 @@
 
   <%= f.submit t(:sign_in) %>
 <% end %>
-
-<%= render "users/shared/links" %>
