@@ -27,6 +27,21 @@ class UsersTest < ApplicationSystemTestCase
     assert_text t('devise.failure.invalid', authentication_keys: User.human_attribute_name(:email))
   end
 
+  # TODO: require e-mail confirmation on registration
+  test "register" do
+    visit new_user_session_url
+    click_link t(:register)
+    fill_in User.human_attribute_name(:email).capitalize, with: random_email
+    password = random_password
+    fill_in User.human_attribute_name(:password).capitalize, with: password
+    fill_in t('users.registrations.new.password_confirmation'), with: password
+    assert_difference ->{User.count}, 1 do
+      click_on t(:register)
+    end
+    assert_no_current_path new_user_registration_path
+    assert_text t('devise.registrations.signed_up')
+  end
+
   #test "visiting the index" do
   #  visit users_url
   #  assert_selector "h1", text: "Users"

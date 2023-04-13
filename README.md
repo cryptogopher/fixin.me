@@ -78,3 +78,10 @@ possibly with different Ruby versions:
 Use `RAILS_ENV="development"` for rake commands and running rails server.
 
 Use `RAILS_ENV="test"` for running tests.
+
+
+### Running tests
+
+Single test:
+
+    bin/rails test test/system/users_test.rb --name test_register

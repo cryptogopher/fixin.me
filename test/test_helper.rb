@@ -18,4 +18,8 @@ class ActiveSupport::TestCase
   def random_password
     SecureRandom.alphanumeric rand(Rails.configuration.devise.password_length)
   end
+
+  def random_email
+    "%s@%s.%s" % (1..3).map { SecureRandom.alphanumeric(rand(1..20)) }
+  end
 end
