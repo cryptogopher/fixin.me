@@ -10,4 +10,12 @@ class ActiveSupport::TestCase
   fixtures :all
 
   include AbstractController::Translation
+
+  def randomize_user_password!(user)
+    random_password.tap { |p| user.update!(password: p) }
+  end
+
+  def random_password
+    SecureRandom.alphanumeric rand(Rails.configuration.devise.password_length)
+  end
 end

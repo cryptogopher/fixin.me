@@ -7,17 +7,21 @@ class UsersTest < ApplicationSystemTestCase
 
   test "sign in" do
     visit new_user_session_url
-    fill_in User.human_attribute_name(:email), with: @admin.email
-    fill_in User.human_attribute_name(:password), with: 'admin'
+    users.sample.then do |user|
+      fill_in User.human_attribute_name(:email).capitalize, with: user.email
+      fill_in User.human_attribute_name(:password).capitalize, with: randomize_user_password!(user)
+    end
     click_on t(:sign_in)
     assert_no_current_path new_user_session_path
     assert_text t('devise.sessions.signed_in')
   end
 
-  test "sign in fails with invalid credentials" do
+  test "sign in fails with invalid password" do
     visit new_user_session_url
-    fill_in User.human_attribute_name(:email), with: @admin.email
-    fill_in User.human_attribute_name(:password), with: 'badpass'
+    users.sample.then do |user|
+      fill_in User.human_attribute_name(:email).capitalize, with: user.email
+      fill_in User.human_attribute_name(:password).capitalize, with: random_password
+    end
     click_on t(:sign_in)
     assert_current_path new_user_session_path
     assert_text t('devise.failure.invalid', authentication_keys: User.human_attribute_name(:email))
