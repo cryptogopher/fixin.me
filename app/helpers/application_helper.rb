@@ -4,18 +4,22 @@ module ApplicationHelper
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def #{selector}(method, options = {})
           @template.content_tag :tr do
-            label_text = label(method, options.delete(:label))
-            if options[:hint]
-              label_text += @template.tag(:br) + @template.content_tag(:em, options.delete(:hint))
-            end
-            label_class = @template.class_names(required: options[:required],
-                                                error: @object&.errors[method].present?)
-
-            @template.content_tag(:td, label_text, class: label_class) +
+            @template.content_tag(:td, label_for(method, options)) +
             @template.content_tag(:td, super)
           end
         end
       RUBY_EVAL
+    end
+
+    def label_for(method, options = {})
+      text = options.delete(:label)
+      text ||= @object.class.human_attribute_name(method).capitalize
+
+      classes = @template.class_names(required: options[:required],
+                                      error: @object&.errors[method].present?)
+
+      label(method, text, class: classes) +
+        (@template.tag(:br) + @template.content_tag(:em, options.delete(:hint)) if options[:hint])
     end
 
     def submit(value, options = {})

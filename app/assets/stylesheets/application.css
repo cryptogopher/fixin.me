@@ -158,10 +158,10 @@ form tr td:first-child {
   padding-right: 0.25rem;
   text-align: right;
 }
-form td.required {
+form label.required {
   font-weight: bold;
 }
-form td.error {
+form label.error {
   color: #ff1f5b;
 }
 form em {

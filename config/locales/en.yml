@@ -2,8 +2,8 @@ en:
   activerecord:
     attributes:
       user:
-        email: E-mail
-        password: Password
+        email: e-mail
+        password: password
   users:
     registrations:
       new:
