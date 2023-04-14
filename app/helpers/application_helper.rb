@@ -35,6 +35,7 @@ module ApplicationHelper
 
   def tabular_form_for(record, options = {}, &block)
     options.merge! builder: TabularFormBuilder
+    options.merge! data: {turbo: false}
     form_for(record, **options, &-> (f) { f.table_form_for(&block) })
   end
 
