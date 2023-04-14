@@ -5,9 +5,14 @@
 # Seeding process should be idempotent.
 
 User.transaction do
-  User.find_or_create_by!(status: :admin) do |user|
-    user.email = Rails.configuration.admin
-    user.password = 'admin'
-    puts "Admin account '#{user.email}' created with default password '#{user.password}'"
+  break if User.find_by status: :admin
+
+  User.create! email: Rails.configuration.admin, password: 'admin', status: :admin do |user|
+    user.skip_confirmation!
+    print "Creating #{user.status} account '#{user.email}' with password '#{user.password}'..."
   end
+  puts "done."
+
+rescue ActiveRecord::RecordInvalid => exception
+  puts "failed. #{exception.message}"
 end
