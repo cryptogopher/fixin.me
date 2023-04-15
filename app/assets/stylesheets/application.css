@@ -130,8 +130,8 @@ input[type=submit]:focus-visible {
   width: 1.4rem;
 }
 .flash.notice {
-  border-color: #00cd6c;
-  background-color: #00cd6c;
+  border-color: #009ade;
+  background-color: #009ade;
 }
 .flash button {
   background-color: inherit;
