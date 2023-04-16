@@ -2,3 +2,4 @@ admin:
   email: admin@dev27.fixin.me
   status: admin
   encrypted_password: <%= Devise::Encryptor.digest(User, 'admin') %>
+  confirmed_at: <%= DateTime.now %>

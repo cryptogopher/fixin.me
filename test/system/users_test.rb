@@ -6,28 +6,25 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test "sign in" do
-    visit new_user_session_url
-    users.sample.then do |user|
-      fill_in User.human_attribute_name(:email).capitalize, with: user.email
-      fill_in User.human_attribute_name(:password).capitalize, with: randomize_user_password!(user)
-    end
-    click_on t(:sign_in)
+    sign_in
     assert_no_current_path new_user_session_path
     assert_text t('devise.sessions.signed_in')
   end
 
   test "sign in fails with invalid password" do
-    visit new_user_session_url
-    users.sample.then do |user|
-      fill_in User.human_attribute_name(:email).capitalize, with: user.email
-      fill_in User.human_attribute_name(:password).capitalize, with: random_password
-    end
-    click_on t(:sign_in)
+    sign_in password: random_password
     assert_current_path new_user_session_path
     assert_text t('devise.failure.invalid', authentication_keys: User.human_attribute_name(:email))
   end
 
-  # TODO: require e-mail confirmation on registration
+  test "sign out" do
+    sign_in user: @admin
+    visit root_url
+    click_on t(:sign_out)
+    assert_current_path new_user_session_path
+    assert_text t('devise.sessions.signed_out')
+  end
+
   test "register" do
     visit new_user_session_url
     click_link t(:register)
@@ -39,7 +36,7 @@ class UsersTest < ApplicationSystemTestCase
       click_on t(:register)
     end
     assert_no_current_path new_user_registration_path
-    assert_text t('devise.registrations.signed_up')
+    assert_text t('devise.registrations.signed_up_but_unconfirmed')
   end
 
   #test "visiting the index" do
