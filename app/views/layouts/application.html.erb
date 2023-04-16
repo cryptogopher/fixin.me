@@ -14,7 +14,7 @@
     <div class="application-menu">
       <% if user_signed_in? %>
         <%= image_link_to t(:sign_out), "logout", destroy_user_session_path,
-              data: { turbo_method: :delete } %>
+              data: { turbo: true, turbo_method: :delete } %>
       <% else %>
         <%= image_link_to t(:register), "account-plus-outline", new_user_registration_path,
               unless_current: true %>
