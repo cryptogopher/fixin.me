@@ -11,7 +11,9 @@ en:
     sessions:
       new:
         remember_me: Remember me
+  or: or
   register: Register
   sign_in: Sign in
   sign_out: Sign out
   recover_password: Recover password
+  resend_confirmation: Resend confirmation

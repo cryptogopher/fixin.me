@@ -38,11 +38,11 @@ module ApplicationHelper
     form_for(record, **options, &-> (f) { f.table_form_for(&block) })
   end
 
-  def image_link_to(name, image = nil, options = nil, html_options = nil)
+  def image_link_to(name, image = nil, options = nil, html_options = {})
     return "" if html_options.delete(:unless_current) && (url_for(options) == request.path)
 
     name = svg_tag("pictograms/#{image}.svg#icon") + name if image
-    link_to name, options, html_options
+    link_to name, options, html_options.merge!(class: "image-button") { |k, v1, v2| "#{v1} #{v2}" }
   end
 
   def svg_tag(source, options = {})
