@@ -34,7 +34,7 @@ module FixinMe
     # SETUP: Below settings need to be updated on a per-installation basis.
     #
     # URL to use in sent e-mails.
-    config.action_mailer.default_url_options = {host: 'localhost'}
+    config.action_mailer.default_url_options = {host: 'localhost', :protocol => 'https'}
     # https://guides.rubyonrails.org/configuring.html#config-action-mailer-delivery-method
     config.action_mailer.delivery_method = :sendmail
 

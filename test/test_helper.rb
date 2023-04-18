@@ -10,6 +10,7 @@ class ActiveSupport::TestCase
   fixtures :all
 
   include AbstractController::Translation
+  include ActionMailer::TestHelper
 
   def randomize_user_password!(user)
     random_password.tap { |p| user.update!(password: p) }
@@ -21,5 +22,9 @@ class ActiveSupport::TestCase
 
   def random_email
     "%s@%s.%s" % (1..3).map { SecureRandom.alphanumeric(rand(1..20)) }
+  end
+
+  def with_last_email
+    yield(ActionMailer::Base.deliveries.last)
   end
 end

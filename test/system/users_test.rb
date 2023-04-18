@@ -28,15 +28,26 @@ class UsersTest < ApplicationSystemTestCase
   test "register" do
     visit new_user_session_url
     click_link t(:register)
+
     fill_in User.human_attribute_name(:email).capitalize, with: random_email
     password = random_password
     fill_in User.human_attribute_name(:password).capitalize, with: password
     fill_in t('users.registrations.new.password_confirmation'), with: password
     assert_difference ->{User.count}, 1 do
-      click_on t(:register)
+      assert_emails 1 do
+        click_on t(:register)
+      end
     end
+
     assert_no_current_path new_user_registration_path
     assert_text t('devise.registrations.signed_up_but_unconfirmed')
+
+    with_last_email do |mail|
+      visit Capybara.string(mail.body.to_s).find_link("Confirm my account")[:href]
+    end
+    assert_current_path new_user_session_path
+    assert_text t('devise.confirmations.confirmed')
+    assert User.last.confirmed?
   end
 
   #test "visiting the index" do
