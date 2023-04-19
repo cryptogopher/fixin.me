@@ -3,3 +3,13 @@ admin:
   status: admin
   encrypted_password: <%= Devise::Encryptor.digest(User, 'admin') %>
   confirmed_at: <%= DateTime.now %>
+alice:
+  email: alice@example.com
+  status: active
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'alice') %>
+  confirmed_at: <%= DateTime.now - 7.days %>
+bob:
+  email: bob@gmail.com
+  status: active
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'bob') %>
+  confirmed_at:
