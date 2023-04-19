@@ -49,4 +49,28 @@ class UsersTest < ApplicationSystemTestCase
     assert_text t('devise.confirmations.confirmed')
     assert User.last.confirmed?
   end
+
+  test "recover password" do
+    visit new_user_session_url
+    click_link t(:recover_password)
+
+    fill_in User.human_attribute_name(:email).capitalize, with: users.sample.email
+    assert_emails 1 do
+      click_on t(:recover_password)
+    end
+    assert_current_path new_user_session_path
+    assert_text t('devise.passwords.send_instructions')
+
+    with_last_email do |mail|
+      visit Capybara.string(mail.body.to_s).find_link("Change my password")[:href]
+    end
+    new_password = random_password
+    fill_in t('users.passwords.edit.new_password'), with: new_password
+    fill_in t('users.passwords.edit.password_confirmation'), with: new_password
+    assert_emails 1 do
+      click_on t('users.passwords.edit.update_password')
+    end
+    assert_no_current_path user_password_path
+    assert_text t('devise.passwords.updated')
+  end
 end

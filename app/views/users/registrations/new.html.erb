@@ -10,6 +10,7 @@
 
   <%= f.submit t(:register) %>
 <% end %>
+
 <%= content_tag :p, t(:or), style: "text-align: center;" %>
 <%= image_link_to t(:resend_confirmation), "email-sync-outline", new_user_confirmation_path,
   class: "centered" %>

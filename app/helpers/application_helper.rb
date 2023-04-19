@@ -12,6 +12,7 @@ module ApplicationHelper
     end
 
     def label_for(method, options = {})
+      return "" if (options[:label] == false)
       text = options.delete(:label)
       text ||= @object.class.human_attribute_name(method).capitalize
 

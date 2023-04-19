@@ -5,6 +5,11 @@ en:
         email: e-mail
         password: password
   users:
+    passwords:
+      edit:
+        new_password: New password
+        password_confirmation: Retype new password
+        update_password: Update password
     registrations:
       new:
         password_confirmation: Retype password
