@@ -1,6 +1,4 @@
 <%= tabular_form_for resource, url: user_password_path, html: { method: :post } do |f| %>
-  <%= render "users/shared/error_messages", resource: resource %>
-
   <%= f.email_field :email, required: true, size: 30, autofocus: true, autocomplete: "email" %>
 
   <%= f.submit t(:recover_password) %>

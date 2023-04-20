@@ -5,7 +5,10 @@ module ApplicationHelper
         def #{selector}(method, options = {})
           @template.content_tag :tr do
             @template.content_tag(:td, label_for(method, options)) +
-            @template.content_tag(:td, super)
+            @template.content_tag(:td, super,
+              @object&.errors[method].present? ?
+                {class: "error", data: {content: @object&.errors.delete(method).join(" and ")}} :
+                {})
           end
         end
       RUBY_EVAL
@@ -30,7 +33,9 @@ module ApplicationHelper
     end
 
     def table_form_for(&block)
-      @template.content_tag(:table) { yield(self) }
+      @template.content_tag(:table) { yield(self) } +
+      # NOTE: display leftover error messages (there shouldn't be any)
+      @template.content_tag(:div, @object&.errors.full_messages.join(@template.tag :br))
     end
   end
 

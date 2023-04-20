@@ -168,8 +168,19 @@ form tr td:first-child {
 form label.required {
   font-weight: bold;
 }
-form label.error {
+form label.error,
+form td.error::after {
   color: #ff1f5b;
+}
+form td.error {
+  display: -webkit-box;
+}
+form td.error::after {
+  content: attr(data-content);
+  font-size: 0.9rem;
+  margin-left: 1rem;
+  padding: 0.25rem 0;
+  position: absolute;
 }
 form em {
   color: #707070;

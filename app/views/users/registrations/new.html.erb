@@ -1,6 +1,4 @@
 <%= tabular_form_for resource, url: user_registration_path do |f| %>
-  <%= render "users/shared/error_messages", resource: resource %>
-
   <%= f.email_field :email, required: true, size: 30, autofocus: true, autocomplete: "email" %>
   <%= f.password_field :password, required: true, size: 30, minlength: @minimum_password_length,
     autocomplete: "new-password",
