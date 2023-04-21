@@ -11,14 +11,14 @@
   </head>
 
   <body>
-    <div class="application-menu">
+    <div class="app-menu">
       <% if user_signed_in? %>
         <%= image_link_to t(:sign_out), "logout", destroy_user_session_path,
               data: { turbo: true, turbo_method: :delete } %>
       <% else %>
         <%= image_link_to t(:register), "account-plus-outline", new_user_registration_path,
-              unless_current: true %>
-        <%= image_link_to t(:sign_in), "login", new_user_session_path, unless_current: true %>
+              current: :hide %>
+        <%= image_link_to t(:sign_in), "login", new_user_session_path, current: :hide %>
       <% end %>
     </div>
 
@@ -27,6 +27,14 @@
         <div class="flash <%= entry %>">
           <div><%= sanitize message %></div>
           <button tabindex="-1" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="nav-menu">
+      <% if user_signed_in? %>
+        <div class="right">
+          <%= image_link_to t('.users'), "account-multiple-outline", users_path, current: :active %>
         </div>
       <% end %>
     </div>

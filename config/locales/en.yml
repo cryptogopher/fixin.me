@@ -16,6 +16,9 @@ en:
     sessions:
       new:
         remember_me: Remember me
+  layouts:
+    application:
+      users: Users
   or: or
   register: Register
   sign_in: Sign in
