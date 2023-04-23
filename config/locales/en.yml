@@ -3,7 +3,10 @@ en:
     attributes:
       user:
         email: e-mail
+        status: status
         password: password
+        created_at: registration
+        confirmed_at: confirmed
   users:
     passwords:
       edit:
@@ -19,6 +22,7 @@ en:
   layouts:
     application:
       users: Users
+  actions: Actions
   or: or
   register: Register
   sign_in: Sign in

@@ -1,10 +1,21 @@
-<div id="users">
+<table class="items" id="users">
+  <tr>
+    <th><%= User.human_attribute_name(:email).capitalize %></th>
+    <th><%= User.human_attribute_name(:status).capitalize %></th>
+    <th><%= User.human_attribute_name(:created_at).capitalize %> <sup>UTC</sup></th>
+    <th><%= User.human_attribute_name(:confirmed_at).capitalize %></th>
+    <th><%= t :actions %></th>
+  </tr>
   <% @users.each do |user| %>
-    <%= render user %>
-    <p>
-      <%= link_to "Show this user", user %>
-    </p>
+    <tr>
+      <td><%= user.email %></td>
+      <td><%= user.status %></td>
+      <td><%= user.created_at.to_fs(:db_without_sec) %></td>
+      <td class="svg">
+        <%= svg_tag "pictograms/checkbox-marked-outline.svg#icon" if user.confirmed_at.present? %>
+      </td>
+      <td class="actions"><%= image_link_to "Delete", "account-remove-outline", user_path(user),
+                                data: { turbo: true, turbo_method: :delete } %></td>
+    </tr>
   <% end %>
-</div>
-
-<%= link_to "New user", new_user_path %>
+</table>

@@ -48,9 +48,11 @@ module ApplicationHelper
     current = html_options.delete(:current)
     return "" if (current == :hide) && (url_for(options) == request.path)
 
-    classes = class_names(html_options[:class], "image-button", active: current == :active)
     name = svg_tag("pictograms/#{image}.svg#icon") + name if image
-    link_to name, options, class: classes
+    classes = class_names(html_options[:class], "image-button", active: current == :active)
+    html_options.merge!(class: classes) { |k, v1, v2| "#{v1} #{v2}" }
+
+    link_to name, options, html_options
   end
 
   def svg_tag(source, options = {})
