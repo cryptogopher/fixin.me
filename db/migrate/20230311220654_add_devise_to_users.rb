@@ -18,7 +18,7 @@ class AddDeviseToUsers < ActiveRecord::Migration[7.0]
       t.datetime :confirmed_at
       t.datetime :confirmation_sent_at
       # Only if using reconfirmable
-      t.string :unconfirmed_email
+      t.string :unconfirmed_email, limit: 64
 
       ## Trackable
       # t.integer :sign_in_count, default: 0, null: false
