@@ -34,7 +34,10 @@
     <div class="nav-menu">
       <% if user_signed_in? %>
         <div class="right">
-          <%= image_link_to t('.users'), "account-multiple-outline", users_path, current: :active %>
+          <% if current_user_at_least(:admin) %>
+            <%= image_link_to t('.users'), "account-multiple-outline", users_path,
+                  current: :active %>
+        <% end %>
         </div>
       <% end %>
     </div>

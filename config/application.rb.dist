@@ -31,6 +31,8 @@ module FixinMe
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    config.action_dispatch.rescue_responses['ApplicationController::AccessForbidden'] = :forbidden
+
     # SETUP: Below settings need to be updated on a per-installation basis.
     #
     # URL to use in sent e-mails.
