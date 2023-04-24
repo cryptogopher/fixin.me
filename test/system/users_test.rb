@@ -92,4 +92,18 @@ class UsersTest < ApplicationSystemTestCase
       visit Capybara.string(mail.body.to_s).find_link("Confirm my account")[:href]
     end
   end
+
+  test "delete user" do
+    sign_in user: users.select(&:admin?).sample
+    click_link t('layouts.application.users')
+    assert_difference ->{ User.count }, -1 do
+      all('tr').drop(1).sample.click_link t(:delete)
+    end
+  end
+
+  test "users tab visible only for admin" do
+  end
+
+  test "update e-mail" do
+  end
 end

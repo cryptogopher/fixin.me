@@ -23,6 +23,7 @@ en:
     application:
       users: Users
   actions: Actions
+  delete: Delete
   or: or
   register: Register
   sign_in: Sign in

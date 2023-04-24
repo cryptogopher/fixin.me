@@ -15,8 +15,10 @@
         <td class="svg">
           <%= svg_tag "pictograms/checkbox-marked-outline" if user.confirmed_at.present? %>
         </td>
-        <td class="actions"><%= image_link_to "Delete", "account-remove-outline", user_path(user),
-                                  data: { turbo: true, turbo_method: :delete } %></td>
+        <td class="actions">
+          <%= image_link_to t(:delete), "account-remove-outline", user_path(user),
+                data: { turbo: true, turbo_method: :delete } %>
+        </td>
       </tr>
     <% end %>
   </table>
