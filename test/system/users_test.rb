@@ -94,14 +94,19 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test "delete user" do
-    sign_in user: users.select(&:admin?).sample
+    sign_in user: users.select(&:admin?).select(&:confirmed?).sample
     click_link t('layouts.application.users')
     assert_difference ->{ User.count }, -1 do
       all('tr').drop(1).sample.click_link t(:delete)
     end
   end
 
-  test "users tab visible only for admin" do
+  test "users index visible only for admin" do
+    sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
+    assert_raise ApplicationController::AccessForbidden do
+      visit users_path
+    end
+    assert has_no_link?t('layouts.application.users')
   end
 
   test "update e-mail" do
