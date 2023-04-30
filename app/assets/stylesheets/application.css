@@ -24,6 +24,9 @@
 :focus-visible {
   outline: none;
 }
+.centered {
+  margin: 0 auto;
+}
 
 body {
   margin: 0 0.5rem;
@@ -101,15 +104,12 @@ input[type=submit] {
   font-weight: bold;
   padding: 0.4rem;
   text-decoration: none;
+  width: fit-content;
 }
 .image-button svg {
   height: 1.3rem;
   padding-right: 0.4rem;
   width: 1.3rem;
-}
-.image-button.centered {
-  margin: 0 auto;
-  width: fit-content;
 }
 .image-button:hover,
 .image-button.active:hover,
@@ -179,7 +179,6 @@ input[type=submit]:hover:focus-visible {
 
 form table {
   border-spacing: 0.8rem;
-  margin: 0 auto;
 }
 form tr td:first-child {
   font-size: 0.9rem;
