@@ -51,13 +51,23 @@ input[type=checkbox] {
   width: 1.1rem;
   -webkit-appearance: none;
 }
-input:focus-visible, input:hover {
+input:focus-visible,
+input:hover {
   accent-color: #006c9b;
   background-color: #f3f3f3;
 }
 input[type=checkbox]:checked {
   appearance: checkbox;
   -webkit-appearance: checkbox;
+}
+input[type=text]:read-only {
+  border: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+input:read-only:focus-visible,
+input:read-only:hover {
+  background: white;
 }
 
 .app-menu {
@@ -74,16 +84,18 @@ input[type=checkbox]:checked {
   margin: 0.4rem 0;
 }
 .nav-menu .image-button {
-  border: none;
-  border-radius: 0;
   font-size: 0.9rem;
-  margin: 0 0.8rem;
   padding: 0.6rem 1rem;
 }
 .nav-menu .right .image-button {
   float: right;
 }
-.nav-menu .image-button.active {
+.nav-menu .tab-button {
+  border: none;
+  border-radius: 0;
+  margin: 0 0.8rem;
+}
+.nav-menu .tab-button.active {
   border-bottom: solid 0.2rem;
   color: #009ade;
   fill: #009ade;
@@ -181,6 +193,7 @@ form table {
   border-spacing: 0.8rem;
 }
 form tr td:first-child {
+  color: #a0a0a0;
   font-size: 0.9rem;
   padding-right: 0.25rem;
   text-align: right;
