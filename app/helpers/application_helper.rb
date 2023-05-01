@@ -70,4 +70,15 @@ module ApplicationHelper
       tag.use href: image_path(source + ".svg") + "#icon"
     end
   end
+
+  def navigation_menu
+    #menu_items = {right: [[:users, :index],]}
+
+    content_tag :div, class: "right" do
+      if current_user.at_least(:admin)
+        image_link_to t('.users'), "account-multiple-outline", users_path, class: "tab-button",
+          current: :active
+      end
+    end
+  end
 end

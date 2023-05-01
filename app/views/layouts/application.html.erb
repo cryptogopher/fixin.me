@@ -31,15 +31,9 @@
       <% end %>
     </div>
 
+    <%# Allow overwriting/clearing navigation menu for some views %>
     <div class="nav-menu">
-      <% if user_signed_in? %>
-        <div class="right">
-          <% if current_user_at_least(:admin) %>
-            <%= image_link_to t('.users'), "account-multiple-outline", users_path,
-                  current: :active %>
-        <% end %>
-        </div>
-      <% end %>
+      <%= content_for(:navigation) || (navigation_menu if user_signed_in?) %>
     </div>
 
     <%= yield %>
