@@ -3,15 +3,37 @@ module ApplicationHelper
     (field_helpers - [:label]).each do |selector|
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def #{selector}(method, options = {})
-          @template.content_tag :tr do
-            @template.content_tag(:td, label_for(method, options)) +
-            @template.content_tag(:td, super,
-              @object&.errors[method].present? ?
-                {class: "error", data: {content: @object&.errors.delete(method).join(" and ")}} :
-                {})
-          end
+          labelled_row_for(method, super, options)
         end
       RUBY_EVAL
+    end
+
+    def select(method, choices = nil, options = {}, html_options = {})
+      labelled_row_for(method, super, options)
+    end
+
+    def submit(value, options = {})
+      @template.content_tag :tr do
+        @template.content_tag :td, super, colspan: 2
+      end
+    end
+
+    def table_form_for(&block)
+      @template.content_tag(:table, class: "centered") { yield(self) } +
+      # Display leftover error messages (there shouldn't be any)
+      @template.content_tag(:div, @object&.errors.full_messages.join(@template.tag :br))
+    end
+
+    private
+
+    def labelled_row_for(method, field, options)
+      @template.content_tag :tr do
+        @template.content_tag(:td, label_for(method, options)) +
+        @template.content_tag(:td, options.delete(:readonly) ? @object.public_send(method) : field,
+          @object&.errors[method].present? ?
+            {class: "error", data: {content: @object&.errors.delete(method).join(" and ")}} :
+            {})
+      end
     end
 
     def label_for(method, options = {})
@@ -22,20 +44,8 @@ module ApplicationHelper
       classes = @template.class_names(required: options[:required],
                                       error: @object&.errors[method].present?)
 
-      label(method, text, class: classes) +
+      label(method, text+":", class: classes) +
         (@template.tag(:br) + @template.content_tag(:em, options.delete(:hint)) if options[:hint])
-    end
-
-    def submit(value, options = {})
-      @template.content_tag :tr do
-        @template.content_tag :td, super, colspan: 2
-      end
-    end
-
-    def table_form_for(&block)
-      @template.content_tag(:table) { yield(self) } +
-      # NOTE: display leftover error messages (there shouldn't be any)
-      @template.content_tag(:div, @object&.errors.full_messages.join(@template.tag :br))
     end
   end
 
