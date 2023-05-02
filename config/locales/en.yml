@@ -7,6 +7,7 @@ en:
         password: password
         created_at: registration
         confirmed_at: confirmed
+        unconfirmed_email: Awaiting confirmation for
   users:
     passwords:
       edit:
@@ -16,9 +17,18 @@ en:
     registrations:
       new:
         password_confirmation: Retype password
+      edit:
+        unconfirmed_email_hint: (since %{timestamp})
+        blank_password_hint_html: leave blank to keep unchanged%{subhint}
+        minimum_length_hint_html:
+          zero:
+          other: <br>(%{count} characters minimum)
+        update: Update profile
     sessions:
       new:
         remember_me: Remember me
+    destroy:
+      success: User has been successfully deleted.
   layouts:
     application:
       users: Users

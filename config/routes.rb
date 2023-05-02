@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
-  devise_for :users, path: '', path_names: {registration: 'register'},
+  devise_for :users, path: '', path_names: {registration: 'profile'},
     controllers: {registrations: :registrations}
 
-  resources :users
+  resources :users, only: [:index, :destroy]
 
-  root "users#index"
+  devise_scope :user do
+    root to: "devise/sessions#new"
+  end
 end

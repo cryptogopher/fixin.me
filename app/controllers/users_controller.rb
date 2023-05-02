@@ -1,60 +1,21 @@
 class UsersController < ApplicationController
-  before_action :find_user, only: [:show, :edit, :update, :destroy]
+  before_action :find_user, only: [:destroy]
   before_action do
-    raise AccessForbidden unless (current_user == @user) || current_user_at_least(:admin)
+    raise AccessForbidden unless (current_user == @user) || current_user.at_least(:admin)
   end
 
   def index
     @users = User.all
   end
 
-  # GET /users/1
-  def show
-  end
-
-  # GET /users/new
-  def new
-    @user = User.new
-  end
-
-  # GET /users/1/edit
-  def edit
-  end
-
-  # POST /users
-  def create
-    @user = User.new(user_params)
-
-    if @user.save
-      redirect_to @user, notice: "User was successfully created."
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH/PUT /users/1
-  def update
-    if @user.update(user_params)
-      redirect_to @user, notice: "User was successfully updated."
-    else
-      render :edit, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /users/1
   def destroy
     @user.destroy
-    redirect_to users_url, notice: "User was successfully destroyed."
+    redirect_to action: :index, notice: t(".success")
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def find_user
-      @user = User.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def user_params
-      params.require(:user).permit(:email, :status)
-    end
+  def find_user
+    @user = User.find(params[:id])
+  end
 end
