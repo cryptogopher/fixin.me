@@ -101,12 +101,11 @@ class UsersTest < ApplicationSystemTestCase
     end
   end
 
-  test "users index visible only for admin" do
+  test "users index forbidden for non admin" do
     sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
-    assert_raise ApplicationController::AccessForbidden do
-      visit users_path
-    end
+    visit users_path
     assert has_no_link?t('layouts.application.users')
+    assert_title "Access is forbidden to this page (403)"
   end
 
   test "update e-mail" do
