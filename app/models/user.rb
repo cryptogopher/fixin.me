@@ -10,4 +10,8 @@ class User < ApplicationRecord
     locked: 1,      # disallowed to sign in due to failed logins; maintained by Devise :lockable
     disabled: 0,    # administratively disallowed to sign in
   }, default: :active
+
+  def at_least(status)
+    User.statuses[self.status] >= User.statuses[status]
+  end
 end

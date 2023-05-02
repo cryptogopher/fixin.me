@@ -1,4 +1,4 @@
-<% if current_user_at_least(:admin) %>
+<% if current_user.at_least(:admin) %>
   <table class="items" id="users">
     <tr>
       <th><%= User.human_attribute_name(:email).capitalize %></th>
@@ -9,6 +9,7 @@
     </tr>
     <% @users.each do |user| %>
       <tr>
+        <%# TODO: add user edit link %>
         <td><%= user.email %></td>
         <td><%= user.status %></td>
         <td><%= user.created_at.to_fs(:db_without_sec) %></td>
