@@ -90,6 +90,9 @@ input:read-only:hover {
 .nav-menu .right .image-button {
   float: right;
 }
+.nav-menu .left .image-button {
+  float: left;
+}
 .nav-menu .tab-button {
   border: none;
   border-radius: 0;
@@ -131,6 +134,10 @@ input[type=submit]:hover {
   color: white;
   fill: white;
 }
+.image-button.dangerous:hover {
+  background-color: #ff1f5b;
+  border-color: #ff1f5b;
+}
 .image-button:focus-visible,
 .image-button.active:focus-visible,
 input[type=submit]:focus-visible {
@@ -141,6 +148,10 @@ input[type=submit]:focus-visible {
 input[type=submit]:hover:focus-visible {
   background-color: #006c9b;
   border-color: #006c9b;
+}
+.image-button.dangerous:hover:focus-visible {
+  background-color: #b21237;
+  border-color: #b21237;
 }
 
 .flashes {

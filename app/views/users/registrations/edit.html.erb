@@ -1,6 +1,13 @@
 <% content_for :navigation, flush: true do %>
-  <%= image_link_to t(:back), "arrow-left-bold-outline",
-        request.referer.present? ? :back : root_url %>
+  <div class="left">
+    <%= image_link_to t(".back"), "arrow-left-bold-outline",
+      request.referer.present? ? :back : root_url %>
+  </div>
+  <div class="right">
+    <%= image_link_to t(".delete"), "account-remove-outline", user_registration_path,
+      class: "dangerous",
+      data: { turbo: true, turbo_method: :delete, turbo_confirm: t(".confirm_delete") } %>
+  </div>
 <% end %>
 
 <%= tabular_form_for resource, url: registration_path(resource), html: {method: :patch} do |f| %>

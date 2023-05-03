@@ -5,21 +5,18 @@
       <th><%= User.human_attribute_name(:status).capitalize %></th>
       <th><%= User.human_attribute_name(:created_at).capitalize %> <sup>UTC</sup></th>
       <th><%= User.human_attribute_name(:confirmed_at).capitalize %></th>
-      <th><%= t :actions %></th>
+      <!-- <th><%#= t :actions %></th> -->
     </tr>
     <% @users.each do |user| %>
       <tr>
-        <%# TODO: add user edit link %>
+        <%# TODO: add user show link %>
         <td><%= user.email %></td>
         <td><%= user.status %></td>
         <td><%= user.created_at.to_fs(:db_without_sec) %></td>
         <td class="svg">
           <%= svg_tag "pictograms/checkbox-marked-outline" if user.confirmed_at.present? %>
         </td>
-        <td class="actions">
-          <%= image_link_to t(:delete), "account-remove-outline", user_path(user),
-                data: { turbo: true, turbo_method: :delete } %>
-        </td>
+        <!-- <td class="actions"></td> -->
       </tr>
     <% end %>
   </table>

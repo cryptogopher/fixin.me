@@ -18,6 +18,10 @@ en:
       new:
         password_confirmation: Retype password
       edit:
+        back: Back
+        confirm_delete: Are you sure you want to delete profile?
+          All data will be irretrievably lost.
+        delete: Delete profile
         unconfirmed_email_hint: (since %{timestamp})
         blank_password_hint_html: leave blank to keep unchanged%{subhint}
         minimum_length_hint_html:
@@ -27,14 +31,12 @@ en:
     sessions:
       new:
         remember_me: Remember me
-    destroy:
-      success: User has been successfully deleted.
   layouts:
     application:
       users: Users
   actions: Actions
-  delete: Delete
   or: or
+  profile: Profile
   register: Register
   sign_in: Sign in
   sign_out: Sign out

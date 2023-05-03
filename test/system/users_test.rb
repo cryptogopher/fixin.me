@@ -93,21 +93,30 @@ class UsersTest < ApplicationSystemTestCase
     end
   end
 
-  test "delete user" do
+  test "show profile" do
     sign_in user: users.select(&:admin?).select(&:confirmed?).sample
     click_link t('layouts.application.users')
+    #all('tr').drop(1).sample.click_link t(:view)
+  end
+
+  test "destroy profile" do
+    sign_in user: users.select(&:confirmed?).sample
+    click_link t(:profile)
     assert_difference ->{ User.count }, -1 do
-      all('tr').drop(1).sample.click_link t(:delete)
+      accept_confirm { click_link t('users.registrations.edit.delete') }
     end
   end
 
-  test "users index forbidden for non admin" do
+  test "index forbidden for non admin" do
     sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
     visit users_path
     assert has_no_link?t('layouts.application.users')
     assert_title "Access is forbidden to this page (403)"
   end
 
-  test "update e-mail" do
+  test "update profile" do
+  end
+
+  test "update status forbidded for non admin" do
   end
 end
