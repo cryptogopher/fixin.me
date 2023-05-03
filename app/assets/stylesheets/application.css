@@ -83,9 +83,14 @@ input:read-only:hover {
   height: 2.7rem;
   margin: 0.4rem 0;
 }
+.nav-menu a svg {
+  height: 1.5rem;
+  padding-right: 0.4rem;
+  width: 1.5rem;
+}
 .nav-menu .image-button {
   font-size: 0.9rem;
-  padding: 0.6rem 1rem;
+  padding: 0.5rem 0.8rem;
 }
 .nav-menu .right .image-button {
   float: right;
