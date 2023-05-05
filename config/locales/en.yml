@@ -5,10 +5,12 @@ en:
         email: e-mail
         status: status
         password: password
-        created_at: registration
+        created_at: registered
         confirmed_at: confirmed
         unconfirmed_email: Awaiting confirmation for
   users:
+    index:
+      become: View as...
     passwords:
       edit:
         new_password: New password
@@ -18,7 +20,6 @@ en:
       new:
         password_confirmation: Retype password
       edit:
-        back: Back
         confirm_delete: Are you sure you want to delete profile?
           All data will be irretrievably lost.
         delete: Delete profile
@@ -35,6 +36,7 @@ en:
     application:
       users: Users
   actions: Actions
+  back: Back
   or: or
   profile: Profile
   register: Register

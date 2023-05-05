@@ -1,6 +1,6 @@
 <% content_for :navigation, flush: true do %>
   <div class="left">
-    <%= image_link_to t(".back"), "arrow-left-bold-outline",
+    <%= image_link_to t(:back), "arrow-left-bold-outline",
       request.referer.present? ? :back : root_url %>
   </div>
   <div class="right">
@@ -11,18 +11,14 @@
 <% end %>
 
 <%= tabular_form_for resource, url: registration_path(resource), html: {method: :patch} do |f| %>
-  <%= f.select :status, User.statuses, readonly: !current_user.at_least(:admin) %>
-
-  <% if current_user.at_least(:admin) %>
-    <%= f.text_field :created_at, readonly: true, tabindex: -1 %>
-  <% end %>
-
   <%= f.email_field :email, size: 30, autofocus: true, autocomplete: "off" %>
   <% if f.object.pending_reconfirmation? %>
     <%= f.text_field :unconfirmed_email, readonly: true, tabindex: -1,
       hint: t(".unconfirmed_email_hint",
               timestamp: f.object.confirmation_sent_at.to_fs(:db_without_sec)) %>
   <% end %>
+
+  <%= f.select :status, User.statuses, readonly: true %>
 
   <%= f.password_field :password, size: 30, autocomplete: "off",
     hint: t('.blank_password_hint_html',

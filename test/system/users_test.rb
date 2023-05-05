@@ -96,15 +96,19 @@ class UsersTest < ApplicationSystemTestCase
   test "show profile" do
     sign_in user: users.select(&:admin?).select(&:confirmed?).sample
     click_link t('layouts.application.users')
-    #all('tr').drop(1).sample.click_link t(:view)
+    email = all('tr').drop(1).sample.first('a').text
+    click_link email
+    assert_current_path user_path(User.find_by_email!(email))
   end
 
   test "destroy profile" do
     sign_in user: users.select(&:confirmed?).sample
-    click_link t(:profile)
+    # TODO: remove condition after root changed to different path than profile
+    click_link t(:profile) unless has_current_path?(edit_user_registration_path)
     assert_difference ->{ User.count }, -1 do
       accept_confirm { click_link t('users.registrations.edit.delete') }
     end
+    assert_current_path new_user_session_path
   end
 
   test "index forbidden for non admin" do

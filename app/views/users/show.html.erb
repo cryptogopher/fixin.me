@@ -1,10 +1,19 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :navigation, flush: true do %>
+  <div class="left">
+    <%= image_link_to t(:back), "arrow-left-bold-outline", users_path %>
+  </div>
+<% end %>
 
-<%= render @user %>
+<%= tabular_form_for @user do |f| %>
+  <%= f.email_field :email, readonly: true %>
+  <% if f.object.pending_reconfirmation? %>
+    <%= f.email_field :unconfirmed_email, readonly: true,
+      hint: t("users.registrations.edit.unconfirmed_email_hint",
+              timestamp: f.object.confirmation_sent_at.to_fs(:db_without_sec)) %>
+  <% end %>
 
-<div>
-  <%= link_to "Edit this user", edit_user_path(@user) %> |
-  <%= link_to "Back to users", users_path %>
+  <%= f.select :status, User.statuses, readonly: true %>
 
-  <%= button_to "Destroy this user", @user, method: :delete %>
-</div>
+  <%= f.text_field :created_at, readonly: true %>
+  <%= f.text_field :confirmed_at, readonly: true %>
+<% end %>

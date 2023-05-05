@@ -250,36 +250,52 @@ table.items {
   font-size: 0.85rem;
   margin: 1rem auto 0 auto;
 }
-table.items th {
+table.items thead {
   font-size: 0.8rem;
+  line-height: 2.2rem;
 }
-table.items th,
-table.items tr:hover {
+table.items thead,
+table.items tbody tr:hover {
   background-color: #f3f3f3;
 }
 table.items th,
-table.items td:not(.svg):not(.actions) {
-  padding: 0.8rem;
+table.items td:not(:first-child):not(.actions) {
+  padding: 0 0.8rem;
+  text-align: center;
 }
 table.items td {
   border-top: 1px solid #dddddd;
+  line-height: 2.5rem;
+  padding: 0;
 }
 table.items td a {
+  color: black;
+  cursor: pointer;
+  display: block;
+  font-weight: normal;
+  padding: 0 0.8rem;
+  text-decoration: none;
+}
+table.items td a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 0.05rem;
+  text-underline-offset: 0.2rem;
+}
+table.items td a.image-button {
   border-color: #dddddd;
   color: #909090;
-  font-weight: normal;
   margin-right: 0.25rem;
   padding: 0.25rem;
 }
 table.items td:not(:first-child) {
   color: #909090;
   fill: #909090;
-  text-align: center;
 }
 table.items td.actions {
   text-align: right;
 }
 table.items svg {
   height: 1.2rem;
+  vertical-align: middle;
   width: 1.2rem;
 }
