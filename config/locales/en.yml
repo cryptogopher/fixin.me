@@ -10,7 +10,7 @@ en:
         unconfirmed_email: Awaiting confirmation for
   users:
     index:
-      become: View as...
+      disguise: View as...
     passwords:
       edit:
         new_password: New password
@@ -34,6 +34,7 @@ en:
         remember_me: Remember me
   layouts:
     application:
+      revert: Revert
       users: Users
   actions: Actions
   back: Back
