@@ -73,7 +73,7 @@ module ApplicationHelper
 
     content_tag :div, class: "right" do
       if current_user.at_least(:admin)
-        image_link_to t('.users'), "account-multiple-outline", users_path, class: "tab",
+        image_link_to t(".users"), "account-multiple-outline", users_path, class: "tab",
           current: :active
       end
     end

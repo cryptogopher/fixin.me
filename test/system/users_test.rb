@@ -8,21 +8,21 @@ class UsersTest < ApplicationSystemTestCase
   test "sign in" do
     sign_in
     assert_no_current_path new_user_session_path
-    assert_text t('devise.sessions.signed_in')
+    assert_text t("devise.sessions.signed_in")
   end
 
   test "sign in fails with invalid password" do
     sign_in password: random_password
     assert_current_path new_user_session_path
-    assert_text t('devise.failure.invalid', authentication_keys: User.human_attribute_name(:email))
+    assert_text t("devise.failure.invalid", authentication_keys: User.human_attribute_name(:email))
   end
 
   test "sign out" do
     sign_in
     visit root_url
-    click_on t(:sign_out)
+    click_on t("layouts.application.sign_out")
     assert_current_path new_user_session_path
-    assert_text t('devise.sessions.signed_out')
+    assert_text t("devise.sessions.signed_out")
   end
 
   test "recover password" do
@@ -35,19 +35,19 @@ class UsersTest < ApplicationSystemTestCase
       click_on t(:recover_password)
     end
     assert_current_path new_user_session_path
-    assert_text t('devise.passwords.send_instructions')
+    assert_text t("devise.passwords.send_instructions")
 
     with_last_email do |mail|
       visit Capybara.string(mail.body.to_s).find_link("Change my password")[:href]
     end
     new_password = random_password
-    fill_in t('users.passwords.edit.new_password'), with: new_password
-    fill_in t('users.passwords.edit.password_confirmation'), with: new_password
+    fill_in t("users.passwords.edit.new_password"), with: new_password
+    fill_in t("users.passwords.edit.password_confirmation"), with: new_password
     assert_emails 1 do
-      click_on t('users.passwords.edit.update_password')
+      click_on t("users.passwords.edit.update_password")
     end
     assert_no_current_path user_password_path
-    assert_text t('devise.passwords.updated')
+    assert_text t("devise.passwords.updated")
   end
 
   test "register" do
@@ -57,7 +57,7 @@ class UsersTest < ApplicationSystemTestCase
     fill_in User.human_attribute_name(:email).capitalize, with: random_email
     password = random_password
     fill_in User.human_attribute_name(:password).capitalize, with: password
-    fill_in t('users.registrations.new.password_confirmation'), with: password
+    fill_in t("users.registrations.new.password_confirmation"), with: password
     assert_difference ->{User.count}, 1 do
       assert_emails 1 do
         click_on t(:register)
@@ -65,13 +65,13 @@ class UsersTest < ApplicationSystemTestCase
     end
 
     assert_no_current_path new_user_registration_path
-    assert_text t('devise.registrations.signed_up_but_unconfirmed')
+    assert_text t("devise.registrations.signed_up_but_unconfirmed")
 
     with_last_email do |mail|
       visit Capybara.string(mail.body.to_s).find_link("Confirm my account")[:href]
     end
     assert_current_path new_user_session_path
-    assert_text t('devise.confirmations.confirmed')
+    assert_text t("devise.confirmations.confirmed")
     assert User.last.confirmed?
   end
 
@@ -86,7 +86,7 @@ class UsersTest < ApplicationSystemTestCase
       click_on t(:resend_confirmation)
     end
     assert_current_path new_user_session_path
-    assert_text t('devise.confirmations.send_instructions')
+    assert_text t("devise.confirmations.send_instructions")
 
     with_last_email do |mail|
       visit Capybara.string(mail.body.to_s).find_link("Confirm my account")[:href]
@@ -95,7 +95,7 @@ class UsersTest < ApplicationSystemTestCase
 
   test "show profile" do
     sign_in user: users.select(&:admin?).select(&:confirmed?).sample
-    click_on t('layouts.application.users')
+    click_on t("layouts.application.users")
     within all('tr').drop(1).sample do |tr|
       email = first(:link).text
       click_on email
@@ -107,7 +107,7 @@ class UsersTest < ApplicationSystemTestCase
     user = users.select(&:admin?).select(&:confirmed?).sample
     sign_in user: user
 
-    click_on t('layouts.application.users')
+    click_on t("layouts.application.users")
     all(:link_or_button, text: t("users.index.disguise")).sample.click
     assert_current_path edit_user_registration_path
     # TODO: test for profile app-menu link after root changed to different path
@@ -122,8 +122,8 @@ class UsersTest < ApplicationSystemTestCase
     user = users.select(&:admin?).select(&:confirmed?).sample
     sign_in user: user
 
-    click_on t('layouts.application.users')
-    text = t('users.index.disguise')
+    click_on t("layouts.application.users")
+    text = t("users.index.disguise")
     undisguisable = all(:xpath, "//tbody//tr[not(descendant::*[contains(text(),\"#{text}\")])]")
     within undisguisable.sample do |tr|
       email = first(:link).text
@@ -144,8 +144,8 @@ class UsersTest < ApplicationSystemTestCase
     end
     assert_difference ->{ User.count }, -1 do
       # TODO: accept_confirm when modal dialog is working
-      #accept_confirm { click_on t('users.registrations.edit.delete') }
-      click_on t('users.registrations.edit.delete')
+      #accept_confirm { click_on t("users.registrations.edit.delete") }
+      click_on t("users.registrations.edit.delete")
     end
     assert_current_path new_user_session_path
   end

@@ -1,11 +1,11 @@
 <%= tabular_form_for resource, url: user_password_path, html: { method: :put } do |f| %>
   <%= f.hidden_field :reset_password_token, label: false %>
 
-  <%= f.password_field :password, label: t('.new_password'),
+  <%= f.password_field :password, label: t(".new_password"),
     required: true, size: 30, autofocus: true, autocomplete: "new-password",
     hint: ("(#{@minimum_password_length} characters minimum)" if @minimum_password_length) %>
-  <%= f.password_field :password_confirmation, label: t('.password_confirmation'),
+  <%= f.password_field :password_confirmation, label: t(".password_confirmation"),
     required: true, size: 30, autocomplete: "new-password" %>
 
-  <%= f.submit t('.update_password') %>
+  <%= f.submit t(".update_password") %>
 <% end %>

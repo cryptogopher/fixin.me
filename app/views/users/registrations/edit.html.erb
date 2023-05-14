@@ -21,9 +21,9 @@
   <%= f.select :status, User.statuses, readonly: true %>
 
   <%= f.password_field :password, size: 30, autocomplete: "off",
-    hint: t('.blank_password_hint_html',
-            subhint: t('.minimum_length_hint_html', count: @minimum_password_length)) %>
+    hint: t(".blank_password_hint_html",
+            subhint: t(".minimum_length_hint_html", count: @minimum_password_length)) %>
   <%= f.password_field :password_confirmation, size: 30, autocomplete: "off" %>
 
-  <%= f.submit t('.update') %>
+  <%= f.submit t(".update") %>
 <% end %>

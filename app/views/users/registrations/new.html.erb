@@ -3,7 +3,7 @@
   <%= f.password_field :password, required: true, size: 30, minlength: @minimum_password_length,
     autocomplete: "new-password",
     hint: ("(#{@minimum_password_length} characters minimum)" if @minimum_password_length) %>
-  <%= f.password_field :password_confirmation, label: t('.password_confirmation'),
+  <%= f.password_field :password_confirmation, label: t(".password_confirmation"),
     required: true, size: 30, autocomplete: "new-password" %>
 
   <%= f.submit t(:register) %>

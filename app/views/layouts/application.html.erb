@@ -13,9 +13,10 @@
     <div class="app-menu">
       <% if user_signed_in? %>
         <% if current_user_disguised? %>
-          <%= image_button_to t(:revert), "incognito-off", revert_users_path %>
+          <%= image_button_to t(".revert"), "incognito-off", revert_users_path %>
         <% else %>
-          <%= image_button_to t(:sign_out), "logout", destroy_user_session_path, method: :delete %>
+          <%= image_button_to t(".sign_out"), "logout", destroy_user_session_path,
+            method: :delete %>
         <% end %>
         <%= image_link_to current_user.email, "account-wrench-outline",
           edit_user_registration_path, current: :hide %>

@@ -35,13 +35,12 @@ en:
   layouts:
     application:
       revert: Revert
+      sign_out: Sign out
       users: Users
   actions: Actions
   back: Back
   or: or
-  profile: Profile
   register: Register
   sign_in: Sign in
-  sign_out: Sign out
   recover_password: Recover password
   resend_confirmation: Resend confirmation
