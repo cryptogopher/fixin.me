@@ -6,7 +6,7 @@
   <div class="right">
     <%# TODO: make confirm dialog work %>
     <%= image_button_to t(".delete"), "account-remove-outline", user_registration_path,
-      class: "dangerous", method: :delete, data: {confirm: t(".confirm_delete")} %>
+      class: "dangerous", method: :delete, confirm: t(".confirm_delete") %>
   </div>
 <% end %>
 

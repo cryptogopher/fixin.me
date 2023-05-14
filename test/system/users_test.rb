@@ -143,9 +143,7 @@ class UsersTest < ApplicationSystemTestCase
       first(:link_or_button, user.email).click
     end
     assert_difference ->{ User.count }, -1 do
-      # TODO: accept_confirm when modal dialog is working
-      #accept_confirm { click_on t("users.registrations.edit.delete") }
-      click_on t("users.registrations.edit.delete")
+      accept_confirm { click_on t("users.registrations.edit.delete") }
     end
     assert_current_path new_user_session_path
   end
