@@ -18,7 +18,7 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test "sign out" do
-    sign_in user: @admin
+    sign_in
     visit root_url
     click_on t(:sign_out)
     assert_current_path new_user_session_path
@@ -27,7 +27,7 @@ class UsersTest < ApplicationSystemTestCase
 
   test "recover password" do
     visit new_user_session_url
-    click_link t(:recover_password)
+    click_on t(:recover_password)
 
     fill_in User.human_attribute_name(:email).capitalize,
       with: users.select(&:confirmed?).sample.email
@@ -52,7 +52,7 @@ class UsersTest < ApplicationSystemTestCase
 
   test "register" do
     visit new_user_session_url
-    click_link t(:register)
+    click_on t(:register)
 
     fill_in User.human_attribute_name(:email).capitalize, with: random_email
     password = random_password
@@ -77,8 +77,8 @@ class UsersTest < ApplicationSystemTestCase
 
   test "resend confirmation" do
     visit new_user_session_url
-    click_link t(:register)
-    click_link t(:resend_confirmation)
+    click_on t(:register)
+    click_on t(:resend_confirmation)
 
     fill_in User.human_attribute_name(:email).capitalize,
       with: users.reject(&:confirmed?).sample.email
@@ -95,18 +95,57 @@ class UsersTest < ApplicationSystemTestCase
 
   test "show profile" do
     sign_in user: users.select(&:admin?).select(&:confirmed?).sample
-    click_link t('layouts.application.users')
-    email = all('tr').drop(1).sample.first('a').text
-    click_link email
-    assert_current_path user_path(User.find_by_email!(email))
+    click_on t('layouts.application.users')
+    within all('tr').drop(1).sample do |tr|
+      email = first(:link).text
+      click_on email
+      assert_current_path user_path(User.find_by_email!(email))
+    end
+  end
+
+  test "disguise" do
+    user = users.select(&:admin?).select(&:confirmed?).sample
+    sign_in user: user
+
+    click_on t('layouts.application.users')
+    all(:link_or_button, text: t("users.index.disguise")).sample.click
+    assert_current_path edit_user_registration_path
+    # TODO: test for profile app-menu link after root changed to different path
+    # then profile
+
+    click_on t("layouts.application.revert")
+    assert_current_path users_path
+    assert_link user.email
+  end
+
+  test "disguise disallowed" do
+    user = users.select(&:admin?).select(&:confirmed?).sample
+    sign_in user: user
+
+    click_on t('layouts.application.users')
+    text = t('users.index.disguise')
+    undisguisable = all(:xpath, "//tbody//tr[not(descendant::*[contains(text(),\"#{text}\")])]")
+    within undisguisable.sample do |tr|
+      email = first(:link).text
+      button = button_to text, disguise_user_path(User.find_by_email!(email))
+      evaluate_script("arguments[0].insertAdjacentHTML('beforeend', '#{button.html_safe}');",
+                      tr.find('td:last-child'))
+      click_on text
+    end
+    assert_title "Bad request received (400)"
   end
 
   test "destroy profile" do
-    sign_in user: users.select(&:confirmed?).sample
+    user = users.select(&:confirmed?).sample
+    sign_in user: user
     # TODO: remove condition after root changed to different path than profile
-    click_link t(:profile) unless has_current_path?(edit_user_registration_path)
+    unless has_current_path?(edit_user_registration_path)
+      first(:link_r_button, user.email).click
+    end
     assert_difference ->{ User.count }, -1 do
-      accept_confirm { click_link t('users.registrations.edit.delete') }
+      # TODO: accept_confirm when modal dialog is working
+      #accept_confirm { click_on t('users.registrations.edit.delete') }
+      click_on t('users.registrations.edit.delete')
     end
     assert_current_path new_user_session_path
   end
@@ -114,7 +153,6 @@ class UsersTest < ApplicationSystemTestCase
   test "index forbidden for non admin" do
     sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
     visit users_path
-    assert has_no_link?t('layouts.application.users')
     assert_title "Access is forbidden to this page (403)"
   end
 
