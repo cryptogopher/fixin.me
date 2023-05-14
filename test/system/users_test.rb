@@ -140,7 +140,7 @@ class UsersTest < ApplicationSystemTestCase
     sign_in user: user
     # TODO: remove condition after root changed to different path than profile
     unless has_current_path?(edit_user_registration_path)
-      first(:link_r_button, user.email).click
+      first(:link_or_button, user.email).click
     end
     assert_difference ->{ User.count }, -1 do
       # TODO: accept_confirm when modal dialog is working
