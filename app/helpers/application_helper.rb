@@ -87,8 +87,8 @@ module ApplicationHelper
 
     name = svg_tag("pictograms/#{image}") + name if image
     html_options[:class] = class_names(html_options[:class], "button", active: current == :active)
-    if html_options[:confirm]
-      html_options[:onclick] = "return confirm('#{html_options.delete(:confirm)}');"
+    if html_options[:onclick]&.is_a? Hash
+      html_options[:onclick] = "return confirm('#{html_options[:onclick][:confirm]}');"
     end
 
     send "#{type}_to", name, options, html_options
