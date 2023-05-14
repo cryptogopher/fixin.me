@@ -54,15 +54,12 @@ module ApplicationHelper
     form_for(record, **options, &-> (f) { f.table_form_for(&block) })
   end
 
+  def image_button_to(name, image = nil, options = nil, html_options = {})
+    image_element_to(:button, name, image, options, html_options)
+  end
+
   def image_link_to(name, image = nil, options = nil, html_options = {})
-    current = html_options.delete(:current)
-    return "" if (current == :hide) && (url_for(options) == request.path)
-
-    name = svg_tag("pictograms/#{image}") + name if image
-    classes = class_names(html_options[:class], "image-button", active: current == :active)
-    html_options.merge!(class: classes) { |k, v1, v2| "#{v1} #{v2}" }
-
-    link_to name, options, html_options
+    image_element_to(:link, name, image, options, html_options)
   end
 
   def svg_tag(source, options = {})
@@ -76,9 +73,21 @@ module ApplicationHelper
 
     content_tag :div, class: "right" do
       if current_user.at_least(:admin)
-        image_link_to t('.users'), "account-multiple-outline", users_path, class: "tab-button",
+        image_link_to t('.users'), "account-multiple-outline", users_path, class: "tab",
           current: :active
       end
     end
+  end
+
+  private
+
+  def image_element_to(type, name, image = nil, options = nil, html_options = {})
+    current = html_options.delete(:current)
+    return "" if (current == :hide) && (url_for(options) == request.path)
+
+    name = svg_tag("pictograms/#{image}") + name if image
+    html_options[:class] = class_names(html_options[:class], "button", active: current == :active)
+
+    send "#{type}_to", name, options, html_options
   end
 end

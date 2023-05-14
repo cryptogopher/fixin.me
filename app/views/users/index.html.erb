@@ -18,8 +18,9 @@
         </td>
         <td><%= user.created_at.to_fs(:db_without_sec) %></td>
         <td class="actions">
-          <%= image_link_to t(".disguise"), "incognito", disguise_user_path(user),
-            data: {turbo: true, turbo_method: :post} if allow_disguise?(user) %>
+          <% if allow_disguise?(user) %>
+            <%= image_button_to t(".disguise"), "incognito", disguise_user_path(user) %>
+          <% end %>
         </td>
       </tr>
     <% end %>

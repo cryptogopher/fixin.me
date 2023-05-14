@@ -4,9 +4,9 @@
       request.referer.present? ? :back : root_url %>
   </div>
   <div class="right">
-    <%= image_link_to t(".delete"), "account-remove-outline", user_registration_path,
-      class: "dangerous",
-      data: { turbo: true, turbo_method: :delete, turbo_confirm: t(".confirm_delete") } %>
+    <%# TODO: make confirm dialog work %>
+    <%= image_button_to t(".delete"), "account-remove-outline", user_registration_path,
+      class: "dangerous", method: :delete, data: {confirm: t(".confirm_delete")} %>
   </div>
 <% end %>
 

@@ -14,17 +14,15 @@
     <div class="app-menu">
       <% if user_signed_in? %>
         <% if current_user_disguised? %>
-          <%= image_link_to t(:revert), "incognito-off", revert_users_path,
-            data: {turbo: true, turbo_method: :post} %>
+          <%= image_button_to t(:revert), "incognito-off", revert_users_path %>
         <% else %>
-          <%= image_link_to t(:sign_out), "logout", destroy_user_session_path,
-            data: {turbo: true, turbo_method: :delete} %>
+          <%= image_button_to t(:sign_out), "logout", destroy_user_session_path, method: :delete %>
         <% end %>
         <%= image_link_to current_user.email, "account-wrench-outline",
-              edit_user_registration_path, current: :hide %>
+          edit_user_registration_path, current: :hide %>
       <% else %>
         <%= image_link_to t(:register), "account-plus-outline", new_user_registration_path,
-              current: :hide %>
+          current: :hide %>
         <%= image_link_to t(:sign_in), "login", new_user_session_path, current: :hide %>
       <% end %>
     </div>

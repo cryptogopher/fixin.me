@@ -74,42 +74,42 @@ input:read-only:hover {
   height: 2.2rem;
   margin: 0.4rem 0;
 }
-.app-menu .image-button {
+.app-menu > * {
   float: right;
   margin-left: 0.8rem;
 }
 
 .nav-menu {
-  height: 2.7rem;
+  height: 2.4rem;
   margin: 0.4rem 0;
 }
-.nav-menu a svg {
-  height: 1.5rem;
-  padding-right: 0.4rem;
-  width: 1.5rem;
-}
-.nav-menu .image-button {
-  font-size: 0.9rem;
-  padding: 0.5rem 0.8rem;
-}
-.nav-menu .right .image-button {
+.nav-menu .right > * {
   float: right;
 }
-.nav-menu .left .image-button {
+.nav-menu .left > * {
   float: left;
 }
-.nav-menu .tab-button {
+.nav-menu .tab {
   border: none;
   border-radius: 0;
+  font-size: 0.9rem;
   margin: 0 0.8rem;
+  padding: 0.5rem 0.8rem;
 }
-.nav-menu .tab-button.active {
+.nav-menu .tab.active {
   border-bottom: solid 0.2rem;
   color: #009ade;
   fill: #009ade;
 }
+.nav-menu a.button svg,
+.nav-menu button svg {
+  height: 1.5rem;
+  padding-right: 0.4rem;
+  width: 1.5rem;
+}
 
-.image-button,
+a.button,
+button,
 input[type=submit] {
   align-items: center;
   background-color: white;
@@ -126,35 +126,39 @@ input[type=submit] {
   text-decoration: none;
   width: fit-content;
 }
-.image-button svg {
+a.button svg,
+button svg {
   height: 1.3rem;
   padding-right: 0.4rem;
   width: 1.3rem;
 }
-.image-button:hover,
-.image-button.active:hover,
+a.button:hover,
+a.button.active:hover,
+button:hover,
 input[type=submit]:hover {
   background-color: #009ade;
   border-color: #009ade;
   color: white;
   fill: white;
 }
-.image-button.dangerous:hover {
-  background-color: #ff1f5b;
-  border-color: #ff1f5b;
-}
-.image-button:focus-visible,
-.image-button.active:focus-visible,
+a.button:focus-visible,
+a.button.active:focus-visible,
+button:focus-visible,
 input[type=submit]:focus-visible {
   background-color: #f3f3f3;
 }
-.image-button:hover:focus-visible,
-.image-button.active:hover:focus-visible,
+a.button:hover:focus-visible,
+a.button.active:hover:focus-visible,
+button:hover:focus-visible,
 input[type=submit]:hover:focus-visible {
   background-color: #006c9b;
   border-color: #006c9b;
 }
-.image-button.dangerous:hover:focus-visible {
+button.dangerous:hover {
+  background-color: #ff1f5b;
+  border-color: #ff1f5b;
+}
+button.dangerous:hover:focus-visible {
   background-color: #b21237;
   border-color: #b21237;
 }
@@ -265,37 +269,45 @@ table.items td:not(:first-child):not(.actions) {
 }
 table.items td {
   border-top: 1px solid #dddddd;
-  line-height: 2.5rem;
   padding: 0;
 }
-table.items td a {
+table.items a {
   color: black;
   cursor: pointer;
   display: block;
   font-weight: normal;
+  line-height: 2.5rem;
   padding: 0 0.8rem;
   text-decoration: none;
 }
-table.items td a:hover {
+table.items a:hover,
+table.items a:focus-visible,
+table.items a:hover:focus-visible {
   text-decoration: underline;
   text-decoration-thickness: 0.05rem;
   text-underline-offset: 0.2rem;
 }
-table.items td a.image-button {
-  border-color: #dddddd;
-  color: #909090;
-  margin-right: 0.25rem;
-  padding: 0.25rem;
+table.items a:focus-visible {
+  text-decoration-style: dashed;
 }
 table.items td:not(:first-child) {
   color: #909090;
   fill: #909090;
 }
-table.items td.actions {
-  text-align: right;
-}
 table.items svg {
   height: 1.2rem;
   vertical-align: middle;
   width: 1.2rem;
+}
+table.items td.actions {
+  padding-left: 0.8rem;
+  text-align: right;
+}
+table.items button {
+  margin-right: 0.25rem;
+  padding: 0.25rem;
+}
+table.items button:not(:hover) {
+  border-color: #dddddd;
+  color: #909090;
 }
