@@ -3,13 +3,13 @@ module ApplicationHelper
     (field_helpers - [:label]).each do |selector|
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def #{selector}(method, options = {})
-          labelled_row_for(method, super, options)
+          labelled_row_for(method, options) { super }
         end
       RUBY_EVAL
     end
 
     def select(method, choices = nil, options = {}, html_options = {})
-      labelled_row_for(method, super, options)
+      labelled_row_for(method, options) { super }
     end
 
     def submit(value, options = {})
@@ -26,10 +26,10 @@ module ApplicationHelper
 
     private
 
-    def labelled_row_for(method, field, options)
+    def labelled_row_for(method, options)
       @template.content_tag :tr do
         @template.content_tag(:td, label_for(method, options)) +
-        @template.content_tag(:td, options.delete(:readonly) ? @object.public_send(method) : field,
+        @template.content_tag(:td, options.delete(:readonly) ? @object.public_send(method) : yield,
           @object&.errors[method].present? ?
             {class: "error", data: {content: @object&.errors.delete(method).join(" and ")}} :
             {})
