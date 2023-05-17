@@ -287,8 +287,14 @@ table.items a:hover:focus-visible {
   text-decoration-thickness: 0.05rem;
   text-underline-offset: 0.2rem;
 }
+table.items a:hover {
+  color: #009ade;
+}
 table.items a:focus-visible {
-  text-decoration-style: dashed;
+  text-decoration-color: #a0a0a0;
+}
+table.items a:hover:focus-visible {
+  color: #006c9b;
 }
 table.items td:not(:first-child) {
   color: #909090;
