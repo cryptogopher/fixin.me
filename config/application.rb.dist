@@ -32,6 +32,7 @@ module FixinMe
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.action_dispatch.rescue_responses['ApplicationController::AccessForbidden'] = :forbidden
+    config.action_dispatch.rescue_responses['ArgumentError'] = :bad_request
 
     # SETUP: Below settings need to be updated on a per-installation basis.
     #

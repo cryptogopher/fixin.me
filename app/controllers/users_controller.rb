@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   helper_method :allow_disguise?
 
-  before_action :find_user, only: [:show, :disguise]
+  before_action :find_user, only: [:show, :update, :disguise]
   before_action except: :revert do
     raise AccessForbidden unless current_user.at_least(:admin)
   end
@@ -16,8 +16,12 @@ class UsersController < ApplicationController
   def show
   end
 
+  def update
+    @user.update!(params.require(:user).permit(:status))
+  end
+
   def disguise
-    raise ActionController::BadRequest unless allow_disguise?(@user)
+    raise ArgumentError unless allow_disguise?(@user)
     session[:revert_to_id] = current_user.id
     bypass_sign_in(@user)
     redirect_to root_url
@@ -28,8 +32,6 @@ class UsersController < ApplicationController
     bypass_sign_in(@user)
     redirect_to users_url
   end
-
-  # TODO: add #update to change user status
 
   # NOTE: limited actions availabe to :admin by design. Users are meant to
   # manage their accounts by themselves through registrations. In future :admin

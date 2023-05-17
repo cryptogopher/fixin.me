@@ -32,13 +32,17 @@ body {
   margin: 0 0.5rem;
 }
 
-input {
+/* blue - target for interaction with pointer */
+/* gray - target for interaction with keyboard */
+input,
+select {
   background-color: white;
   border: 1px solid;
   border-radius: 0.2rem;
   border-color: #cccccc;
 }
-input:not([type=checkbox]) {
+input:not([type=checkbox]),
+select {
   font-size: 0.9rem;
   padding: 0.2rem 0.4rem;
 }
@@ -51,8 +55,17 @@ input[type=checkbox] {
   width: 1.1rem;
   -webkit-appearance: none;
 }
+input:hover,
+select:hover {
+  border-color: #009ade;
+  outline: #009ade solid 1px;
+}
+select:hover {
+  cursor: pointer;
+}
 input:focus-visible,
-input:hover {
+select:focus-within,
+select:focus-visible {
   accent-color: #006c9b;
   background-color: #f3f3f3;
 }
@@ -313,7 +326,12 @@ table.items button {
   margin-right: 0.25rem;
   padding: 0.25rem;
 }
+table.items select:not(:hover),
 table.items button:not(:hover) {
   border-color: #dddddd;
   color: #909090;
+}
+table.items select:focus-within,
+table.items select:focus-visible {
+  color: black;
 }
