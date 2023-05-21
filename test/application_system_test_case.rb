@@ -21,6 +21,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     click_on t(:sign_in)
   end
 
+  def inject_button_to(after, *button_options)
+    button = button_to *button_options
+    evaluate_script("arguments[0].insertAdjacentHTML('beforeend', '#{button.html_safe}');", after)
+  end
+
   #def assert_stale(element)
   #  assert_raise(Selenium::WebDriver::Error::StaleElementReferenceError) { element.tag_name }
   #end

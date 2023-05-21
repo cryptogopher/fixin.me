@@ -124,12 +124,11 @@ class UsersTest < ApplicationSystemTestCase
 
     click_on t("layouts.application.users")
     text = t("users.index.disguise")
+    # Pick row without 'disguise' button
     undisguisable = all(:xpath, "//tbody//tr[not(descendant::*[contains(text(),\"#{text}\")])]")
     within undisguisable.sample do |tr|
-      email = first(:link).text
-      button = button_to text, disguise_user_path(User.find_by_email!(email))
-      evaluate_script("arguments[0].insertAdjacentHTML('beforeend', '#{button.html_safe}');",
-                      tr.find('td:last-child'))
+      inject_button_to tr.find('td:last-child'), text,
+        disguise_user_path(User.find_by_email!(first(:link).text))
       click_on text
     end
     assert_title "Bad request received (400)"
@@ -155,8 +154,43 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test "update profile" do
+    # TODO
   end
 
-  test "update status forbidded for non admin" do
+  test "update status" do
+    sign_in user: users.select(&:admin?).select(&:confirmed?).sample
+    visit users_path
+
+    within all(:xpath, "//tbody//tr[descendant::select]").sample do |tr|
+      user = User.find_by_email!(first(:link).text)
+      status = find(:select)
+      new_status = (status.all(:option).map(&:value) - [status.value]).sample
+      assert_changes ->{ user.reload.status }, from: status.value, to: new_status do
+        status.select new_status
+      end
+    end
+    assert_current_path users_path
+  end
+
+  test "update status disallowed" do
+    sign_in user: users.select(&:admin?).select(&:confirmed?).sample
+    visit users_path
+
+    within all(:xpath, "//tbody//tr[not(descendant::select)]").sample do |tr|
+      user = User.find_by_email!(first(:link).text)
+      inject_button_to first('td'), "update status", user_path(user), method: :patch,
+        params: {user: {status: User.statuses.keys.sample}}
+      click_on "update status"
+    end
+    assert_title "Bad request received (400)"
+  end
+
+  test "update status forbidden for non admin" do
+    sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
+    visit root_path
+    inject_button_to find('body'), "update status", user_path(User.all.sample), method: :patch,
+      params: {user: {status: User.statuses.keys.sample}}
+    click_on "update status"
+    assert_title "Access is forbidden to this page (403)"
   end
 end
