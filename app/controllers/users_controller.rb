@@ -17,6 +17,7 @@ class UsersController < ApplicationController
   end
 
   def update
+    raise ArgumentError if current_user == @user
     @user.update!(params.require(:user).permit(:status))
   end
 
