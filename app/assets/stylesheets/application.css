@@ -102,12 +102,16 @@ input:read-only:hover {
 .nav-menu .left > * {
   float: left;
 }
+/* TODO: inactive tab color #d0d0d0 or #c7c7c7 */
 .nav-menu .tab {
   border: none;
+  border-bottom: solid 0.2rem #a0a0a0;
   border-radius: 0;
   font-size: 0.9rem;
-  margin: 0 0.8rem;
   padding: 0.5rem 0.8rem;
+}
+.nav-menu .tab:hover {
+  border-bottom: solid 0.2rem #009ade;
 }
 .nav-menu .tab.active {
   border-bottom: solid 0.2rem;
@@ -276,20 +280,23 @@ table.items tbody tr:hover {
   background-color: #f3f3f3;
 }
 table.items th,
-table.items td:not(:first-child):not(.actions) {
+table.items td {
   padding: 0 0.8rem;
   text-align: center;
 }
 table.items td {
   border-top: 1px solid #dddddd;
+}
+table.items td:first-child {
   padding: 0;
+  text-align: left;
 }
 table.items a {
   color: black;
   cursor: pointer;
   display: block;
   font-weight: normal;
-  line-height: 2.5rem;
+  line-height: 2.2rem;
   padding: 0 0.8rem;
   text-decoration: none;
 }
@@ -318,11 +325,15 @@ table.items svg {
   vertical-align: middle;
   width: 1.2rem;
 }
+table.items td.number {
+  text-align: right;
+}
 table.items td.actions {
-  padding-left: 0.8rem;
+  padding: 0 0 0 0.8rem;
   text-align: right;
 }
 table.items button {
+  font-weight: normal;
   margin-right: 0.25rem;
   padding: 0.25rem;
 }
@@ -334,4 +345,9 @@ table.items button:not(:hover) {
 table.items select:focus-within,
 table.items select:focus-visible {
   color: black;
+}
+
+.contextual {
+  float: right;
+  margin-top: 1rem;
 }

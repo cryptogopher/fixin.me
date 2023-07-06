@@ -69,21 +69,27 @@ module ApplicationHelper
   end
 
   def navigation_menu
-    #menu_items = {right: [[:users, :index],]}
+    menu_items = {right: [
+      [".users", "account-multiple-outline", users_path, :admin],
+      [".units", "weight-kilogram", units_path, :restricted],
+    ]}
 
-    content_tag :div, class: "right" do
-      if current_user.at_least(:admin)
-        image_link_to t(".users"), "account-multiple-outline", users_path, class: "tab",
-          current: :active
+    menu_items.map do |alignment, items|
+      content_tag :div, class: alignment do
+        items.map do |label, image, path, status|
+          if current_user.at_least(status)
+            image_link_to t(label), image, path, class: "tab", current: :active
+          end
+        end.join.html_safe
       end
-    end
+    end.join.html_safe
   end
 
   private
 
   def image_element_to(type, name, image = nil, options = nil, html_options = {})
-    current = html_options.delete(:current)
-    return "" if (current == :hide) && (url_for(options) == request.path)
+    current = (url_for(options) == request.path) && html_options.delete(:current)
+    return "" if current == :hide
 
     name = svg_tag("pictograms/#{image}") + name if image
     html_options[:class] = class_names(html_options[:class], "button", active: current == :active)

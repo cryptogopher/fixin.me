@@ -1,0 +1,35 @@
+<div class="contextual">
+  <% if current_user.at_least(:active) %>
+    <%= image_link_to t(".add_unit"), "plus-outline", new_unit_path %>
+  <% end %>
+</div>
+
+<table class="items" id="units">
+  <thead>
+    <tr>
+      <th><%= User.human_attribute_name(:symbol).capitalize %></th>
+      <th><%= User.human_attribute_name(:name).capitalize %></th>
+      <th><%= User.human_attribute_name(:multiplier).capitalize %></th>
+      <% if current_user.at_least(:active) %>
+        <th><%= t :actions %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% Unit.each_with_level(@units) do |unit, level| %>
+      <tr>
+        <td <%= "style=padding-left:0.5rem;" if level > 0 %>>
+          <%= link_to unit.symbol, edit_unit_path(unit) %>
+        </td>
+        <td><%= unit.name %></td>
+        <td class="number"><%= unit.multiplier unless unit.multiplier == 1 %></td>
+        <% if current_user.at_least(:active) %>
+          <td class="actions">
+            <%= image_button_to t(".delete_unit"), "delete-outline", unit_path(unit),
+              method: :delete %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

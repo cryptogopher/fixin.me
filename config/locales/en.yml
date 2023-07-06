@@ -1,6 +1,11 @@
 en:
   activerecord:
     attributes:
+      unit:
+        symbol: Symbol
+        name: Name
+        multiplier: Multiplier
+        base: Base unit
       user:
         email: e-mail
         status: status
@@ -8,6 +13,18 @@ en:
         created_at: registered
         confirmed_at: confirmed
         unconfirmed_email: Awaiting confirmation for
+  units:
+    index:
+      add_unit: Add unit
+      delete_unit: Delete
+    new:
+      none: none
+    create:
+      success: Created new unit
+    update:
+      success: Updated unit
+    destroy:
+      success: Deleted unit
   users:
     index:
       disguise: View as...
@@ -36,11 +53,14 @@ en:
     application:
       revert: Revert
       sign_out: Sign out
+      units: Units
       users: Users
   actions: Actions
+  add: Add
   back: Back
   or: or
   register: Register
   sign_in: Sign in
   recover_password: Recover password
   resend_confirmation: Resend confirmation
+  update: Update

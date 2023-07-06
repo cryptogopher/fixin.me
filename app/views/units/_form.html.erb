@@ -1,0 +1,26 @@
+<div id="add-unit" <%= 'style=display:none;' if @unit.errors.empty? %>>
+  <h2><%= t ".heading_new_unit" %></h2>
+
+  <%= labelled_form_for @unit,
+    url: project_units_path(@project),
+    html: {id: 'unit-add-form', name: 'unit-add-form'} do |f| %>
+
+    <%= render partial: 'units/form', locals: {f: f} %>
+    <%= submit_tag l(:button_create) %>
+    <%= link_to l(:button_cancel), "#", onclick: '$("#add-unit").hide(); return false;' %>
+  <% end %>
+  <hr>
+  </div>
+
+<%= error_messages_for @unit %>
+
+<div class="box tabular">
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <p><%= f.text_field :shortname, required: true, size: 20 %></p>
+    </div>
+    <div class="splitcontentright">
+      <p><%= f.text_field :name, size: 60 %></p>
+    </div>
+  </div>
+</div>
