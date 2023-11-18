@@ -3,8 +3,8 @@ require "test_helper"
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   include ActionView::Helpers::UrlHelper
 
-  # NOTE: remove when capabilities no longer used by Rails
-  Selenium::WebDriver.logger.ignore(:capabilities)
+  # NOTE: geckodriver installed with Firefox, ignore incompatibility warning
+  Selenium::WebDriver.logger.ignore(:selenium_manager)
   Capybara.configure do |config|
     config.save_path = "#{Rails.root}/tmp/screenshots/"
   end
