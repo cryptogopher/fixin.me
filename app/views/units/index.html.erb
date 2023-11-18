@@ -22,7 +22,7 @@
           <%= link_to unit.symbol, edit_unit_path(unit) %>
         </td>
         <td><%= unit.name %></td>
-        <td class="number"><%= unit.multiplier.to_s('3F') unless unit.multiplier == 1 %></td>
+        <td class="number"><%= scientifize(unit.multiplier) unless unit.multiplier == 1 %></td>
         <% if current_user.at_least(:active) %>
           <td class="actions">
             <%= image_button_to t(".delete_unit"), "delete-outline", unit_path(unit),
