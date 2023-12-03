@@ -12,6 +12,9 @@ gem "devise"
 
 gem 'awesome_nested_set'
 
+gem 'importmap-rails'
+gem 'turbo-rails'
+
 group :development, :test do
   gem "byebug"
 end
