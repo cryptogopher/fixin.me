@@ -1,11 +1,11 @@
 <% content_for :navigation, flush: true do %>
   <div class="left">
-    <%= image_link_to t(:back), "arrow-left-bold-outline",
+    <%= image_link_to t(:back), 'arrow-left-bold-outline',
       request.referer.present? ? :back : root_url %>
   </div>
   <div class="right">
     <%= image_button_to t(".delete"), "account-remove-outline", user_registration_path,
-      class: "dangerous", method: :delete, onclick: {confirm: t(".confirm_delete")} %>
+      method: :delete, onclick: {confirm: t(".confirm_delete")} %>
   </div>
 <% end %>
 

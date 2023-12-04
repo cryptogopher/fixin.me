@@ -1,10 +1,10 @@
-<table class="items" id="users">
+<table class="main items" id="users">
   <thead>
     <tr>
       <th><%= User.human_attribute_name(:email).capitalize %></th>
       <th><%= User.human_attribute_name(:status).capitalize %></th>
       <th><%= User.human_attribute_name(:confirmed_at).capitalize %></th>
-      <th><%= User.human_attribute_name(:created_at).capitalize %> <sup>UTC</sup></th>
+      <th><%= User.human_attribute_name(:created_at).capitalize %>&nbsp;<sup>UTC</sup></th>
       <th><%= t :actions %></th>
     </tr>
   </thead>

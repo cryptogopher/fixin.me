@@ -54,14 +54,6 @@ module ApplicationHelper
     form_for(record, **options, &-> (f) { f.table_form_for(&block) })
   end
 
-  def image_button_to(name, image = nil, options = nil, html_options = {})
-    image_element_to(:button, name, image, options, html_options)
-  end
-
-  def image_link_to(name, image = nil, options = nil, html_options = {})
-    image_element_to(:link, name, image, options, html_options)
-  end
-
   def svg_tag(source, options = {})
     content_tag :svg, options do
       tag.use href: image_path(source + ".svg") + "#icon"
@@ -69,30 +61,47 @@ module ApplicationHelper
   end
 
   def navigation_menu
-    menu_items = {right: [
+    menu_items = [
+      #[".test", "weight-kilogram", units_path, :restricted],
+      [".units", "weight-kilogram", units_path, :restricted, 'right'],
       [".users", "account-multiple-outline", users_path, :admin],
-      [".units", "weight-kilogram", units_path, :restricted],
-    ]}
+    ]
 
-    menu_items.map do |alignment, items|
-      content_tag :div, class: alignment do
-        items.map do |label, image, path, status|
-          if current_user.at_least(status)
-            image_link_to t(label), image, path, class: "tab", current: :active
-          end
-        end.join.html_safe
+    menu_items.map do |label, image, path, status, css_class|
+      if current_user.at_least(status)
+        image_tab_to t(label), image, path, class: "tab #{css_class}", current: :active
       end
     end.join.html_safe
   end
 
+  def image_button_to(name, image = nil, options = nil, html_options = {})
+    html_options[:class] = class_names(html_options[:class], 'button')
+    image_element_to(:button, name, image, options, html_options)
+  end
+
+  def image_link_to(name, image = nil, options = nil, html_options = {})
+    html_options[:class] = class_names(html_options[:class], 'button')
+    image_element_to(:link, name, image, options, html_options)
+  end
+
+  def image_tab_to(name, image = nil, options = nil, html_options = {})
+    image_element_to(:link, name, image, options, html_options)
+  end
+
+
   private
 
   def image_element_to(type, name, image = nil, options = nil, html_options = {})
-    current = (url_for(options) == request.path) && html_options.delete(:current)
-    return "" if current == :hide
+    current = html_options.delete(:current)
+    current = nil unless url_for(options) == request.path
+    return '' if current == :hide
 
     name = svg_tag("pictograms/#{image}") + name if image
-    html_options[:class] = class_names(html_options[:class], "button", active: current == :active)
+    html_options[:class] = class_names(
+      html_options[:class],
+      active: current == :active,
+      dangerous: html_options[:method] == :delete
+    )
     if html_options[:onclick]&.is_a? Hash
       html_options[:onclick] = "return confirm('#{html_options[:onclick][:confirm]}');"
     end

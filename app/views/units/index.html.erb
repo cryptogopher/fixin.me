@@ -1,10 +1,12 @@
-<div class="contextual">
+<div class="rightside">
   <% if current_user.at_least(:active) %>
     <%= image_link_to t(".add_unit"), "plus-outline", new_unit_path %>
   <% end %>
 </div>
 
-<table class="items" id="units">
+<%#= turbo_frame_tag 'unit_form' %>
+
+<table class="main items" id="units">
   <thead>
     <tr>
       <th><%= User.human_attribute_name(:symbol).capitalize %></th>
@@ -18,8 +20,9 @@
   <tbody>
     <% Unit.each_with_level(@units) do |unit, level| %>
       <tr>
-        <td <%= "style=padding-left:0.5rem;" if level > 0 %>>
-          <%= link_to unit.symbol, edit_unit_path(unit) %>
+        <td>
+          <%= link_to unit.symbol, edit_unit_path(unit),
+            {style: level > 0 ? 'padding-left:0.6em;': ''}  %>
         </td>
         <td><%= unit.name %></td>
         <td class="number"><%= scientifize(unit.multiplier) unless unit.multiplier == 1 %></td>

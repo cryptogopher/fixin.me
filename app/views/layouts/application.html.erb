@@ -11,23 +11,24 @@
   </head>
 
   <body>
-    <div class="app-menu">
+    <header class="header">
       <% if user_signed_in? %>
+        <%= image_link_to current_user.email, "account-wrench-outline",
+          edit_user_registration_path, current: :hide %>
         <% if current_user_disguised? %>
           <%= image_button_to t(".revert"), "incognito-off", revert_users_path %>
         <% else %>
           <%= image_button_to t(".sign_out"), "logout", destroy_user_session_path,
             method: :delete %>
         <% end %>
-        <%= image_link_to current_user.email, "account-wrench-outline",
-          edit_user_registration_path, current: :hide %>
       <% else %>
+        <%= image_link_to t(:sign_in), "login", new_user_session_path, current: :hide %>
         <%= image_link_to t(:register), "account-plus-outline", new_user_registration_path,
           current: :hide %>
-        <%= image_link_to t(:sign_in), "login", new_user_session_path, current: :hide %>
       <% end %>
-    </div>
+    </header>
 
+    <!--
     <div class="flashes">
       <% flash.each do |entry, message| %>
         <div class="flash <%= entry %>">
@@ -35,12 +36,13 @@
           <button tabindex="-1" onclick="this.parentElement.style.display='none';">&times;</button>
         </div>
       <% end %>
-    </div>
+      </div>
+    -->
 
     <%# Allow overwriting/clearing navigation menu for some views %>
-    <div class="nav-menu">
+    <nav class="navigation">
       <%= content_for(:navigation) || (navigation_menu if user_signed_in?) %>
-    </div>
+    </nav>
 
     <%= yield %>
   </body>
