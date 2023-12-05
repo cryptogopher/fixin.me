@@ -309,22 +309,42 @@ table.items th {
 }
 table.items th,
 table.items td {
-  padding-inline-start: 0.8rem;
+  padding-inline: 1em 0;
 }
 table.items th:last-child {
   padding-inline-end: 0.4em;
+}
+table.items td:last-child {
+  padding-inline-end: 0.1em;
 }
 table.items td {
   border-top: solid 1px #dddddd;
   padding-block: 0.1em;
 }
+/* TODO: change selector to td:has(a) when :has() available on FF.
+ * That will fix lack of padding for form elements in first column. */
 table.items td:first-child {
-  text-align: left;
+  padding: 0;
 }
+/* FIXME: size <a> to fill <td> keeping vertical alignment */
+/* td:absolute > a:relative(0,0,0,0) > div:flex > span */
 table.items a {
   color: inherit;
+  display: block;
   font: inherit;
+  line-height: 2.4;
+  padding-inline-start: 1em;
+  text-align: left;
 }
+table.items a.subunit {
+  padding-inline-start: 1.6em;
+}
+table.items td.actions {
+  display: flex;
+  gap: 0.4em;
+  justify-content: end;
+}
+
 table.items a:hover,
 table.items a:focus-visible,
 table.items a:hover:focus-visible {
@@ -351,9 +371,6 @@ table.items svg {
   width: 1.2rem;
 }
 table.items td.number {
-  text-align: right;
-}
-table.items td.actions {
   text-align: right;
 }
 table.items .button,
