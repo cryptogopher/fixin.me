@@ -21,7 +21,7 @@
     <% Unit.each_with_level(@units) do |unit, level| %>
       <tr>
         <td class="link">
-          <%= table_link_to unit.symbol, edit_unit_path(unit), class: level > 0 ? 'subunit' : '' %>
+          <%= link_to unit.symbol, edit_unit_path(unit), class: level > 0 ? 'subunit' : '' %>
         </td>
         <td><%= unit.name %></td>
         <td class="number"><%= scientifize(unit.multiplier) unless unit.multiplier == 1 %></td>

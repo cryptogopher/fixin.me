@@ -88,11 +88,6 @@ module ApplicationHelper
     image_element_to(:link, name, image, options, html_options)
   end
 
-  # Workaround to fill <td> with link completely, see CSS for details.
-  def table_link_to(...)
-    link_to(...) * 2
-  end
-
 
   private
 

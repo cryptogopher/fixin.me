@@ -312,26 +312,25 @@ table.items td {
   border-top: solid 1px #dddddd;
   padding-block: 0.1em;
 }
-/* NOTE: for <a> to fill <td> completely, we use 2 copies of same <a>. 1st is
- * left transparent in <td> to resize <td> to link length. 2nd is positioned
- * absolutely over whole <td> cell. */
+/* For <a> to fill <td> completely, we use an ::after pseudoelement. */
+/* TODO: change selector from td.link to td:has(a) once :has() is available on
+ * FF */
 table.items td.link {
   padding: 0;
   position: relative;
-}
-table.items td.link a {
-  color: transparent;
-  font: inherit;
-  padding-inline-start: 1em;
   text-align: left;
 }
-table.items td.link a:last-child {
+table.items td.link a {
   color: inherit;
-  display: flex;
+  font: inherit;
+  padding-inline-start: 1em;
+}
+table.items td.link a::after {
+  content: '';
   inset: 0;
   position: absolute;
 }
-table.items td.link a.subunit {
+table.items td.link .subunit {
   padding-inline-start: 1.6em;
 }
 table.items td.actions {
