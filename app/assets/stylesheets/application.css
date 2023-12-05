@@ -16,6 +16,13 @@
  *= require_self
  */
 
+/* Colors:
+ *   dark blue: #006c9b
+ *   light blue: #009ade
+ *   dark red: #b21237
+ *   light red: #ff1f5b
+ * */
+
 *,
 ::before,
 ::after {
@@ -88,20 +95,44 @@ button > svg {
   padding-right: 0.4em;
   width: 1.8em;
 }
+/* TODO: <a> hover/focus here and remove from table.items */
+/* This is for normal links only. Button-like link styles are under .button
+ * selector */
+.button:focus-visible,
+button:focus-visible,
+input[type=submit]:focus-visible {
+  background-color: #f3f3f3;
+}
+.button:hover,
+button:hover,
+input[type=submit]:hover {
+  background-color: #009ade;
+  border-color: #009ade;
+  color: white;
+  fill: white;
+}
+button.dangerous:hover {
+  background-color: #ff1f5b;
+  border-color: #ff1f5b;
+}
 
 input[type=checkbox] {
   accent-color: #009ade;
   appearance: none;
+  -webkit-appearance: none;
   display: flex;
   height: 1.1rem;
-  margin: 0rem;
+  margin: 0;
   width: 1.1rem;
-  -webkit-appearance: none;
+}
+input[type=checkbox]:checked {
+  appearance: checkbox;
+  -webkit-appearance: checkbox;
 }
 input:hover,
 select:hover {
   border-color: #009ade;
-  outline: #009ade solid 1px;
+  outline: solid 1px #009ade;
 }
 select:hover {
   cursor: pointer;
@@ -112,18 +143,10 @@ select:focus-visible {
   accent-color: #006c9b;
   background-color: #f3f3f3;
 }
-input[type=checkbox]:checked {
-  appearance: checkbox;
-  -webkit-appearance: checkbox;
-}
 input[type=text]:read-only {
   border: none;
   padding-left: 0;
   padding-right: 0;
-}
-input:read-only:focus-visible,
-input:read-only:hover {
-  background: white;
 }
 
 
@@ -169,38 +192,6 @@ input:read-only:hover {
 }
 .rightside {
   grid-area: rightside;
-}
-
-
-a.button:hover,
-a.button.active:hover,
-button:hover,
-input[type=submit]:hover {
-  background-color: #009ade;
-  border-color: #009ade;
-  color: white;
-  fill: white;
-}
-a.button:focus-visible,
-a.button.active:focus-visible,
-button:focus-visible,
-input[type=submit]:focus-visible {
-  background-color: #f3f3f3;
-}
-a.button:hover:focus-visible,
-a.button.active:hover:focus-visible,
-button:hover:focus-visible,
-input[type=submit]:hover:focus-visible {
-  background-color: #006c9b;
-  border-color: #006c9b;
-}
-button.dangerous:hover {
-  background-color: #ff1f5b;
-  border-color: #ff1f5b;
-}
-button.dangerous:hover:focus-visible {
-  background-color: #b21237;
-  border-color: #b21237;
 }
 
 
