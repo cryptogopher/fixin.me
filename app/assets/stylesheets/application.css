@@ -321,22 +321,26 @@ table.items td {
   border-top: solid 1px #dddddd;
   padding-block: 0.1em;
 }
-/* TODO: change selector to td:has(a) when :has() available on FF.
- * That will fix lack of padding for form elements in first column. */
-table.items td:first-child {
+/* NOTE: for <a> to fill <td> completely, we use 2 copies of same <a>. 1st is
+ * left transparent in <td> to resize <td> to link length. 2nd is positioned
+ * absolutely over whole <td> cell. */
+table.items td.link {
   padding: 0;
+  position: relative;
 }
-/* FIXME: size <a> to fill <td> keeping vertical alignment */
-/* td:absolute > a:relative(0,0,0,0) > div:flex > span */
-table.items a {
-  color: inherit;
-  display: block;
+table.items td.link a {
+  color: transparent;
   font: inherit;
-  line-height: 2.4;
   padding-inline-start: 1em;
   text-align: left;
 }
-table.items a.subunit {
+table.items td.link a:last-child {
+  color: inherit;
+  display: flex;
+  inset: 0;
+  position: absolute;
+}
+table.items td.link a.subunit {
   padding-inline-start: 1.6em;
 }
 table.items td.actions {

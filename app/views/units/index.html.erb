@@ -20,9 +20,8 @@
   <tbody>
     <% Unit.each_with_level(@units) do |unit, level| %>
       <tr>
-        <td>
-          <%= link_to unit.symbol, edit_unit_path(unit),
-            {style: level > 0 ? 'padding-left:0.6em;': ''}  %>
+        <td class="link">
+          <%= table_link_to unit.symbol, edit_unit_path(unit), class: level > 0 ? 'subunit' : '' %>
         </td>
         <td><%= unit.name %></td>
         <td class="number"><%= scientifize(unit.multiplier) unless unit.multiplier == 1 %></td>
