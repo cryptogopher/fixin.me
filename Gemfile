@@ -13,7 +13,9 @@ gem "devise"
 gem 'awesome_nested_set'
 
 gem 'importmap-rails'
-gem 'turbo-rails'
+# turborails >= 2.0.0 required with npm v8.0.0 with support for [autofocus]
+# attribute in turbo-streams
+gem 'turbo-rails', '> 1.5.0'
 
 group :development, :test do
   gem "byebug"
