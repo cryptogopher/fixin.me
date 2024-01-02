@@ -2,8 +2,9 @@
 
 Quantified self
 
-* Ruby version: 2.7
+* Ruby version: 3.1
 * System dependencies: none
+
 
 
 ## Installation
@@ -13,11 +14,13 @@ Quantified self
     bundle install
 
 
+
 ## Configuration
 
     cp -a config/application.rb.dist config/application.rb
 
 Modify configuration settings below `SETUP` comment appropriately.
+
 
 
 ## Database
@@ -38,6 +41,7 @@ Run database creation and migration tasks:
     RAILS_ENV="production" bundle exec rake db:create db:migrate db:seed
 
 
+
 ## Running
 
 
@@ -53,10 +57,11 @@ and specify server IP/port, either with `port` or `bind`, e.g.:
 
 Run server
 
-    RAILS_ENV="production" bin/rails s
+    bundle exec rails s -e production
 
 
 ### Apache mod_passenger
+
 
 
 ## Contributing
@@ -73,15 +78,29 @@ possibly with different Ruby versions:
     mysql> flush privileges;
 
 
-### Environment
+### Development environment
 
-Use `RAILS_ENV="development"` for rake commands and running rails server.
+Starting application server in development environment:
 
-Use `RAILS_ENV="test"` for running tests.
+    bundle exec rails s -e development
+
+For running rake tasks, prepend command with environment:
+
+    RAILS_ENV="development" bundle exec rake ...
 
 
 ### Running tests
 
-Single test:
+Tests need to be run from within toplevel application directory:
 
-    bin/rails test test/system/users_test.rb --name test_register
+* all system tests:
+
+    bundle exec rails test:system
+
+* all tests from one file, with optional seed:
+
+    bundle exec rails test test/system/users_test.rb --seed 1234
+
+* single test, with optional seed:
+
+    bundle exec rails test test/system/users_test.rb --name test_register --seed 1234
