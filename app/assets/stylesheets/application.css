@@ -77,7 +77,7 @@ input[type=submit] {
   padding: 0.4em;
   width: fit-content;
 }
-input:not([type=submit]).not([type=checkbox]),
+input:not([type=submit]):not([type=checkbox]),
 select {
   padding: 0.2rem 0.4rem;
 }
@@ -165,20 +165,20 @@ input[type=text]:read-only {
 .navigation > .tab + .tab.right {
   margin-inline-start: 4%;
 }
-/* TODO: inactive tab color #d0d0d0 or #c7c7c7 */
 .navigation > .tab {
-  border-bottom: solid 3px #c7c7c7;
+  border-bottom: solid 2px #c7c7c7;
   display: flex;
   flex: 1;
   font-size: 1rem;
   justify-content: center;
   padding-block: 0.3em;
 }
-.navigation > .tab:hover {
-  border-bottom: solid 4px #009ade;
+.navigation > .tab:hover,
+.navigation > .tab:focus-visible {
+  background-color: #f3f3f3;
 }
 .navigation > .tab.active {
-  border-bottom: solid 4px;
+  border-bottom: solid 4px #009ade;
   color: #009ade;
   fill: #009ade;
 }
@@ -339,22 +339,24 @@ table.items td.actions {
   justify-content: end;
 }
 
-table.items a:hover,
-table.items a:focus-visible,
-table.items a:hover:focus-visible {
+/* TODO: replace :hover:focus-visible with proper stye order */
+table.items td.link a:hover,
+table.items td.link a:focus-visible,
+table.items td.link a:hover:focus-visible {
   text-decoration: underline;
   text-decoration-thickness: 0.05rem;
   text-underline-offset: 0.2rem;
 }
-table.items a:hover {
+table.items td.link a:hover {
   color: #009ade;
 }
-table.items a:focus-visible {
+table.items td.link a:focus-visible {
   text-decoration-color: #a0a0a0;
 }
-table.items a:hover:focus-visible {
+table.items td.link a:hover:focus-visible {
   color: #006c9b;
 }
+
 table.items td:not(:first-child) {
   color: #909090;
   fill: #909090;
