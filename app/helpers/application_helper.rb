@@ -88,7 +88,6 @@ module ApplicationHelper
     image_element_to(:link, name, image, options, html_options)
   end
 
-
   private
 
   def image_element_to(type, name, image = nil, options = nil, html_options = {})
@@ -126,7 +125,7 @@ module ApplicationHelper
       end
     end
     if exponent != 1
-      result += "10<sup>#{exponent-1}</sup>"
+      result += "10<sup>% d</sup>" % [exponent-1]
     end
     result.html_safe
   end

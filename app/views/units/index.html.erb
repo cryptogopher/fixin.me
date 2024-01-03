@@ -1,10 +1,13 @@
 <div class="rightside">
   <% if current_user.at_least(:active) %>
-    <%= image_link_to t(".add_unit"), "plus-outline", new_unit_path %>
+    <%= turbo_frame_tag target: dom_id(Unit.new) do %>
+      <%= image_link_to t('.add_unit'), 'plus-outline', new_unit_path, id: :add_unit,
+        onclick: 'this.style.visibility = "hidden";' %>
+    <% end %>
   <% end %>
 </div>
 
-<%#= turbo_frame_tag 'unit_form' %>
+<%= turbo_frame_tag 'unit_form_frame' %>
 
 <table class="main items" id="units">
   <thead>
@@ -18,6 +21,8 @@
     </tr>
   </thead>
   <tbody>
+    <tr id="<%= dom_id(Unit.new) %>" is="turbo-frame"></tr>
+
     <% Unit.each_with_level(@units) do |unit, level| %>
       <tr>
         <td class="link">

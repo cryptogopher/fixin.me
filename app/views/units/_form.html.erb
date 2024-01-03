@@ -1,26 +1,24 @@
-<div id="add-unit" <%= 'style=display:none;' if @unit.errors.empty? %>>
-  <h2><%= t ".heading_new_unit" %></h2>
+<%= fields_for unit do |form| %>
+  <td>
+    <%= form.text_field :symbol, form: :unit_form, required: true, autofocus: true, size: 10,
+      autocomplete: "off" %>
+  </td>
+  <td>
+    <%= form.text_field :name, form: :unit_form, size: 25, autocomplete: "off" %>
+  </td>
+  <td>
+    <% unless unit.base.nil? %>
+      <%= form.number_field :multiplier, form: :unit_form, step: "any", size: 10,
+        autocomplete: "off" %>
+    <% end %>
+  </td>
 
-  <%= labelled_form_for @unit,
-    url: project_units_path(@project),
-    html: {id: 'unit-add-form', name: 'unit-add-form'} do |f| %>
-
-    <%= render partial: 'units/form', locals: {f: f} %>
-    <%= submit_tag l(:button_create) %>
-    <%= link_to l(:button_cancel), "#", onclick: '$("#add-unit").hide(); return false;' %>
-  <% end %>
-  <hr>
-  </div>
-
-<%= error_messages_for @unit %>
-
-<div class="box tabular">
-  <div class="splitcontent">
-    <div class="splitcontentleft">
-      <p><%= f.text_field :shortname, required: true, size: 20 %></p>
-    </div>
-    <div class="splitcontentright">
-      <p><%= f.text_field :name, size: 60 %></p>
-    </div>
-  </div>
-</div>
+  <td class="actions">
+    <%= form.submit unit.persisted? ? t(:update) : t(:add), form: :unit_form %>
+    <%= image_link_to t(:cancel), "close-circle-outline", units_path, class: 'dangerous',
+      onclick: 'this.closest("tr").replaceChildren();
+                document.querySelector("a#add_unit").style.visibility = "visible";
+                return false;' %>
+  </td>
+  <!-- TODO: display error_messages_for unit -->
+<% end %>

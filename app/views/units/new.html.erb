@@ -1,22 +1,12 @@
-<% content_for :navigation, flush: true do %>
-  <div class="left">
-    <%= image_link_to t(:back), "arrow-left-bold-outline",
-      request.referer.present? ? :back : units_url %>
-  </div>
-<% end %>
-
-<%= tabular_form_for @unit do |f| %>
-  <%= f.text_field :symbol, required: true, size: 10, autofocus: true, autocomplete: "off" %>
-  <%= f.text_field :name, size: 25, autocomplete: "off" %>
-
-  <% if current_user.units.roots.count %>
-    <%= f.select :base_id,
-      current_user.units.roots.collect { |u| ["#{u.symbol}#{' - ' + u.name if u.name}", u.id] },
-      {include_blank: t(".none")},
-      onchange: 'this.form.unit_multiplier.disabled = (this.value == "");' %>
-    <%= f.number_field :multiplier, step: "any", disabled: @unit.base.nil?, size: 10,
-      autocomplete: "off" %>
+<!-- NOTE: as of turbo-rails 2.0.0.pre.beta.1/turbo 8.0.0-beta.1
+  loading <form> through *.turbo_stream.erb does not autofocus -->
+<%= turbo_frame_tag @unit do %>
+  <%= turbo_stream.update @unit do %>
+    <%= render partial: 'form', locals: {unit: @unit} %>
   <% end %>
 
-  <%= f.submit @unit.persisted? ? t(:update) : t(:add) %>
+  <%= turbo_stream.update :unit_form_frame do %>
+    <%= form_with model: @unit, html: {id: :unit_form} do %>
+    <% end %>
+  <% end %>
 <% end %>
