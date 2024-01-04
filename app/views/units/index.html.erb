@@ -1,8 +1,8 @@
 <div class="rightside">
   <% if current_user.at_least(:active) %>
-    <%= turbo_frame_tag target: dom_id(Unit.new) do %>
+    <%= turbo_frame_tag do %>
       <%= image_link_to t('.add_unit'), 'plus-outline', new_unit_path, id: :add_unit,
-        onclick: 'this.style.visibility = "hidden";' %>
+      onclick: 'this.style.visibility = "hidden";', data: {turbo_stream: true} %>
     <% end %>
   <% end %>
 </div>
