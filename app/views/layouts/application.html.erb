@@ -1,5 +1,11 @@
 <!DOCTYPE html>
-<html>
+<!-- Hide content until Turbo is loaded completely. There exist (mostly
+  unnoticeable) delay after a page is shown and before Turbo has started to
+  service frame/stream requests. If user (or more probably: system test) clicks
+  link during this period, request will be sent outside of Turbo, resulting in
+  e.g. stream request sent as HTML instead of TURBO_STREAM.
+  Content is shown on 'turbo:load' event. -->
+<html style="visibility: hidden;">
   <head>
     <title>fixin.me</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
