@@ -1,10 +1,11 @@
 <%= fields_for unit do |form| %>
   <td>
     <%= form.text_field :symbol, form: :unit_form, required: true, autofocus: true, size: 10,
-      autocomplete: "off" %>
+      maxlength: unit.class.columns_hash['symbol'].limit, autocomplete: "off" %>
   </td>
   <td>
-    <%= form.text_field :name, form: :unit_form, size: 25, autocomplete: "off" %>
+    <%= form.text_field :name, form: :unit_form, size: 25,
+      maxlength: unit.class.columns_hash['name'].limit, autocomplete: "off" %>
   </td>
   <td>
     <% unless unit.base.nil? %>
