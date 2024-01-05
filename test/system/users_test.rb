@@ -110,8 +110,8 @@ class UsersTest < ApplicationSystemTestCase
     click_on t("layouts.application.users")
     all(:link_or_button, text: t("users.index.disguise")).sample.click
     assert_current_path edit_user_registration_path
-    # TODO: test for profile app-menu link after root changed to different path
-    # then profile
+    # TODO: test for "Profile" link button after root_url changed to different
+    # path then profile in routes.rb
 
     click_on t("layouts.application.revert")
     assert_current_path users_path
@@ -134,10 +134,11 @@ class UsersTest < ApplicationSystemTestCase
     assert_title "Bad request received (400)"
   end
 
-  test "destroy profile" do
+  test "delete profile" do
     user = users.select(&:confirmed?).sample
     sign_in user: user
-    # TODO: remove condition after root changed to different path than profile
+    # TODO: remove condition after root_url changed to different path than
+    # profile in routes.rb
     unless has_current_path?(edit_user_registration_path)
       first(:link_or_button, user.email).click
     end

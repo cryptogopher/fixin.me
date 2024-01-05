@@ -95,9 +95,11 @@ button > svg {
   padding-right: 0.4em;
   width: 1.8em;
 }
-/* TODO: <a> hover/focus here and remove from table.items */
-/* This is for normal links only. Button-like link styles are under .button
- * selector */
+
+/* TODO: move normal non-button links (<a>:hover/:focus) styling here (i.e.
+ * page-wide, top-level) and remove from table.items - as the style should be
+ * same everywhere */
+
 .button:focus-visible,
 button:focus-visible,
 input[type=submit]:focus-visible {
@@ -339,7 +341,7 @@ table.items td.actions {
   justify-content: end;
 }
 
-/* TODO: replace :hover:focus-visible with proper stye order */
+/* TODO: replace :hover:focus-visible combos with proper LOVE stye order */
 table.items td.link a:hover,
 table.items td.link a:focus-visible,
 table.items td.link a:hover:focus-visible {
