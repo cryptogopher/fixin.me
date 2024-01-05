@@ -16,9 +16,16 @@
   <td class="actions">
     <%= form.submit unit.persisted? ? t(:update) : t(:add), form: :unit_form %>
     <%= image_link_to t(:cancel), "close-circle-outline", units_path, class: 'dangerous',
-      onclick: 'this.closest("tr").replaceChildren();
-                document.querySelector("a#add_unit").style.visibility = "visible";
-                return false;' %>
+      onclick: 'closeForm(event); return false;' %>
   </td>
   <!-- TODO: display error_messages_for unit -->
+<% end %>
+
+<%= javascript_tag do %>
+  function closeForm(event) {
+    event.target.closest("tr").replaceChildren();
+    var add_unit_link = document.querySelector("a#add_unit");
+    add_unit_link.style.visibility = "visible";
+    add_unit_link.focus({ focusVisible: true });
+  }
 <% end %>

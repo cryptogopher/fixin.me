@@ -17,6 +17,7 @@ class UnitsTest < ApplicationSystemTestCase
     assert_no_selector :link_or_button, text: t('units.index.add_unit')
 
     within first('tbody > tr') do
+      assert_selector ':focus'
       fill_in 'unit[symbol]', with: SecureRandom.random_symbol(rand(1..10))
       fill_in 'unit[name]', with: [nil, SecureRandom.alphanumeric(rand(1..500))].sample
       assert_difference ->{ Unit.count }, 1 do
