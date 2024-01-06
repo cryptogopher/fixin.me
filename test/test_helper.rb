@@ -16,7 +16,7 @@ class ActiveSupport::TestCase
   SecureRandom.class_eval do
     def self.random_symbol(n = 10)
       # Unicode characters: 32-126, 160-383
-      choose([*' '..'~', 160.chr, *'¡'..'ſ'], n)
+      choose([*' '..'~', 160.chr(Encoding::UTF_8), *'¡'..'ſ'], n)
     end
   end
 

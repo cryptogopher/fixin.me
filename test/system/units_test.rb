@@ -18,8 +18,11 @@ class UnitsTest < ApplicationSystemTestCase
 
     within first('tbody > tr') do
       assert_selector ':focus'
-      fill_in 'unit[symbol]', with: SecureRandom.random_symbol(rand(1..16))
-      fill_in 'unit[name]', with: [nil, SecureRandom.alphanumeric(rand(1..255))].sample
+      maxlength = all(:fillable_field).to_h { |f| [f[:name], f[:maxlength].to_i || 1000] }
+      fill_in 'unit[symbol]',
+        with: SecureRandom.random_symbol(rand([1..15, 15..maxlength['unit[symbol]']].sample))
+      fill_in 'unit[name]',
+        with: [nil, SecureRandom.alphanumeric(rand(1..maxlength['unit[name]']))].sample
       assert_difference ->{ Unit.count }, 1 do
         click_on t(:add)
       end
