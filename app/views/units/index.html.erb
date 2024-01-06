@@ -24,3 +24,22 @@
     <%= render partial: 'index' %>
   </tbody>
 </table>
+
+<%= javascript_tag do %>
+  function closeForm(event) {
+    event.target.closest("tr").remove();
+    focusAddLink(event);
+  }
+
+  function focusAddLink(event) {
+    var add_unit_link = document.querySelector("a#add_unit");
+    add_unit_link.style.visibility = "visible";
+    add_unit_link.focus({ focusVisible: true });
+  }
+
+  function processKey(event) {
+    if (event.key == "Escape") {
+      closeForm(event);
+    }
+  }
+<% end %>

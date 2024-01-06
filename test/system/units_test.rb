@@ -36,4 +36,10 @@ class UnitsTest < ApplicationSystemTestCase
 
     # assert_selector flash
   end
+
+  test "close new unit form with escape" do
+    click_on t('units.index.add_unit')
+    first('tbody > tr').all(:field).sample.send_keys :escape
+    within('tbody') { assert_no_selector :fillable_field }
+  end
 end

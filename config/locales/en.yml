@@ -13,6 +13,10 @@ en:
         created_at: registered
         confirmed_at: confirmed
         unconfirmed_email: Awaiting confirmation for
+  helpers:
+    submit:
+      create: Create
+      update: Update
   units:
     index:
       add_unit: Add unit

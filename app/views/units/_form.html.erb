@@ -1,37 +1,26 @@
 <%= fields_for @unit do |form| %>
-  <td>
-    <%= form.text_field :symbol, form: :unit_form, required: true, autofocus: true, size: 10,
-      maxlength: @unit.class.columns_hash['symbol'].limit, autocomplete: "off" %>
-  </td>
-  <td>
-    <%= form.text_field :name, form: :unit_form, size: 25,
-      maxlength: @unit.class.columns_hash['name'].limit, autocomplete: "off" %>
-  </td>
-  <td>
-    <% unless @unit.base.nil? %>
-      <%= form.number_field :multiplier, form: :unit_form, step: "any", size: 10,
-        autocomplete: "off" %>
-    <% end %>
-  </td>
+  <tr id="<%= dom_id(@unit) %>" onkeydown="processKey(event)">
+    <td>
+      <%= form.text_field :symbol, form: :unit_form, required: true, autofocus: true, size: 12,
+        maxlength: @unit.class.columns_hash['symbol'].limit, autocomplete: "off" %>
+    </td>
+    <td>
+      <%= form.text_field :name, form: :unit_form, size: 30,
+        maxlength: @unit.class.columns_hash['name'].limit, autocomplete: "off" %>
+    </td>
+    <td>
+      <% unless @unit.base.nil? %>
+        <%= form.number_field :multiplier, form: :unit_form, step: "any", size: 10,
+          autocomplete: "off" %>
+      <% end %>
+    </td>
 
-  <td class="actions">
-    <%= form.submit @unit.persisted? ? t(:update) : t(:add), form: :unit_form,
-      onclick: 'focusAddLink(event);' %>
-    <%= image_link_to t(:cancel), "close-circle-outline", units_path, class: 'dangerous',
-      onclick: 'closeForm(event); return false;' %>
-  </td>
+    <td class="actions">
+      <%= form.submit form: :unit_form, onclick: 'focusAddLink(event)' %>
+      <%= image_link_to t(:cancel), "close-circle-outline", units_path, class: 'dangerous',
+        onclick: 'closeForm(event); return false;' %>
+    </td>
+  </tr>
   <!-- TODO: display error_messages_for unit -->
 <% end %>
 
-<%= javascript_tag do %>
-  function closeForm(event) {
-    event.target.closest("tr").replaceChildren();
-    focusAddLink(event);
-  }
-
-  function focusAddLink(event) {
-    var add_unit_link = document.querySelector("a#add_unit");
-    add_unit_link.style.visibility = "visible";
-    add_unit_link.focus({ focusVisible: true });
-  }
-<% end %>

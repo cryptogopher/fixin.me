@@ -1,4 +1,4 @@
-<%= turbo_stream.update @unit do %>
+<%= turbo_stream.prepend :units do %>
   <%= render partial: 'form' %>
 <% end %>
 
