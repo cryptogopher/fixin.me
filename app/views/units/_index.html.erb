@@ -1,0 +1,17 @@
+<tr id="<%= dom_id(Unit.new) %>" is="turbo-frame"></tr>
+
+<% Unit.each_with_level(@units) do |unit, level| %>
+  <tr>
+    <td class="link">
+      <%= link_to unit.symbol, edit_unit_path(unit), class: level > 0 ? 'subunit' : '' %>
+    </td>
+    <td><%= unit.name %></td>
+    <td class="number"><%= scientifize(unit.multiplier) unless unit.multiplier == 1 %></td>
+    <% if current_user.at_least(:active) %>
+      <td class="actions">
+        <%= image_button_to t(".delete_unit"), "delete-outline", unit_path(unit),
+          method: :delete %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>

@@ -20,7 +20,7 @@ class UnitsController < ApplicationController
     @unit = current_user.units.new(unit_params)
     if @unit.save
       flash[:notice] = t(".success")
-      redirect_to units_url
+      @units = current_user.units
     else
       render :new
     end

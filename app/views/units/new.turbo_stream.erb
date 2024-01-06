@@ -1,5 +1,5 @@
 <%= turbo_stream.update @unit do %>
-  <%= render partial: 'form', locals: {unit: @unit} %>
+  <%= render partial: 'form' %>
 <% end %>
 
 <%= turbo_stream.update :unit_form_frame do %>

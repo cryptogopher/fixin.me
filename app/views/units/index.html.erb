@@ -9,7 +9,7 @@
 
 <%= turbo_frame_tag 'unit_form_frame' %>
 
-<table class="main items" id="units">
+<table class="main items">
   <thead>
     <tr>
       <th><%= User.human_attribute_name(:symbol).capitalize %></th>
@@ -20,23 +20,7 @@
       <% end %>
     </tr>
   </thead>
-  <tbody>
-    <tr id="<%= dom_id(Unit.new) %>" is="turbo-frame"></tr>
-
-    <% Unit.each_with_level(@units) do |unit, level| %>
-      <tr>
-        <td class="link">
-          <%= link_to unit.symbol, edit_unit_path(unit), class: level > 0 ? 'subunit' : '' %>
-        </td>
-        <td><%= unit.name %></td>
-        <td class="number"><%= scientifize(unit.multiplier) unless unit.multiplier == 1 %></td>
-        <% if current_user.at_least(:active) %>
-          <td class="actions">
-            <%= image_button_to t(".delete_unit"), "delete-outline", unit_path(unit),
-              method: :delete %>
-          </td>
-        <% end %>
-      </tr>
-    <% end %>
+  <tbody id="units" is="turbo-frame">
+    <%= render partial: 'index' %>
   </tbody>
 </table>
