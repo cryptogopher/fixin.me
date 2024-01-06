@@ -51,7 +51,8 @@ body {
 }
 button,
 input,
-select {
+select,
+textarea {
   background-color: inherit;
   font: inherit;
 }
@@ -113,7 +114,7 @@ input[type=submit]:hover {
   color: white;
   fill: white;
 }
-button.dangerous:hover {
+.dangerous:hover {
   background-color: #ff1f5b;
   border-color: #ff1f5b;
 }
