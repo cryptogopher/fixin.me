@@ -1,16 +1,14 @@
 class Unit < ApplicationRecord
-  attribute :multiplier, default: 1
-
   belongs_to :user, optional: true
   belongs_to :base, optional: true, class_name: "Unit"
 
   validates :symbol, presence: true, uniqueness: {scope: :user_id},
     length: {maximum: columns_hash['symbol'].limit}
   validates :name, length: {maximum: columns_hash['name'].limit}
-  validates :multiplier, numericality: {equal_to: 1}, unless: :base
-  validates :multiplier, numericality: {other_than: 1}, if: :base
-  validate if: -> { base.present? } do
-    errors.add(:base, :only_top_level_base_units) unless base.base.nil?
+  validates :multiplier, absence: true, unless: :base
+  validates :multiplier, presence: true, numericality: {other_than: 0}, if: :base
+  validate if: ->{ base&.base.present? } do
+    errors.add(:base, :multilevel_nesting)
   end
 
   acts_as_nested_set parent_column: :base_id, scope: :user, dependent: :destroy,
