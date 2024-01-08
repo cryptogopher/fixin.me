@@ -11,7 +11,7 @@ class User < ApplicationRecord
     disabled: 0,    # administratively disallowed to sign in
   }, default: :active
 
-  has_many :units, -> { order :lft }, dependent: :destroy
+  has_many :units, -> { ordered }, dependent: :destroy
 
   def at_least(status)
     User.statuses[self.status] >= User.statuses[status]

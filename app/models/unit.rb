@@ -14,11 +14,14 @@ class Unit < ApplicationRecord
   acts_as_nested_set parent_column: :base_id, scope: :user, dependent: :destroy,
     order_column: :multiplier
 
-  scope :defaults, -> { where(user: nil) }
-
-  after_save if: :base do |record|
-    record.move_to_ordered_child_of(record.base, :multiplier)
-  end
+  scope :defaults, ->{ where(user: nil) }
+  scope :ordered, ->{
+    parent_symbol = Arel::Nodes::NamedFunction.new(
+                      'COALESCE',
+                      [Arel::Table.new(:bases_units)[:symbol], Unit.arel_table[:symbol]]
+                    )
+    left_outer_joins(:base).order(parent_symbol, :multiplier)
+  }
 
   before_destroy do
     # TODO: disallow destruction if any object depends on this unit
