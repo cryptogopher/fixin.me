@@ -24,7 +24,7 @@ class UnitsTest < ApplicationSystemTestCase
       fill_in 'unit[name]',
         with: [nil, SecureRandom.alphanumeric(rand(1..maxlength['unit[name]']))].sample
       assert_difference ->{ Unit.count }, 1 do
-        click_on t(:add)
+        click_on t('helpers.submit.create')
       end
     end
 
