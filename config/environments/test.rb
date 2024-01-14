@@ -25,7 +25,7 @@ Rails.application.configure do
   # Hide full error reports.
   config.consider_all_requests_local     = false
   # Render exception templates instead of raising exceptions.
-  config.action_dispatch.show_exceptions = true
+  config.action_dispatch.show_exceptions = :all
 
   # Disable caching.
   config.action_controller.perform_caching = false
