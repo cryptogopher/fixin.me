@@ -1,4 +1,5 @@
 module ApplicationHelper
+  # TODO: replace legacy content_tag with tag.tagname
   class TabularFormBuilder < ActionView::Helpers::FormBuilder
     (field_helpers - [:label]).each do |selector|
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
@@ -86,6 +87,15 @@ module ApplicationHelper
 
   def image_tab_to(name, image = nil, options = nil, html_options = {})
     image_element_to(:link, name, image, options, html_options)
+  end
+
+  def render_flash_messages
+    flash.map do |entry, message|
+      tag.div class: "flash #{entry}" do
+        tag.div(sanitize(message)) + tag.button(sanitize("&times;"), tabindex: -1,
+                                       onclick: "this.parentElement.style.display='none';")
+      end
+    end.join.html_safe
   end
 
   private

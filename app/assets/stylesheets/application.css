@@ -198,9 +198,6 @@ input[type=text]:read-only {
 }
 
 
-.flashes {
-  height: 2.1rem;
-}
 .flash {
   align-items: center;
   border-radius: 0.2rem;

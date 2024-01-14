@@ -36,16 +36,9 @@
       <% end %>
     </header>
 
-    <!--
-    <div class="flashes">
-      <% flash.each do |entry, message| %>
-        <div class="flash <%= entry %>">
-          <div><%= sanitize message %></div>
-          <button tabindex="-1" onclick="this.parentElement.style.display='none';">&times;</button>
-        </div>
-      <% end %>
-      </div>
-    -->
+    <div id="flashes">
+      <%= render_flash_messages %>
+    </div>
 
     <%# Allow overwriting/clearing navigation menu for some views %>
     <nav class="navigation">
