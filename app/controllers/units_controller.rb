@@ -5,7 +5,7 @@ class UnitsController < ApplicationController
     raise AccessForbidden unless current_user.at_least(:active)
   end
   before_action only: [:edit, :update, :destroy] do
-    raise ArgumentError unless current_user == @unit.user
+    raise ParameterInvalid unless current_user == @unit.user
   end
 
   def index
@@ -20,7 +20,7 @@ class UnitsController < ApplicationController
     @unit = current_user.units.new(unit_params)
     if @unit.save
       flash[:notice] = t(".success")
-      @units = current_user.units
+      run_and_render :index
     else
       render :new
     end
@@ -32,7 +32,7 @@ class UnitsController < ApplicationController
   def update
     if @unit.update(unit_params)
       flash[:notice] = t(".success")
-      redirect_to units_url
+      run_and_render :index
     else
       render :edit
     end
@@ -42,7 +42,7 @@ class UnitsController < ApplicationController
     if @unit.destroy
       flash[:notice] = t(".success")
     end
-    redirect_to units_url
+    run_and_render :index
   end
 
   private

@@ -361,6 +361,12 @@ table.items td:not(:first-child) {
   color: #909090;
   fill: #909090;
 }
+table.items td.hint {
+  color: #909090;
+  font-style: italic;
+  font-size: 0.8rem;
+  padding: 1em;
+}
 table.items svg {
   height: 1.2rem;
   vertical-align: middle;

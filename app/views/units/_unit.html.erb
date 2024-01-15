@@ -1,0 +1,13 @@
+<tr>
+  <td class="link">
+    <%= link_to unit.symbol, edit_unit_path(unit), class: unit.base.nil? ? '' : 'subunit' %>
+  </td>
+  <td><%= unit.name %></td>
+  <td class="number"><%= scientifize(unit.multiplier) if unit.multiplier %></td>
+  <% if current_user.at_least(:active) %>
+    <td class="actions">
+      <%= image_button_to t(".delete_unit"), "delete-outline", unit_path(unit),
+        method: :delete %>
+    </td>
+  <% end %>
+</tr>

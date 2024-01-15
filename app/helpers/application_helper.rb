@@ -98,6 +98,10 @@ module ApplicationHelper
     end.join.html_safe
   end
 
+  def render_no_items
+    tag.tr tag.td t('.no_items'), colspan: 10, class: 'hint'
+  end
+
   private
 
   def image_element_to(type, name, image = nil, options = nil, html_options = {})

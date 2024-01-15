@@ -33,9 +33,11 @@ en:
       units: Units
       users: Users
   units:
+    unit:
+      delete_unit: Delete
     index:
       add_unit: Add unit
-      delete_unit: Delete
+      no_items: There are no configured units. You can try to import some defaults.
     new:
       none: none
     create:

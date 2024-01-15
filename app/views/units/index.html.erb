@@ -21,7 +21,7 @@
     </tr>
   </thead>
   <tbody id="units" is="turbo-frame">
-    <%= render partial: 'index' %>
+    <%= render(@units) || render_no_items %>
   </tbody>
 </table>
 

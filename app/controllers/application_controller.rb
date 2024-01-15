@@ -44,4 +44,9 @@ class ApplicationController < ActionController::Base
     flash.alert = t("actioncontroller.exceptions.status.#{message_id}")
     redirect_to request.referer
   end
+
+  def run_and_render(action)
+    send action
+    render action
+  end
 end
