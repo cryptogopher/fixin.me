@@ -61,6 +61,10 @@ textarea {
 /* blue - target for interaction with pointer */
 /* gray - target for interaction with keyboard */
 a,
+button {
+  white-space: nowrap;
+}
+a,
 button,
 input[type=submit] {
   align-items: center;
@@ -286,7 +290,7 @@ table.items {
   border: solid 1px #dddddd;
   border-radius: 0.25em;
   font-size: 0.85rem;
-  text-align: center;
+  text-align: left;
 }
 table.items thead {
   font-size: 0.8rem;
@@ -310,6 +314,7 @@ table.items td:last-child {
 }
 table.items td {
   border-top: solid 1px #dddddd;
+  min-height: 2.4em;
   padding-block: 0.1em;
 }
 /* For <a> to fill <td> completely, we use an ::after pseudoelement. */
@@ -382,6 +387,7 @@ table.items input[type=submit] {
   padding: 0.3em;
 }
 table.items select:not(:hover),
+table.items .button:not(:hover),
 table.items button:not(:hover) {
   border-color: #dddddd;
   color: #909090;
