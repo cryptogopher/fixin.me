@@ -4,7 +4,9 @@
   service frame/stream requests. If user (or more probably: system test) clicks
   link during this period, request will be sent outside of Turbo, resulting in
   e.g. stream request sent as HTML instead of TURBO_STREAM.
-  Content is shown on 'turbo:load' event. -->
+  Content is shown on 'turbo:load' event.
+  TODO: hide only in TEST environment?
+-->
 <html style="visibility: hidden;">
   <head>
     <title>fixin.me</title>
