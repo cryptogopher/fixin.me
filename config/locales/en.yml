@@ -13,10 +13,25 @@ en:
         created_at: registered
         confirmed_at: confirmed
         unconfirmed_email: Awaiting confirmation for
+  actioncontroller:
+    exceptions:
+      status:
+        forbidden: >
+          You have not been granted access to this action (403 Forbidden).
+          This should not happen, please notify site administrator.
+        unprocessable_entity: >
+          The request is semantically incorrect and was rejected (422 Unprocessable Entity).
+          This should not happen, please notify site administrator.
   helpers:
     submit:
       create: Create
       update: Update
+  layouts:
+    application:
+      revert: Revert
+      sign_out: Sign out
+      units: Units
+      users: Users
   units:
     index:
       add_unit: Add unit
@@ -53,12 +68,6 @@ en:
     sessions:
       new:
         remember_me: Remember me
-  layouts:
-    application:
-      revert: Revert
-      sign_out: Sign out
-      units: Units
-      users: Users
   actions: Actions
   add: Add
   back: Back

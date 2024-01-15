@@ -17,12 +17,12 @@ class UsersController < ApplicationController
   end
 
   def update
-    raise ArgumentError if current_user == @user
+    raise ParameterInvalid if current_user == @user
     @user.update!(params.require(:user).permit(:status))
   end
 
   def disguise
-    raise ArgumentError unless allow_disguise?(@user)
+    raise ParameterInvalid unless allow_disguise?(@user)
     session[:revert_to_id] = current_user.id
     bypass_sign_in(@user)
     redirect_to root_url
@@ -35,8 +35,8 @@ class UsersController < ApplicationController
   end
 
   # NOTE: limited actions availabe to :admin by design. Users are meant to
-  # manage their accounts by themselves through registrations. In future :admin
-  # may be allowed to sing-in as user and make changes there.
+  # manage their accounts by themselves through registrations. :admin
+  # is allowed to sign-in (disguise) as user and make changes from there.
 
   protected
 
