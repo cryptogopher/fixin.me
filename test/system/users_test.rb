@@ -118,7 +118,7 @@ class UsersTest < ApplicationSystemTestCase
     assert_link user.email
   end
 
-  test "disguise disallowed" do
+  test "disguise fails for admin when disallowed" do
     user = users.select(&:admin?).select(&:confirmed?).sample
     sign_in user: user
 
@@ -126,12 +126,15 @@ class UsersTest < ApplicationSystemTestCase
     text = t("users.index.disguise")
     # Pick row without 'disguise' button
     undisguisable = all(:xpath, "//tbody//tr[not(descendant::*[contains(text(),\"#{text}\")])]")
-    within undisguisable.sample do |tr|
-      inject_button_to tr.find('td:last-child'), text,
-        disguise_user_path(User.find_by_email!(first(:link).text))
-      click_on text
-    end
-    assert_title "Bad request received (400)"
+    user_email = undisguisable.sample.first(:link).text
+    visit disguise_user_path(User.find_by_email!(user_email))
+    assert_title 'The change you wanted was rejected (422)'
+  end
+
+  test "disguise forbidden for non admin" do
+    sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
+    visit disguise_user_path(User.all.sample)
+    assert_title 'Access is forbidden to this page (403)'
   end
 
   test "delete profile" do

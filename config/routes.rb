@@ -6,10 +6,10 @@ Rails.application.routes.draw do
 
   resources :users, only: [:index, :show, :update] do
     member do
-      post :disguise
+      get :disguise
     end
     collection do
-      post :revert
+      get :revert
     end
   end
 
