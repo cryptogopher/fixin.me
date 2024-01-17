@@ -62,14 +62,17 @@ en:
           All data will be irretrievably lost.
         delete: Delete profile
         unconfirmed_email_hint: (since %{timestamp})
-        blank_password_hint_html: leave blank to keep unchanged%{subhint}
-        minimum_length_hint_html:
-          zero:
-          other: <br>(%{count} characters minimum)
+        new_password: New password
+        password_confirmation: Retype new password
+        blank_password_hint: leave blank to keep unchanged<br>%{subhint}
         update: Update profile
     sessions:
       new:
         remember_me: Remember me
+    minimum_password_length:
+      zero:
+      one: (%{count} character minimum)
+      other: (%{count} characters minimum)
   actions: Actions
   add: Add
   back: Back

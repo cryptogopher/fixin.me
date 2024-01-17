@@ -176,25 +176,25 @@ class UsersTest < ApplicationSystemTestCase
     assert_current_path users_path
   end
 
-  test "update status disallowed" do
+  test "update status fails for admin when disallowed" do
     sign_in user: users.select(&:admin?).select(&:confirmed?).sample
     visit users_path
 
     within all(:xpath, "//tbody//tr[not(descendant::select)]").sample do |tr|
       user = User.find_by_email!(first(:link).text)
-      inject_button_to first('td'), "update status", user_path(user), method: :patch,
-        params: {user: {status: User.statuses.keys.sample}}
+      inject_button_to first('td:not(.link)'), "update status", user_path(user), method: :patch,
+        params: {user: {status: User.statuses.keys.sample}}, data: {turbo: false}
       click_on "update status"
     end
-    assert_title "Bad request received (400)"
+    assert_title 'The change you wanted was rejected (422)'
   end
 
   test "update status forbidden for non admin" do
     sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
-    visit root_path
+    visit units_path
     inject_button_to find('body'), "update status", user_path(User.all.sample), method: :patch,
       params: {user: {status: User.statuses.keys.sample}}
     click_on "update status"
-    assert_title "Access is forbidden to this page (403)"
+    assert_text t('actioncontroller.exceptions.status.forbidden')
   end
 end

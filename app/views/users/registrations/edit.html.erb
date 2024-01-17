@@ -19,10 +19,12 @@
 
   <%= f.select :status, User.statuses, readonly: true %>
 
-  <%= f.password_field :password, size: 30, autocomplete: "off",
-    hint: t(".blank_password_hint_html",
-            subhint: t(".minimum_length_hint_html", count: @minimum_password_length)) %>
-  <%= f.password_field :password_confirmation, size: 30, autocomplete: "off" %>
+  <%= f.password_field :password, label: t(".new_password"), size: 30,
+    minlength: @minimum_password_length, autocomplete: "new-password",
+    hint: t(".blank_password_hint",
+            subhint: t("users.minimum_password_length", count: @minimum_password_length)) %>
+  <%= f.password_field :password_confirmation, label: t(".password_confirmation"),
+    size: 30, minlength: @minimum_password_length, autocomplete: "off" %>
 
   <%= f.submit t(".update") %>
 <% end %>

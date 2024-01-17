@@ -17,7 +17,8 @@
             <%= user.status %>
           <% else %>
             <%= form_for user do |u| %>
-              <%= u.select :status, User.statuses.keys, {}, onchange: "this.form.submit();" %>
+              <%= u.select :status, User.statuses.keys, {}, autocomplete: "off",
+                onchange: "this.form.requestSubmit();" %>
             <% end %>
           <% end %>
         </td>
@@ -27,7 +28,7 @@
       <td><%= user.created_at.to_fs(:db_without_sec) %></td>
       <td class="actions">
         <% if allow_disguise?(user) %>
-          <%= image_button_to t(".disguise"), "incognito", disguise_user_path(user) %>
+          <%= image_link_to t(".disguise"), "incognito", disguise_user_path(user) %>
         <% end %>
       </td>
       </tr>

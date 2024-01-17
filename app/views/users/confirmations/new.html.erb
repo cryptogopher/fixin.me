@@ -1,6 +1,8 @@
-<%= tabular_form_for resource, url: user_confirmation_path, html: { method: :post } do |f| %>
-  <%= f.email_field :email, required: true, size: 30, autofocus: true, autocomplete: "email",
-    value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
+<div class"main">
+  <%= tabular_form_for resource, url: user_confirmation_path do |f| %>
+    <%= f.email_field :email, required: true, size: 30, autofocus: true, autocomplete: "email",
+      value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
 
-  <%= f.submit t(:resend_confirmation) %>
-<% end %>
+    <%= f.submit t(:resend_confirmation) %>
+  <% end %>
+</div>

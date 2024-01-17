@@ -29,7 +29,7 @@
         <%= image_link_to current_user.email, "account-wrench-outline",
           edit_user_registration_path, current: :hide %>
         <% if current_user_disguised? %>
-          <%= image_button_to t(".revert"), "incognito-off", revert_users_path %>
+          <%= image_link_to t(".revert"), "incognito-off", revert_users_path %>
         <% else %>
           <%= image_button_to t(".sign_out"), "logout", destroy_user_session_path,
             method: :delete %>
