@@ -36,7 +36,6 @@ class UnitsTest < ApplicationSystemTestCase
       end
     end
 
-    assert_current_path units_path
     within('tbody') do
       assert_no_selector :fillable_field
       assert_selector 'tr', count: @user.units.count

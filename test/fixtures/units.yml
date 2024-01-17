@@ -34,7 +34,7 @@ mg:
   name: milligram
   multiplier: 0.001
   base: g
-g:
+g_alice:
   user: alice
   symbol: g
   name: gram

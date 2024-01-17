@@ -84,6 +84,8 @@ class UsersTest < ApplicationSystemTestCase
       with: users.reject(&:confirmed?).sample.email
     assert_emails 1 do
       click_on t(:resend_confirmation)
+      # Wait until redirected to make sure async request has been processed
+      assert_current_path new_user_session_path
     end
     assert_current_path new_user_session_path
     assert_text t("devise.confirmations.send_instructions")
@@ -138,8 +140,7 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test "delete profile" do
-    user = users.select(&:confirmed?).sample
-    sign_in user: user
+    user = sign_in
     # TODO: remove condition after root_url changed to different path than
     # profile in routes.rb
     unless has_current_path?(edit_user_registration_path)
