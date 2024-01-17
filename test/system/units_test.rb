@@ -41,8 +41,7 @@ class UnitsTest < ApplicationSystemTestCase
       assert_selector 'tr', count: @user.units.count
     end
     assert_selector :link_or_button, text: t('units.index.add_unit')
-
-    # assert_selector flash
+    assert_selector '.flash.notice', text: t('units.create.success')
   end
 
   test "close new unit form with escape" do

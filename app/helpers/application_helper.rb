@@ -93,7 +93,7 @@ module ApplicationHelper
     flash.map do |entry, message|
       tag.div class: "flash #{entry}" do
         tag.div(sanitize(message)) + tag.button(sanitize("&times;"), tabindex: -1,
-                                       onclick: "this.parentElement.style.display='none';")
+                                       onclick: "this.parentElement.remove();")
       end
     end.join.html_safe
   end

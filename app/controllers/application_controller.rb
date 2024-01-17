@@ -47,6 +47,8 @@ class ApplicationController < ActionController::Base
 
   def run_and_render(action)
     send action
-    render action
+    # 2024-01-17, Rails 7.1.2: For unknown reason turbo_stream layout is omitted
+    # during render on POST method only (GET, DESTROY are ok).
+    render action, layout: 'application'
   end
 end

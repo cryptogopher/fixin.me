@@ -19,7 +19,7 @@ class UnitsController < ApplicationController
   def create
     @unit = current_user.units.new(unit_params)
     if @unit.save
-      flash[:notice] = t(".success")
+      flash.now[:notice] = t(".success")
       run_and_render :index
     else
       render :new
@@ -31,7 +31,7 @@ class UnitsController < ApplicationController
 
   def update
     if @unit.update(unit_params)
-      flash[:notice] = t(".success")
+      flash.now[:notice] = t(".success")
       run_and_render :index
     else
       render :edit
@@ -40,7 +40,7 @@ class UnitsController < ApplicationController
 
   def destroy
     if @unit.destroy
-      flash[:notice] = t(".success")
+      flash.now[:notice] = t(".success")
     end
     run_and_render :index
   end
