@@ -11,9 +11,6 @@ class Unit < ApplicationRecord
     errors.add(:base, :multilevel_nesting)
   end
 
-  acts_as_nested_set parent_column: :base_id, scope: :user, dependent: :destroy,
-    order_column: :multiplier
-
   scope :defaults, ->{ where(user: nil) }
   scope :ordered, ->{
     parent_symbol = Arel::Nodes::NamedFunction.new(

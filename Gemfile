@@ -10,8 +10,6 @@ gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 
 gem "devise"
 
-gem 'awesome_nested_set'
-
 gem 'importmap-rails', '~> 1.2.3'
 # turborails >= 2.0.0 required with npm v8.0.0 with support for [autofocus]
 # attribute in turbo-streams
