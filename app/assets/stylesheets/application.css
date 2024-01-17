@@ -60,6 +60,7 @@ textarea {
 
 /* blue - target for interaction with pointer */
 /* gray - target for interaction with keyboard */
+/* TODO: remove non-font-size rems from buttons/inputs below */
 a,
 button {
   white-space: nowrap;
@@ -104,7 +105,6 @@ button > svg {
 /* TODO: move normal non-button links (<a>:hover/:focus) styling here (i.e.
  * page-wide, top-level) and remove from table.items - as the style should be
  * same everywhere */
-
 .button:focus-visible,
 button:focus-visible,
 input[type=submit]:focus-visible {
@@ -255,6 +255,7 @@ input[type=text]:read-only {
 }
 
 
+/* TODO: Update styling, including rem removal. */
 form table {
   border-spacing: 0.8rem;
 }
@@ -354,6 +355,7 @@ table.items td.actions {
 }
 
 /* TODO: replace :hover:focus-visible combos with proper LOVE stye order */
+/* TODO: Update styling, including rem removal. */
 table.items td.link a:hover,
 table.items td.link a:focus-visible,
 table.items td.link a:hover:focus-visible {

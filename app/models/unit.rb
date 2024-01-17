@@ -1,5 +1,6 @@
 class Unit < ApplicationRecord
   belongs_to :user, optional: true
+  # TODO: validate base.user == user
   belongs_to :base, optional: true, class_name: "Unit"
 
   validates :symbol, presence: true, uniqueness: {scope: :user_id},
