@@ -19,6 +19,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     fill_in User.human_attribute_name(:email).capitalize, with: user.email
     fill_in User.human_attribute_name(:password).capitalize, with: password
     click_on t(:sign_in)
+    user
   end
 
   def inject_button_to(after, *button_options)

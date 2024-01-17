@@ -1,0 +1,40 @@
+g:
+  user: admin
+  symbol: g
+  name: gram
+kg:
+  user: admin
+  symbol: kg
+  name: kilogram
+  multiplier: 1000
+  base: g
+1:
+  user: admin
+  symbol: 1
+  name: one
+s:
+  user: admin
+  symbol: s
+  name: second
+percent:
+  user: admin
+  symbol: '%'
+  name: percent
+  multiplier: 0.01
+  base: 1
+µg:
+  user: admin
+  symbol: µg
+  name: microgram
+  multiplier: 0.000001
+  base: g
+mg:
+  user: admin
+  symbol: mg
+  name: milligram
+  multiplier: 0.001
+  base: g
+g:
+  user: alice
+  symbol: g
+  name: gram

@@ -2,14 +2,22 @@ require "application_system_test_case"
 
 class UnitsTest < ApplicationSystemTestCase
   setup do
-    @admin = users(:admin)
-    sign_in
+    @user = sign_in
     visit units_path
   end
 
   test "index" do
-    assert_selector 'tbody > tr', count: Unit.count
-    assert_current_path units_path
+    # Wait for the table to appear first, only then check row count
+    within 'tbody' do
+      assert_selector 'tr', count: @user.units.count
+    end
+
+    Unit.destroy_all
+    visit units_path
+    within 'tbody' do
+      assert_selector 'tr', count: 1
+      assert_text t('units.index.no_items')
+    end
   end
 
   test "add unit" do
@@ -28,9 +36,10 @@ class UnitsTest < ApplicationSystemTestCase
       end
     end
 
+    assert_current_path units_path
     within('tbody') do
       assert_no_selector :fillable_field
-      assert_selector 'tr', count: Unit.count
+      assert_selector 'tr', count: @user.units.count
     end
     assert_selector :link_or_button, text: t('units.index.add_unit')
 
@@ -40,6 +49,8 @@ class UnitsTest < ApplicationSystemTestCase
   test "close new unit form with escape" do
     click_on t('units.index.add_unit')
     first('tbody > tr').all(:field).sample.send_keys :escape
-    within('tbody') { assert_no_selector :fillable_field }
+    within('tbody') do
+      assert_no_selector :fillable_field
+    end
   end
 end
