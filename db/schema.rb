@@ -10,20 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_02_185352) do
+ActiveRecord::Schema[7.1].define(version: 2023_06_02_185352) do
   create_table "units", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "symbol"
     t.string "name"
     t.decimal "multiplier", precision: 30, scale: 15
     t.bigint "base_id"
-    t.integer "lft", null: false
-    t.integer "rgt", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["base_id"], name: "index_units_on_base_id"
-    t.index ["lft"], name: "index_units_on_lft"
-    t.index ["rgt"], name: "index_units_on_rgt"
     t.index ["user_id", "symbol"], name: "index_units_on_user_id_and_symbol", unique: true
     t.index ["user_id"], name: "index_units_on_user_id"
   end
