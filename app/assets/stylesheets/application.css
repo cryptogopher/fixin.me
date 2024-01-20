@@ -421,6 +421,13 @@ table.items select:focus-visible {
 .centered {
   margin: 0 auto;
 }
+[disabled] {
+  border-color: var(--color-border-gray) !important;
+  color: var(--color-border-gray) !important;
+  cursor: not-allowed;
+  fill: var(--color-border-gray) !important;
+  pointer-events: none;
+}
 .unwrappable {
   white-space: nowrap;
 }
