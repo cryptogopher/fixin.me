@@ -23,3 +23,7 @@ Turbo.StreamActions.enable = function() {
     e.removeAttribute("tabindex")
   })
 }
+
+Turbo.StreamActions.focus = function() {
+  this.targetElements[0].focus({focusVisible: true})
+}

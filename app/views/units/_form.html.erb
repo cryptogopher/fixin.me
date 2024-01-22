@@ -17,9 +17,9 @@
     </td>
 
     <td class="actions">
-      <%= form.submit form: :unit_form, onclick: 'focusAddLink(event)' %>
+      <%= form.submit form: :unit_form %>
       <%= image_link_to t(:cancel), "close-circle-outline", units_path, class: 'dangerous',
-        onclick: 'closeForm(event); return false;' %>
+        onclick: turbo_stream_handler('form_close'), name: :cancel %>
     </td>
   </tr>
   <!-- TODO: display error_messages_for unit -->

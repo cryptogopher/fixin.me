@@ -102,6 +102,10 @@ module ApplicationHelper
     tag.tr tag.td t('.no_items'), colspan: 10, class: 'hint'
   end
 
+  def turbo_stream_handler(partial)
+    "Turbo.renderStreamMessage('#{j(render partial: partial)}'); return false;"
+  end
+
   private
 
   def image_element_to(type, name, image = nil, options = nil, html_options = {})
