@@ -29,7 +29,7 @@ module ApplicationHelper
 
     def labelled_row_for(method, options)
       @template.content_tag :tr do
-        @template.content_tag(:td, label_for(method, options)) +
+        @template.content_tag(:td, label_for(method, options), class: "unwrappable") +
         @template.content_tag(:td, options.delete(:readonly) ? @object.public_send(method) : yield,
           @object&.errors[method].present? ?
             {class: "error", data: {content: @object&.errors.delete(method).join(" and ")}} :
