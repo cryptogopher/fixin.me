@@ -1,6 +1,6 @@
 <%= fields_for @unit do |form| %>
   <tr id="<%= dom_id(@unit) %>" onkeydown="processKey(event)">
-    <td>
+    <td class="<%= class_names({subunit: @unit.base}) %>">
       <%= form.text_field :symbol, form: :unit_form, required: true, autofocus: true, size: 12,
         maxlength: @unit.class.columns_hash['symbol'].limit, autocomplete: "off" %>
     </td>
@@ -10,8 +10,9 @@
     </td>
     <td>
       <% unless @unit.base.nil? %>
-        <%= form.number_field :multiplier, form: :unit_form, step: "any", size: 10,
-          autocomplete: "off" %>
+        <%= form.hidden_field :base_id, form: :unit_form %>
+        <%= form.number_field :multiplier, form: :unit_form, required: true, step: "any",
+          size: 10, autocomplete: "off" %>
       <% end %>
     </td>
 
@@ -23,4 +24,3 @@
   </tr>
   <!-- TODO: display error_messages_for unit -->
 <% end %>
-

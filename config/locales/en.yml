@@ -34,6 +34,7 @@ en:
       users: Users
   units:
     unit:
+      add_subunit: Subunit
       delete_unit: Delete
     index:
       add_unit: Add unit

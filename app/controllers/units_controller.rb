@@ -1,11 +1,11 @@
 class UnitsController < ApplicationController
+  before_action only: [:new] do
+    find_unit if params[:id].present?
+  end
   before_action :find_unit, only: [:edit, :update, :destroy]
 
   before_action except: :index do
     raise AccessForbidden unless current_user.at_least(:active)
-  end
-  before_action only: [:edit, :update, :destroy] do
-    raise ParameterInvalid unless current_user == @unit.user
   end
 
   def index
@@ -13,7 +13,7 @@ class UnitsController < ApplicationController
   end
 
   def new
-    @unit = current_user.units.new
+    @unit = current_user.units.new(base: @unit)
   end
 
   def create
@@ -52,6 +52,6 @@ class UnitsController < ApplicationController
   end
 
   def find_unit
-    @unit = Unit.find(params[:id])
+    @unit = Unit.find_by!(id: params[:id], user: current_user)
   end
 end

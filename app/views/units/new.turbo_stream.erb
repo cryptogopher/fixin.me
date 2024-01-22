@@ -1,5 +1,13 @@
-<%= turbo_stream.prepend :units do %>
-  <%= render partial: 'form' %>
+<%= turbo_stream.disable :add_unit %>
+<%= turbo_stream.disable_all 'td.actions .button' %>
+
+<% case %>
+<% when @unit.errors.present? %>
+  <%= turbo_stream.replace @unit, partial: 'form' %>
+<% when @unit.base.nil? %>
+  <%= turbo_stream.prepend :units, partial: 'form' %>
+<% else %>
+  <%= turbo_stream.after @unit.base, partial: 'form' %>
 <% end %>
 
 <%= turbo_stream.update :unit_form_frame do %>
