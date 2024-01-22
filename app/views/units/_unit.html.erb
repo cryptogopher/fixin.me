@@ -1,6 +1,6 @@
 <tr id="<%= dom_id(unit) %>">
   <td class="<%= class_names('link', {subunit: unit.base}) %>">
-    <%= link_to unit.symbol, edit_unit_path(unit) %>
+    <%= link_to unit.symbol, edit_unit_path(unit), data: {turbo_stream: true} %>
   </td>
   <td><%= unit.name %></td>
   <td class="number"><%= scientifize(unit.multiplier) if unit.multiplier %></td>
