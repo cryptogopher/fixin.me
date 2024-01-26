@@ -1,29 +1,42 @@
-# README
+README
+======
 
 Quantified self
 
-* Ruby version: 3.1
-* System dependencies: none
+
+Software requirements
+---------------------
+
+* Server side:
+    * Ruby version: developed on Ruby 3.x
+    * database with recursive Common Table Expressions (CTE) support, e.g.
+      MySQL >= 8.0, MariaDB >= 10.2.2
+    * for testing: browser as specified in _Client side_ requirements
+* Client side:
+    * browser supporting below requirements (e.g. Firefox >= 121):
+        * [`import maps`](https://caniuse.com/import-maps)
+          (required by `importmap-rails` gem >= 2.0)
+        * CSS [`:has()` pseudo-class](https://caniuse.com/css-has)
 
 
-
-## Installation
+Installation
+------------
 
     git clone https://gitea.michalczyk.pro/fixin.me/fixin.me.git
     bundle config set --local path '.gem'
     bundle install
 
 
-
-## Configuration
+Configuration
+-------------
 
     cp -a config/application.rb.dist config/application.rb
 
 Modify configuration settings below `SETUP` comment appropriately.
 
 
-
-## Database
+Database
+--------
 
 Grant database user and privileges:
 
@@ -41,9 +54,8 @@ Run database creation and migration tasks:
     RAILS_ENV="production" bundle exec rake db:create db:migrate db:seed
 
 
-
-## Running
-
+Running
+-------
 
 ### Standalone Rails server + Apache proxy
 
@@ -62,10 +74,11 @@ Run server
 
 ### Apache mod_passenger
 
+TODO: add sample configuration
 
 
-## Contributing
-
+Contributing
+------------
 
 ### Database
 
@@ -95,12 +108,12 @@ Tests need to be run from within toplevel application directory:
 
 * all system tests:
 
-    bundle exec rails test:system
+        bundle exec rails test:system
 
 * all tests from one file, with optional seed:
 
-    bundle exec rails test test/system/users_test.rb --seed 1234
+        bundle exec rails test test/system/users_test.rb --seed 1234
 
 * single test, with optional seed:
 
-    bundle exec rails test test/system/users_test.rb --name test_register --seed 1234
+        bundle exec rails test test/system/users_test.rb --name test_register --seed 1234
