@@ -102,8 +102,10 @@ module ApplicationHelper
     tag.tr tag.td t('.no_items'), colspan: 10, class: 'hint'
   end
 
-  def turbo_stream_handler(partial)
-    "Turbo.renderStreamMessage('#{j(render partial: partial)}'); return false;"
+  def render_turbo_stream(partial, locals)
+    # TODO: extend with smth like "if outside of rendering, render; otherwise
+    # appendChild() template within current render"
+    "Turbo.renderStreamMessage('#{j(render partial: partial, locals: locals)}'); return false;"
   end
 
   private
