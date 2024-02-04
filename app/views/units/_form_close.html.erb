@@ -1,4 +1,3 @@
-<%= turbo_stream.remove @unit %>
-<%= turbo_stream.enable_all 'td.actions .button' %>
-<%= turbo_stream.enable :add_unit %>
-<%= turbo_stream.focus :add_unit %>
+<%= @unit.persisted? ? turbo_stream.replace(@unit) : turbo_stream.remove(@unit) %>
+<%= turbo_stream.enable id %>
+<%= turbo_stream.focus id %>

@@ -1,6 +1,7 @@
 <tr id="<%= dom_id(unit) %>">
   <td class="<%= class_names('link', {subunit: unit.base}) %>">
-    <%= link_to unit.symbol, edit_unit_path(unit), data: {turbo_stream: true} %>
+    <%= link_to unit.symbol, edit_unit_path(unit), id: dom_id(unit, :edit),
+      data: {turbo_stream: true} %>
   </td>
   <td><%= unit.name %></td>
   <td class="number"><%= scientifize(unit.multiplier) if unit.multiplier %></td>
@@ -9,7 +10,8 @@
     <td class="actions">
       <% if unit.base.nil? %>
         <%= image_link_to t(".add_subunit"), "plus-outline", new_unit_path(unit),
-          onclick: 'this.blur();', data: {turbo_stream: true} %>
+          id: dom_id(unit, :add), onclick: 'this.blur();',
+          data: {turbo_stream: true} %>
       <% end %>
 
       <%= image_button_to t(".delete_unit"), "delete-outline", unit_path(unit),

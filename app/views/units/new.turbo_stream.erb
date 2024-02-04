@@ -1,14 +1,16 @@
-<%= turbo_stream.disable :add_unit %>
-<%# TODO: disable only form-opening actions %>
-<%= turbo_stream.disable_all 'td.actions .button' %>
+<% options = {partial: 'form', locals: {id: dom_id(@unit.base || @unit, :add)}} %>
 
 <% if @unit.errors.present? %>
-  <%= turbo_stream.replace @unit, partial: 'form' %>
+  <%= turbo_stream.replace @unit, **options -%>
 <% else %>
+  <%= turbo_stream.disable options[:locals][:id] -%>
+  <%= turbo_stream.click_all 'tbody a[name=cancel]' -%>
+  <%#= turbo_stream.blur_all %>
+
   <% if @unit.base.nil? %>
-    <%= turbo_stream.prepend :units, partial: 'form' %>
+    <%= turbo_stream.prepend :units, **options -%>
   <% else %>
-    <%= turbo_stream.after @unit.base, partial: 'form' %>
+    <%= turbo_stream.after @unit.base, **options -%>
   <% end %>
 
   <%= turbo_stream.update :unit_form_frame do %>
