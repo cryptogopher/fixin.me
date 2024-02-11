@@ -7,42 +7,6 @@ function showPage(event) {
 }
 document.addEventListener('turbo:load', showPage)
 
-/*
-function beforeStreamRender(event) {
-  console.log(event.target)
-}
-document.addEventListener('turbo:before-stream-render', beforeStreamRender)
-*/
-
-/*
-Turbo.session.streamMessageRenderer.appendFragment = async function (fragment) {
-  for (let child of [...fragment.children]) {
-    document.documentElement.appendChild(child)
-    if (child.action == "click") {
-      await new Promise((resolve) => {
-        new MutationObserver((mutations, observer) => {
-          mutations.forEach((m) => {
-            if ([...m.removedNodes].includes(child)) {
-              resolve(child)
-              observer.disconnect()
-            }
-          })
-        }).observe(document.documentElement, {childList: true})
-      })
-    }
-  }
-}
-
-window.renderTurboStream = function (message) {
-  // Render if not already rendering, otherwise just append fragment to DOM
-  if (document.documentElement.getElementsByTagName("turbo-stream").length == 0) {
-    Turbo.renderStreamMessage(message)
-  } else {
-    Turbo.session.streamMessageRenderer
-      .appendFragment(Turbo.StreamMessage.wrap(message).fragment)
-  }
-}
-*/
 
 Turbo.StreamElement.prototype.enableElement = function(element) {
     element.removeAttribute("disabled")
@@ -121,9 +85,3 @@ Turbo.StreamActions.close_form = function() {
     this.removePreviousForm(e.closest(".form"))
   })
 }
-
-/*
-Turbo.StreamActions.click = function() {
-  this.targetElements.forEach((e) => { e.click() })
-}
-*/

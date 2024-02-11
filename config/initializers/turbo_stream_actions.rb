@@ -23,14 +23,6 @@ ActiveSupport.on_load :turbo_streams_tag_builder do
     action :focus, target, allow_inferred_rendering: false
   end
 
-  #def click(target)
-  #  action :click, target, allow_inferred_rendering: false
-  #end
-
-  #def click_all(targets)
-  #  action_all :click, targets, allow_inferred_rendering: false
-  #end
-
   def insert_form(target, content = nil, **rendering, &block)
     if target.is_a? Symbol
       action :prepend_form, target, content, **rendering, &block
