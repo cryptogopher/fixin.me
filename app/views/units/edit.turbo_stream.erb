@@ -1,7 +1,7 @@
 <%# TODO: make sure turbo_stream layout is used in new/edit %>
-<%= turbo_stream.replace @unit, partial: 'form', locals: {id: dom_id(@unit, :edit)} %>
-
 <%= turbo_stream.update :unit_form_frame do %>
   <%= form_with model: @unit, html: {id: :unit_form} do %>
   <% end %>
-<% end unless @unit.errors.present? %>
+<% end %>
+
+<%= turbo_stream.replace_form @unit, partial: 'form', locals: {link_id: dom_id(@unit, :edit)} %>

@@ -1,5 +1,7 @@
 <%= fields_for @unit do |form| %>
-  <tr id="<%= dom_id(@unit) %>" onkeydown="processKey(event)">
+  <%= tag.tr id: dom_id(@unit), class: "form", onkeydown: "processKey(event)",
+    data: {link_id: link_id} do %>
+
     <td class="<%= class_names({subunit: @unit.base}) %>">
       <%= form.text_field :symbol, form: :unit_form, required: true, autofocus: true, size: 12,
         maxlength: @unit.class.columns_hash['symbol'].limit, autocomplete: "off" %>
@@ -19,8 +21,8 @@
     <td class="actions">
       <%= form.submit form: :unit_form %>
       <%= image_link_to t(:cancel), "close-circle-outline", units_path, class: 'dangerous',
-        name: :cancel, onclick: render_turbo_stream('form_close', {id: id}) %>
+        name: :cancel, onclick: render_turbo_stream('form_close', {link_id: link_id}) %>
     </td>
-  </tr>
+  <% end %>
   <!-- TODO: display error_messages_for unit -->
 <% end %>

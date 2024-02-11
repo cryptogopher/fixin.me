@@ -1,3 +1,2 @@
-<%= @unit.persisted? ? turbo_stream.replace(@unit) : turbo_stream.remove(@unit) %>
-<%= turbo_stream.enable id %>
-<%= turbo_stream.focus id %>
+<%= turbo_stream.close_form @unit %>
+<%#= turbo_stream.focus link_id %>

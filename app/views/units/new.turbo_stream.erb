@@ -1,20 +1,9 @@
-<% options = {partial: 'form', locals: {id: dom_id(@unit.base || @unit, :add)}} %>
+<% link_id = dom_id(@unit.base || @unit, :add) %>
+<%= turbo_stream.disable link_id -%>
 
-<% if @unit.errors.present? %>
-  <%= turbo_stream.replace @unit, **options -%>
-<% else %>
-  <%= turbo_stream.disable options[:locals][:id] -%>
-  <%= turbo_stream.click_all 'tbody a[name=cancel]' -%>
-  <%#= turbo_stream.blur_all %>
-
-  <% if @unit.base.nil? %>
-    <%= turbo_stream.prepend :units, **options -%>
-  <% else %>
-    <%= turbo_stream.after @unit.base, **options -%>
-  <% end %>
-
-  <%= turbo_stream.update :unit_form_frame do %>
-    <%= form_with model: @unit, html: {id: :unit_form} do %>
-    <% end %>
+<%= turbo_stream.update :unit_form_frame do %>
+  <%= form_with model: @unit, html: {id: :unit_form} do %>
   <% end %>
 <% end %>
+
+<%= turbo_stream.insert_form (@unit.base || :units), partial: 'form', locals: {link_id: link_id} %>

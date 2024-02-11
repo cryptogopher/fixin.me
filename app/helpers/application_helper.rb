@@ -103,8 +103,6 @@ module ApplicationHelper
   end
 
   def render_turbo_stream(partial, locals)
-    # TODO: extend with smth like "if outside of rendering, render; otherwise
-    # appendChild() template within current render"
     "Turbo.renderStreamMessage('#{j(render partial: partial, locals: locals)}'); return false;"
   end
 

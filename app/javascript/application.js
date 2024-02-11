@@ -14,6 +14,7 @@ function beforeStreamRender(event) {
 document.addEventListener('turbo:before-stream-render', beforeStreamRender)
 */
 
+/*
 Turbo.session.streamMessageRenderer.appendFragment = async function (fragment) {
   for (let child of [...fragment.children]) {
     document.documentElement.appendChild(child)
@@ -32,6 +33,38 @@ Turbo.session.streamMessageRenderer.appendFragment = async function (fragment) {
   }
 }
 
+window.renderTurboStream = function (message) {
+  // Render if not already rendering, otherwise just append fragment to DOM
+  if (document.documentElement.getElementsByTagName("turbo-stream").length == 0) {
+    Turbo.renderStreamMessage(message)
+  } else {
+    Turbo.session.streamMessageRenderer
+      .appendFragment(Turbo.StreamMessage.wrap(message).fragment)
+  }
+}
+*/
+
+Turbo.StreamElement.prototype.enableElement = function(element) {
+    element.removeAttribute("disabled")
+    element.removeAttribute("aria-disabled")
+    // 'tabindex' is not used explicitly, so removing it is safe
+    element.removeAttribute("tabindex")
+}
+
+Turbo.StreamElement.prototype.removePreviousForm = function(form) {
+  const id = form.id
+  const row = document.getElementById(id + "_cached")
+  form.remove()
+  if (row) {
+    row.id = id
+    row.style.display = "revert"
+  }
+  if (form.hasAttribute("data-link-id")) {
+    const link = document.getElementById(form.getAttribute("data-link-id"))
+    this.enableElement(link)
+  }
+}
+
 
 Turbo.StreamActions.disable = function() {
   this.targetElements.forEach((e) => {
@@ -42,12 +75,7 @@ Turbo.StreamActions.disable = function() {
 }
 
 Turbo.StreamActions.enable = function() {
-  this.targetElements.forEach((e) => {
-    e.removeAttribute("disabled")
-    e.removeAttribute("aria-disabled")
-    // 'tabindex' is not used explicitly, so removing it is safe
-    e.removeAttribute("tabindex")
-  })
+  this.targetElements.forEach((e) => { this.enableElement(e) })
 }
 
 Turbo.StreamActions.blur = function() {
@@ -59,6 +87,43 @@ Turbo.StreamActions.focus = function() {
   this.targetElements[0].focus({focusVisible: true})
 }
 
+Turbo.StreamActions.prepend_form = function() {
+  this.targetElements.forEach((e) => {
+    [...e.getElementsByClassName("form")].forEach((f) => {
+      this.removePreviousForm(f)
+    })
+    e.prepend(this.templateContent)
+  })
+}
+
+Turbo.StreamActions.after_form = function() {
+  this.targetElements.forEach((e) => {
+    [...e.parentElement?.getElementsByClassName("form")].forEach((f) => {
+      this.removePreviousForm(f)
+    })
+    e.parentElement?.insertBefore(this.templateContent, e.nextSibling)
+  })
+}
+
+Turbo.StreamActions.replace_form = function() {
+  this.targetElements.forEach((e) => {
+    [...e.parentElement?.getElementsByClassName("form")].forEach((f) => {
+      this.removePreviousForm(f)
+    })
+    e.style.display = "none"
+    e.id = e.id + "_cached"
+    e.parentElement?.insertBefore(this.templateContent, e.nextSibling)
+  })
+}
+
+Turbo.StreamActions.close_form = function() {
+  this.targetElements.forEach((e) => {
+    this.removePreviousForm(e.closest(".form"))
+  })
+}
+
+/*
 Turbo.StreamActions.click = function() {
   this.targetElements.forEach((e) => { e.click() })
 }
+*/
