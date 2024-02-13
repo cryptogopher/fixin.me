@@ -28,6 +28,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   #def assert_stale(element)
-  #  assert_raise(Selenium::WebDriver::Error::StaleElementReferenceError) { element.tag_name }
+  #  assert_raises(Selenium::WebDriver::Error::StaleElementReferenceError) { element.tag_name }
   #end
 end
