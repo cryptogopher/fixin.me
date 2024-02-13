@@ -1,7 +1,7 @@
 <% link_id = dom_id(@unit.base || @unit, :add) %>
 <%= turbo_stream.disable link_id -%>
 
-<%= turbo_stream.update :unit_form_frame do %>
+<%= turbo_stream.replace :unit_form do %>
   <%= form_with model: @unit, html: {id: :unit_form} do %>
   <% end %>
 <% end %>

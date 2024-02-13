@@ -1,4 +1,11 @@
 class ApplicationController < ActionController::Base
+  # Turbo-rails disables layout rendering for turbo_frame requests (i.e.
+  # requests that specify 'turbo-frame:' header).
+  # As a side effect, this also disables layout for turbo_stream requests that
+  # happen to originate from within turbo frame (e.g. turbo_frame_tag or tag
+  # with 'is="turbo-frame"' attribute). To fix this, either frame tags must not be
+  # used, or custom layout method needs to be defined.
+
   helper_method :current_user_disguised?
 
   before_action :authenticate_user!
@@ -47,8 +54,6 @@ class ApplicationController < ActionController::Base
 
   def run_and_render(action)
     send action
-    # 2024-01-17, Rails 7.1.2: For unknown reason turbo_stream layout is omitted
-    # during render on POST method only (GET, DESTROY are ok).
-    render action, layout: 'application'
+    render action
   end
 end

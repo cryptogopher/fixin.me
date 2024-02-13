@@ -1,5 +1,4 @@
-<%# TODO: make sure turbo_stream layout is used in new/edit %>
-<%= turbo_stream.update :unit_form_frame do %>
+<%= turbo_stream.replace :unit_form do %>
   <%= form_with model: @unit, html: {id: :unit_form} do %>
   <% end %>
 <% end %>

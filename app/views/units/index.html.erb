@@ -1,13 +1,11 @@
 <div class="rightside">
   <% if current_user.at_least(:active) %>
-    <%= turbo_frame_tag do %>
-      <%= image_link_to t('.add_unit'), 'plus-outline', new_unit_path, id: :add_unit,
-        onclick: 'this.blur();', data: {turbo_stream: true} %>
-    <% end %>
+    <%= image_link_to t('.add_unit'), 'plus-outline', new_unit_path, id: :add_unit,
+      onclick: 'this.blur();', data: {turbo_stream: true} %>
   <% end %>
 </div>
 
-<%= turbo_frame_tag 'unit_form_frame' %>
+<%= tag.div id: :unit_form %>
 
 <table class="main items">
   <thead>
@@ -20,7 +18,7 @@
       <% end %>
     </tr>
   </thead>
-  <tbody id="units" is="turbo-frame">
+  <tbody id="units">
     <%= render(@units) || render_no_items %>
   </tbody>
 </table>
