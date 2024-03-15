@@ -110,10 +110,11 @@ Tests need to be run from within toplevel application directory:
 
         bundle exec rails test:system
 
+* system test(s) with seed/test name specified:
+
+        bundle exec rails test:system --seed 64690 --name test_add_unit
+
 * all tests from one file, with optional seed:
 
         bundle exec rails test test/system/users_test.rb --seed 1234
 
-* single test, with optional seed:
-
-        bundle exec rails test test/system/users_test.rb --name test_register --seed 1234
