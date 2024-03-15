@@ -1,4 +1,4 @@
-<%= fields_for @unit do |form| %>
+<%= tabular_fields_for @unit do |form| %>
   <%= tag.tr id: dom_id(@unit), class: "form", onkeydown: "processKey(event)",
     data: {link_id: link_id} do %>
 

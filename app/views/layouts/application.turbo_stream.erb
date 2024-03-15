@@ -1,4 +1,6 @@
+<%= yield %>
+
+<%# Some views may convert ActiveRecord errors to flashes, render at the end. %>
 <%= turbo_stream.update :flashes do %>
   <%= render_flash_messages %>
 <% end %>
-<%= yield %>

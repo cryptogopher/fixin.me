@@ -9,7 +9,7 @@
   </div>
 <% end %>
 
-<%= tabular_form_for resource, url: registration_path(resource), html: {method: :patch} do |f| %>
+<%= labelled_form_for resource, url: registration_path(resource), html: {method: :patch} do |f| %>
   <%= f.email_field :email, size: 30, autofocus: true, autocomplete: "off" %>
   <% if f.object.pending_reconfirmation? %>
     <%= f.text_field :unconfirmed_email, readonly: true, tabindex: -1,

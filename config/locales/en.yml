@@ -13,6 +13,12 @@ en:
         created_at: registered
         confirmed_at: confirmed
         unconfirmed_email: Awaiting confirmation for
+    errors:
+      models:
+        unit:
+          attributes:
+            symbol:
+              taken: has to be unique
   actioncontroller:
     exceptions:
       status:

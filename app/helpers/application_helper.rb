@@ -1,6 +1,6 @@
 module ApplicationHelper
   # TODO: replace legacy content_tag with tag.tagname
-  class TabularFormBuilder < ActionView::Helpers::FormBuilder
+  class LabelledFormBuilder < ActionView::Helpers::FormBuilder
     (field_helpers - [:label]).each do |selector|
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def #{selector}(method, options = {})
@@ -19,7 +19,7 @@ module ApplicationHelper
       end
     end
 
-    def table_form_for(&block)
+    def form_for(&block)
       @template.content_tag(:table, class: "centered") { yield(self) } +
       # Display leftover error messages (there shouldn't be any)
       @template.content_tag(:div, @object&.errors.full_messages.join(@template.tag :br))
@@ -50,9 +50,14 @@ module ApplicationHelper
     end
   end
 
-  def tabular_form_for(record, options = {}, &block)
-    options.merge! builder: TabularFormBuilder
-    form_for(record, **options, &-> (f) { f.table_form_for(&block) })
+  def labelled_form_for(record, options = {}, &block)
+    options.merge! builder: LabelledFormBuilder
+    form_for(record, **options) { |f| f.form_for(&block) }
+  end
+
+  def tabular_fields_for(record_name, record_object = nil, options = {}, &block)
+    flash.now[:alert] = record_name.errors.full_messages unless record_name.errors.empty?
+    fields_for(record_name, record_object, **options, &block)
   end
 
   def svg_tag(source, options = {})

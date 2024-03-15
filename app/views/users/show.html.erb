@@ -4,7 +4,7 @@
   </div>
 <% end %>
 
-<%= tabular_form_for @user do |f| %>
+<%= labelled_form_for @user do |f| %>
   <%= f.email_field :email, readonly: true %>
   <% if f.object.pending_reconfirmation? %>
     <%= f.email_field :unconfirmed_email, readonly: true,
