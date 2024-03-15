@@ -1,6 +1,4 @@
 class Unit < ApplicationRecord
-  attribute :multiplier, default: 1
-
   belongs_to :user, optional: true
   # TODO: validate base.user == user
   belongs_to :base, optional: true, class_name: "Unit"

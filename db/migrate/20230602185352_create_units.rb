@@ -4,7 +4,7 @@ class CreateUnits < ActiveRecord::Migration[7.0]
       t.references :user, foreign_key: true
       t.string :symbol
       t.string :name
-      t.decimal :multiplier, precision: 30, scale: 15
+      t.decimal :multiplier, precision: 30, scale: 15, default: 1.0
       t.references :base
 
       t.timestamps
