@@ -213,20 +213,22 @@ input[type=text]:read-only {
 
 
 #flashes {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 0.2em;
+  grid-template-columns: 1fr auto auto auto 1fr;
   left: 0;
   pointer-events: none;
   position: fixed;
   right: 0;
-  top: 1em;
+  top: 0.4em;
 }
 .flash {
   align-items: center;
   border-radius: 0.2em;
   color: white;
-  display: flex;
+  display: grid;
+  grid-column: 2/5;
+  grid-template-columns: subgrid;
   pointer-events: auto;
 }
 .flash.alert:before {
@@ -249,18 +251,22 @@ input[type=text]:read-only {
   border-color: #009ade;
   background-color: #009ade;
 }
+.flash > div {
+  grid-column: 2;
+}
 /* NOTE: currently flash button inherits some unnecessary styles from generic
  * button. */
-.flash button {
+.flash > button {
   border: none;
   color: inherit;
   cursor: pointer;
   font-size: 1.4em;
   font-weight: bold;
+  grid-column: 3;
   opacity: 0.6;
   padding: 0.2em 0.4em;
 }
-.flash button:hover {
+.flash > button:hover {
   opacity: 1;
 }
 

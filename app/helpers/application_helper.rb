@@ -90,10 +90,12 @@ module ApplicationHelper
   end
 
   def render_flash_messages
-    flash.map do |entry, message|
-      tag.div class: "flash #{entry}" do
-        tag.div(sanitize(message)) + tag.button(sanitize("&times;"), tabindex: -1,
-                                       onclick: "this.parentElement.remove();")
+    flash.map do |entry, messages|
+      Array(messages).map do |message|
+        tag.div class: "flash #{entry}" do
+          tag.div(sanitize(message)) + tag.button(sanitize("&times;"), tabindex: -1,
+                                                  onclick: "this.parentElement.remove();")
+        end
       end
     end.join.html_safe
   end
