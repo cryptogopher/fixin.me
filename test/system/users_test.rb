@@ -33,8 +33,9 @@ class UsersTest < ApplicationSystemTestCase
       with: users.select(&:confirmed?).sample.email
     assert_emails 1 do
       click_on t(:recover_password)
+      # Wait until redirected to make sure async request has been processed
+      assert_current_path new_user_session_path
     end
-    assert_current_path new_user_session_path
     assert_text t("devise.passwords.send_instructions")
 
     with_last_email do |mail|
@@ -45,8 +46,9 @@ class UsersTest < ApplicationSystemTestCase
     fill_in t("users.passwords.edit.password_confirmation"), with: new_password
     assert_emails 1 do
       click_on t("users.passwords.edit.update_password")
+      # Wait until redirected to make sure async request has been processed
+      assert_current_path /#{users_path}|#{edit_user_registration_path}/
     end
-    assert_no_current_path user_password_path
     assert_text t("devise.passwords.updated")
   end
 
@@ -61,10 +63,10 @@ class UsersTest < ApplicationSystemTestCase
     assert_difference ->{User.count}, 1 do
       assert_emails 1 do
         click_on t(:register)
+        # Wait until redirected to make sure async request has been processed
+        assert_current_path new_user_session_path
       end
     end
-
-    assert_no_current_path new_user_registration_path
     assert_text t("devise.registrations.signed_up_but_unconfirmed")
 
     with_last_email do |mail|
