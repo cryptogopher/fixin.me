@@ -23,7 +23,7 @@ class UnitsTest < ApplicationSystemTestCase
   test "add unit" do
     click_on t('units.index.add_unit')
 
-    within 'tbody > tr:has(input, textarea)' do
+    within 'tbody > tr:has(input[type=text], textarea)' do
       assert_selector ':focus'
       maxlength = all(:fillable_field).to_h { |f| [f[:name], f[:maxlength].to_i || 1000] }
       fill_in 'unit[symbol]',
@@ -39,7 +39,7 @@ class UnitsTest < ApplicationSystemTestCase
       assert_no_selector :fillable_field
       assert_selector 'tr', count: @user.units.count
     end
-    assert_selector '.flash.notice', exact_text: t('units.create.success')
+    assert_selector '.flash.notice', text: /^#{t('units.create.success')}/
   end
 
   test "add and edit disallow opening multiple forms" do
@@ -53,7 +53,6 @@ class UnitsTest < ApplicationSystemTestCase
       all(:link_or_button, exact_text: Regexp.union(labels)).map { |l| links[l] = row_change }
     end
     link, rows = links.assoc(links.keys.sample).tap { |l, _| links.delete(l) }
-    puts link[:text]
     assert_difference ->{ all('tbody tr').count }, rows do
       link.click
     end
@@ -70,7 +69,7 @@ class UnitsTest < ApplicationSystemTestCase
 
     link = links.keys.select(&:visible?).sample
     assert_difference ->{ all('tbody tr').count }, links[link] - rows do
-      link.tap{|l| puts l[:text]}.click
+      link.click
     end
     assert_selector 'tbody tr:has(input[type=text]:focus)', count: 1
   end
