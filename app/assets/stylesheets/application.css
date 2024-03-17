@@ -96,7 +96,7 @@ input[type=submit] {
 }
 input:not([type=submit]):not([type=checkbox]),
 select {
-  padding: 0.2rem 0.4rem;
+  padding: 0.2em 0.4em;
 }
 .button,
 button,
@@ -327,10 +327,14 @@ table.items tbody tr:hover {
 }
 table.items th {
   padding-block: 0.75em;
+  text-align: center;
 }
 table.items th,
 table.items td {
   padding-inline: 1em 0;
+}
+table.items td:has(input) {
+  padding-inline-start: calc(0.6em - 0.9px);
 }
 table.items th:last-child {
   padding-inline-end: 0.4em;
@@ -344,25 +348,24 @@ table.items td {
   padding-block: 0.1em;
 }
 /* For <a> to fill <td> completely, we use an ::after pseudoelement. */
-/* TODO: change selector from td.link to td:has(a) once :has() is available on
- * FF */
 table.items td.link {
-  padding: 0;
+  padding: 0 0 0 1em;
   position: relative;
-  text-align: left;
 }
 table.items td.link a {
   color: inherit;
   font: inherit;
-  padding-inline-start: 1em;
 }
 table.items td.link a::after {
   content: '';
   inset: 0;
   position: absolute;
 }
-table.items td.link .subunit {
-  padding-inline-start: 1.6em;
+table.items td.subunit {
+  padding-inline-start: 1.8em;
+}
+table.items td.subunit:has(input) {
+  padding-inline-start: calc(1.4em - 1px);
 }
 table.items td.actions {
   display: flex;
