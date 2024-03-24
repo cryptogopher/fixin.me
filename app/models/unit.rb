@@ -2,6 +2,7 @@ class Unit < ApplicationRecord
   belongs_to :user, optional: true
   # TODO: validate base.user == user
   belongs_to :base, optional: true, class_name: "Unit"
+  has_many :subunits, class_name: "Unit", dependent: :restrict_with_error, inverse_of: :base
 
   validates :symbol, presence: true, uniqueness: {scope: :user_id},
     length: {maximum: columns_hash['symbol'].limit}
@@ -18,11 +19,16 @@ class Unit < ApplicationRecord
                       'COALESCE',
                       [Arel::Table.new(:bases_units)[:symbol], arel_table[:symbol]]
                     )
-    left_outer_joins(:base).order(parent_symbol, arel_table[:base_id].asc.nulls_first, :multiplier)
+    left_outer_joins(:base)
+      .order(parent_symbol, arel_table[:base_id].asc.nulls_first, :multiplier, :symbol)
   }
 
   before_destroy do
     # TODO: disallow destruction if any object depends on this unit
     nil
+  end
+
+  def movable?
+    subunits.empty?
   end
 end

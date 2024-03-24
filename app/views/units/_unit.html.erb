@@ -1,4 +1,6 @@
-<tr id="<%= dom_id(unit) %>">
+<%= tag.tr id: dom_id(unit), ondragover: "dragOver(event)", ondrop: "drop(event)",
+  data: {drag_path: unit_path(unit), drop_id: unit.base_id || unit.id} do %>
+
   <td class="<%= class_names('link', {subunit: unit.base}) %>">
     <%= link_to unit.symbol, edit_unit_path(unit), id: dom_id(unit, :edit),
       onclick: 'this.blur();', data: {turbo_stream: true} %>
@@ -17,5 +19,10 @@
       <%= image_button_to t(".delete_unit"), "delete-outline", unit_path(unit),
         method: :delete %>
     </td>
+    <% if unit.movable? %>
+      <td class="handle" draggable="true" ondragstart="dragStart(event)">&#x283F</td>
+    <% else %>
+      <td></td>
+    <% end %>
   <% end %>
-</tr>
+<% end %>

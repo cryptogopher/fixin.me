@@ -22,6 +22,9 @@ en:
   actioncontroller:
     exceptions:
       status:
+        bad_request: >
+          Server received request it's unable to understand (400 Bad Request).
+          This should not happen, please notify site administrator.
         forbidden: >
           You have not been granted access to this action (403 Forbidden).
           This should not happen, please notify site administrator.

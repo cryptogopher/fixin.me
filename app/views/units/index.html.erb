@@ -15,6 +15,7 @@
       <th><%= User.human_attribute_name(:multiplier).capitalize %></th>
       <% if current_user.at_least(:active) %>
         <th><%= t :actions %></th>
+        <th></th>
       <% end %>
     </tr>
   </thead>
@@ -28,5 +29,37 @@
     if (event.key == "Escape") {
       event.target.closest("tr").querySelector("a[name=cancel]").click();
     }
+  }
+
+  function dragStart(event) {
+    var row = event.target.closest("tr");
+    event.dataTransfer.setData("text/plain", row.getAttribute("data-drag-path"));
+    var rowRectangle = row.getBoundingClientRect();
+    event.dataTransfer.setDragImage(row, event.x - rowRectangle.left, event.y - rowRectangle.top);
+    event.dataTransfer.dropEffect = "none";
+  }
+
+  function dragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }
+
+  function drop(event) {
+    event.preventDefault();
+
+    var params = new URLSearchParams();
+    params.append("unit[base_id]", event.target.closest("tr").getAttribute("data-drop-id"));
+
+    fetch(event.dataTransfer.getData("text/plain"), {
+      body: params,
+      headers: {
+        "Accept": "text/vnd.turbo-stream.html",
+        "X-CSRF-Token": document.head.querySelector("meta[name=csrf-token]").content,
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      method: "PATCH"
+    })
+    .then(response => response.text())
+    .then(html => Turbo.renderStreamMessage(html))
   }
 <% end %>
