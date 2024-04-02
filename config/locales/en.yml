@@ -17,6 +17,11 @@ en:
       models:
         unit:
           attributes:
+            base:
+              multilevel_nesting: has to be a top-level unit
+              user_mismatch: has to belong to the same user as unit
+            multiplier:
+              equal_to: for a top-level unit has to be 1
             symbol:
               taken: has to be unique
   actioncontroller:
