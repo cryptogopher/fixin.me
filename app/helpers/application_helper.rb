@@ -56,7 +56,7 @@ module ApplicationHelper
   end
 
   def tabular_fields_for(record_name, record_object = nil, options = {}, &block)
-    flash.now[:alert] = record_name.errors.full_messages unless record_name.errors.empty?
+    render_errors(record_name)
     fields_for(record_name, record_object, **options, &block)
   end
 
@@ -92,6 +92,10 @@ module ApplicationHelper
 
   def image_tab_to(name, image = nil, options = nil, html_options = {})
     image_element_to(:link, name, image, options, html_options)
+  end
+
+  def render_errors(record)
+    flash.now[:alert] = record.errors.full_messages unless record.errors.empty?
   end
 
   def render_flash_messages

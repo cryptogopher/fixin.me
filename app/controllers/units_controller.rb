@@ -2,7 +2,7 @@ class UnitsController < ApplicationController
   before_action only: [:new] do
     find_unit if params[:id].present?
   end
-  before_action :find_unit, only: [:edit, :update, :destroy]
+  before_action :find_unit, only: [:edit, :update, :rebase, :destroy]
 
   before_action except: :index do
     raise AccessForbidden unless current_user.at_least(:active)
@@ -30,12 +30,22 @@ class UnitsController < ApplicationController
   end
 
   def update
-    if @unit.update(unit_params)
+    if @unit.update(unit_params.except(:base_id))
       flash.now[:notice] = t(".success")
       run_and_render :index
     else
       render :edit
     end
+  end
+
+  def rebase
+    permitted = params.require(:unit).permit(:base_id)
+    if permitted[:base_id].blank? && @unit.multiplier != 1
+      permitted.merge!(multiplier: 1)
+      flash.now[:notice] = t(".multiplier_reset", symbol: @unit.symbol)
+    end
+
+    run_and_render :index if @unit.update(permitted)
   end
 
   def destroy

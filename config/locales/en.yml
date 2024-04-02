@@ -54,6 +54,8 @@ en:
       success: Created new unit
     update:
       success: Updated unit
+    rebase:
+      multiplier_reset: Multiplier of "%{symbol}" has been reset to 1, due to repositioning
     destroy:
       success: Deleted unit
   users:
