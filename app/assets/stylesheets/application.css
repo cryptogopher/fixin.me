@@ -30,6 +30,9 @@
   --color-gray: #a0a0a0;
   --color-table-gray: #909090;
   --color-text-gray: #707070;
+
+  --z-index-flashes: 100;
+  --z-index-table-row-outline: 10;
 }
 
 *,
@@ -221,6 +224,7 @@ input[type=text]:read-only {
   position: fixed;
   right: 0;
   top: 0.4em;
+  z-index: var(--z-index-flashes);
 }
 .flash {
   align-items: center;
