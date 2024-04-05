@@ -53,6 +53,7 @@ en:
     index:
       add_unit: Add unit
       no_items: There are no configured units. You can try to import some defaults.
+      top_level_drop: Drop here to reposition into top-level unit
     new:
       none: none
     create:

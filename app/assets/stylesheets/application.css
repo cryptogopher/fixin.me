@@ -376,6 +376,17 @@ table.items td.actions {
   gap: 0.4em;
   justify-content: end;
 }
+table.items tr.dropzone {
+  position: relative;
+}
+table.items tr.dropzone::after {
+  content: '';
+  inset: 1px 0 0 0;
+  position: absolute;
+  outline: dashed 2px #009ade;
+  outline-offset: -1px;
+  z-index: var(--z-index-table-row-outline);
+}
 table.items td.handle {
   cursor: move;
 }
