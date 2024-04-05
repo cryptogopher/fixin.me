@@ -372,6 +372,7 @@ table.items td.subunit:has(input) {
   padding-inline-start: calc(1.4em - 1px);
 }
 table.items td.actions {
+  align-items: center;
   display: flex;
   gap: 0.4em;
   justify-content: end;

@@ -33,7 +33,7 @@
 <%= javascript_tag do %>
   function processKey(event) {
     if (event.key == "Escape") {
-      event.target.closest("tr").querySelector("a[name=cancel]").click();
+      event.currentTarget.querySelector("a[name=cancel]").click();
     }
   }
 
