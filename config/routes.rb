@@ -8,6 +8,10 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :units do
+    get 'defaults/index'
+  end
+
   resources :users, only: [:index, :show, :update] do
     member do
       get :disguise
