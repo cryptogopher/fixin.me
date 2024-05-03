@@ -1,7 +1,9 @@
-<div class="rightside">
+<div class="rightside buttongrid">
   <% if current_user.at_least(:active) %>
     <%= image_link_to t('.add_unit'), 'plus-outline', new_unit_path, id: :add_unit,
       onclick: 'this.blur();', data: {turbo_stream: true} %>
+    <%= image_link_to t('.import_units'), 'import', new_unit_path, class: 'tools',
+      data: {turbo_stream: true} %>
   <% end %>
 </div>
 

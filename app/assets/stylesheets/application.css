@@ -468,3 +468,15 @@ table.items select:focus-visible {
 .unwrappable {
   white-space: nowrap;
 }
+
+
+.buttongrid {
+  display: grid;
+  gap: 0.4em;
+  grid-template-areas: "context empty tools";
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: max-content;
+}
+.tools {
+  grid-area: tools;
+}
