@@ -67,15 +67,16 @@ module ApplicationHelper
   end
 
   def navigation_menu
-    menu_items = [
-      #[".test", "weight-kilogram", units_path, :restricted],
-      [".units", "weight-kilogram", units_path, :restricted, 'right'],
-      [".users", "account-multiple-outline", users_path, :admin],
+    menu_tabs = [
+      ['units', "weight-kilogram", :restricted, 'right'],
+      ['users', "account-multiple-outline", :admin],
     ]
 
-    menu_items.map do |label, image, path, status, css_class|
+    menu_tabs.map do |name, image, status, css_class|
       if current_user.at_least(status)
-        image_tab_to t(label), image, path, class: "tab #{css_class}", current: :active
+        link_to svg_tag("pictograms/#{image}") + t(".#{name}"),
+          {controller: "/#{name}", action: "index"},
+          class: class_names('tab', css_class, active: name == current_tab)
       end
     end.join.html_safe
   end

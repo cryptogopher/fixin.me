@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   # used, or custom layout method needs to be defined.
 
   helper_method :current_user_disguised?
+  helper_method :current_tab
 
   before_action :authenticate_user!
 
@@ -40,6 +41,16 @@ class ApplicationController < ActionController::Base
 
   def after_sign_out_path_for(scope)
     new_user_session_path
+  end
+
+  class << self
+    attr_reader :navigation_menu_tab
+    def navigation_tab(name)
+      @navigation_menu_tab = name.to_s
+    end
+  end
+  def current_tab
+    self.class.navigation_menu_tab || controller_name
   end
 
   private
