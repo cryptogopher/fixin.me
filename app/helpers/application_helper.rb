@@ -81,18 +81,23 @@ module ApplicationHelper
     end.join.html_safe
   end
 
-  def image_button_to(name, image = nil, options = nil, html_options = {})
-    html_options[:class] = class_names(html_options[:class], 'button')
-    image_element_to(:button, name, image, options, html_options)
-  end
+  [:button_to, :link_to, :link_to_unless_current].each do |method_name|
+    class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+      def image_#{method_name}(name, image = nil, options = nil, html_options = {}, &block)
+        name = svg_tag("pictograms/\#{image}") + name if image
 
-  def image_link_to(name, image = nil, options = nil, html_options = {})
-    html_options[:class] = class_names(html_options[:class], 'button')
-    image_element_to(:link, name, image, options, html_options)
-  end
+        html_options[:class] = class_names(
+          html_options[:class],
+          'button',
+          dangerous: html_options[:method] == :delete
+        )
+        if html_options[:onclick]&.is_a? Hash
+          html_options[:onclick] = "return confirm('\#{html_options[:onclick][:confirm]}');"
+        end
 
-  def image_tab_to(name, image = nil, options = nil, html_options = {})
-    image_element_to(:link, name, image, options, html_options)
+        send :#{method_name}, name, options, html_options, &block
+      end
+    RUBY_EVAL
   end
 
   def render_errors(record)
@@ -119,24 +124,6 @@ module ApplicationHelper
   end
 
   private
-
-  def image_element_to(type, name, image = nil, options = nil, html_options = {})
-    current = html_options.delete(:current)
-    current = nil unless url_for(options) == request.path
-    return '' if current == :hide
-
-    name = svg_tag("pictograms/#{image}") + name if image
-    html_options[:class] = class_names(
-      html_options[:class],
-      active: current == :active,
-      dangerous: html_options[:method] == :delete
-    )
-    if html_options[:onclick]&.is_a? Hash
-      html_options[:onclick] = "return confirm('#{html_options[:onclick][:confirm]}');"
-    end
-
-    send "#{type}_to", name, options, html_options
-  end
 
   # Converts value to HTML formatted scientific notation
   def scientifize(d)
