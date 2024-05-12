@@ -24,4 +24,7 @@ Rails.application.routes.draw do
   devise_scope :user do
     root to: "devise/sessions#new"
   end
+
+  direct(:source_code) { "https://gitea.michalczyk.pro/fixin.me/fixin.me" }
+  direct(:issue_tracker) { "https://gitea.michalczyk.pro/fixin.me/fixin.me/issues" }
 end

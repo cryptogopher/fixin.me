@@ -42,8 +42,10 @@ en:
       update: Update
   layouts:
     application:
+      issue_tracker: Report issue
       revert: Revert
       sign_out: Sign out
+      source_code: Get code
       units: Units
       users: Users
   units:

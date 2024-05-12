@@ -25,6 +25,9 @@
 
   <body>
     <header class="header">
+      <%= image_link_to t(".source_code"), "code-braces", source_code_url %>
+      <%= image_link_to t(".issue_tracker"), "bug-outline", issue_tracker_url,
+            class: "extendedright" %>
       <% if user_signed_in? %>
         <%= image_link_to_unless_current(current_user.email, "account-wrench-outline",
           edit_user_registration_path) {} %>

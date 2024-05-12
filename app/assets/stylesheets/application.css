@@ -175,7 +175,6 @@ input[type=text]:read-only {
   display: flex;
   gap: 0.8em;
   grid-area: header;
-  justify-content: flex-end;
 }
 
 
@@ -457,6 +456,9 @@ table.items select:focus-visible {
 
 .centered {
   margin: 0 auto;
+}
+.extendedright {
+  margin-right: auto;
 }
 [disabled] {
   border-color: var(--color-border-gray) !important;
