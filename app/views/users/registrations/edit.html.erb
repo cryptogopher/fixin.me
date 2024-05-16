@@ -1,15 +1,15 @@
 <% content_for :navigation, flush: true do %>
-  <div class="left">
-    <%= image_link_to t(:back), 'arrow-left-bold-outline',
-      request.referer.present? ? :back : root_url %>
-  </div>
-  <div class="right">
-    <%= image_button_to t(".delete"), "account-remove-outline", user_registration_path,
-      method: :delete, onclick: {confirm: t(".confirm_delete")} %>
-  </div>
+  <%= image_link_to t(:back), 'arrow-left-bold-outline',
+    request.referer.present? ? :back : root_path %>
 <% end %>
 
-<%= labelled_form_for resource, url: registration_path(resource), html: {method: :patch} do |f| %>
+<div class="rightside buttongrid">
+  <%= image_button_to t(".delete"), "account-remove-outline", user_registration_path,
+    method: :delete, form_class: 'tools', onclick: {confirm: t(".confirm_delete")} %>
+</div>
+
+<%= labelled_form_for resource, url: registration_path(resource),
+                      html: {method: :patch, class: 'main'} do |f| %>
   <%= f.email_field :email, size: 30, autofocus: true, autocomplete: "off" %>
   <% if f.object.pending_reconfirmation? %>
     <%= f.text_field :unconfirmed_email, readonly: true, tabindex: -1,
@@ -21,7 +21,7 @@
 
   <%= f.password_field :password, label: t(".new_password"), size: 30,
     minlength: @minimum_password_length, autocomplete: "new-password",
-    hint: t(".blank_password_hint",
+    hint: t(".blank_password_hint_html",
             subhint: t("users.minimum_password_length", count: @minimum_password_length)) %>
   <%= f.password_field :password_confirmation, label: t(".password_confirmation"),
     size: 30, minlength: @minimum_password_length, autocomplete: "off" %>
