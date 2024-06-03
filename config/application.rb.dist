@@ -23,6 +23,10 @@ module FixinMe
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
+    # Autoload lib/, required e.g. for core library extensions.
+    # https://guides.rubyonrails.org/autoloading_and_reloading_constants.html#config-autoload-lib-ignore.
+    config.autoload_lib(ignore: %w(assets tasks))
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
@@ -32,7 +36,7 @@ module FixinMe
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.action_dispatch.rescue_responses['ApplicationController::AccessForbidden'] = :forbidden
-    config.action_dispatch.rescue_responses['ArgumentError'] = :bad_request
+    config.action_dispatch.rescue_responses['ApplicationController::ParameterInvalid'] = :unprocessable_entity
 
     # SETUP: Below settings need to be updated on a per-installation basis.
     #
