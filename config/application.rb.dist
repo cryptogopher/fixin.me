@@ -51,5 +51,8 @@ module FixinMe
 
     # Email address of admin account
     config.admin = 'admin@localhost'
+
+    # Sender address of account registration-related messages
+    Devise.mailer_sender = 'noreply@localhost'
   end
 end
