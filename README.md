@@ -118,3 +118,6 @@ Tests need to be run from within toplevel application directory:
 
         bundle exec rails test test/system/users_test.rb --seed 1234
 
+### Icons
+
+Pictogrammers Material Design Icons: https://pictogrammers.com/library/mdi/
