@@ -2,9 +2,8 @@
   <% if current_user.at_least(:active) %>
     <%= image_link_to t('.add_unit'), 'plus-outline', new_unit_path, id: :add_unit,
       onclick: 'this.blur();', data: {turbo_stream: true} %>
-    <%= image_link_to t('.import_units'), 'import', units_defaults_path, class: 'tools',
-      data: {turbo_stream: true} %>
   <% end %>
+  <%= image_link_to t('.import_units'), 'download-outline', default_units_path, class: 'tools' %>
 </div>
 
 <%= tag.div id: :unit_form %>

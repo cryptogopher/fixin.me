@@ -1,4 +1,4 @@
-class Units::DefaultsController < ApplicationController
+class Default::UnitsController < ApplicationController
   navigation_tab :units
 
   before_action except: :index do
@@ -6,5 +6,6 @@ class Units::DefaultsController < ApplicationController
   end
 
   def index
+    @units = current_user.units.defaults_diff
   end
 end

@@ -1,0 +1,17 @@
+<div class="rightside buttongrid">
+  <%= image_link_to t('.back'), 'arrow-left-bold-outline', units_path %>
+</div>
+
+<table class="main items">
+  <thead>
+    <tr>
+      <th><%= User.human_attribute_name(:symbol).capitalize %></th>
+      <% if current_user.at_least(:active) %>
+        <th><%= t :actions %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody id="units">
+    <%= render(@units, partial: 'default') || render_no_items %>
+  </tbody>
+</table>

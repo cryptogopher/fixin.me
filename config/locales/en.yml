@@ -67,6 +67,10 @@ en:
       multiplier_reset: Multiplier of "%{symbol}" has been reset to 1, due to repositioning
     destroy:
       success: Deleted unit
+  default:
+    units:
+      index:
+        back: Back to units...
   users:
     index:
       disguise: View as...

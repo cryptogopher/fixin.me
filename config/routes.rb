@@ -8,8 +8,8 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :units do
-    resources :defaults, only: :index
+  namespace :default do
+    resources :units, only: :index
   end
 
   resources :users, only: [:index, :show, :update] do
