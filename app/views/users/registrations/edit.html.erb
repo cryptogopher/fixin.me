@@ -1,6 +1,6 @@
 <% content_for :navigation, flush: true do %>
-  <%= image_link_to t(:back), 'arrow-left-bold-outline',
-    request.referer.present? ? :back : root_path %>
+  <%= link_to svg_tag("pictograms/arrow-left-bold-outline") + t(:back),
+    request.referer.present? ? :back : root_path, class: 'tab' %>
 <% end %>
 
 <div class="rightside buttongrid">
