@@ -15,12 +15,9 @@ class Unit < ApplicationRecord
 
   scope :defaults, ->{ where(user: nil) }
   scope :ordered, ->{
-    parent_symbol = Arel::Nodes::NamedFunction.new(
-                      'COALESCE',
-                      [Arel::Table.new(:bases_units)[:symbol], arel_table[:symbol]]
-                    )
     left_outer_joins(:base)
-      .order(parent_symbol, arel_table[:base_id].asc.nulls_first, :multiplier, :symbol)
+      .order(arel_table.coalesce(Arel::Table.new(:bases_units)[:symbol], arel_table[:symbol]),
+             arel_table[:base_id].asc.nulls_first, :multiplier, :symbol)
   }
 
   before_destroy do
