@@ -14,6 +14,24 @@ class Unit < ApplicationRecord
   validates :multiplier, numericality: {other_than: 0}, if: :base
 
   scope :defaults, ->{ where(user: nil) }
+  scope :with_defaults, ->{ self.or(Unit.where(user: nil)) }
+  scope :default_diff, ->{
+    other_units = Unit.arel_table.alias('other_units')
+    other_bases_units = Unit.arel_table.alias('other_bases_units')
+    constraints = other_bases_units[:id].eq(other_units[:base_id])
+      .and(other_units[:symbol].eq(arel_table[:symbol]))
+      .and(other_units[:user_id].not_eq(arel_table[:user_id]))
+
+    with_defaults
+      .joins(
+        arel_table.create_join(
+          arel_table.grouping([other_units, other_bases_units]),
+          arel_table.create_on(constraints),
+          Arel::Nodes::OuterJoin
+        ).to_sql
+      )
+      .where({other_units: {id: nil}})
+  }
   scope :ordered, ->{
     left_outer_joins(:base)
       .order(arel_table.coalesce(Arel::Table.new(:bases_units)[:symbol], arel_table[:symbol]),

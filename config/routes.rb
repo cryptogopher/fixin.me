@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   end
 
   namespace :units do
-    get 'defaults/index'
+    resources :defaults, only: :index
   end
 
   resources :users, only: [:index, :show, :update] do
