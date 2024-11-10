@@ -69,7 +69,10 @@ en:
       success: Deleted unit
   default:
     units:
+      unit:
+        delete_default: Delete default
       index:
+        import_all: Import all
         back: Back to units...
   users:
     index:

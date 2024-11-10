@@ -15,10 +15,11 @@ class Unit < ApplicationRecord
 
   scope :defaults, ->{ where(user: nil) }
   scope :with_defaults, ->{ self.or(Unit.where(user: nil)) }
-  scope :default_diff, ->{
+  scope :defaults_diff, ->{
     other_units = Unit.arel_table.alias('other_units')
     other_bases_units = Unit.arel_table.alias('other_bases_units')
     constraints = other_bases_units[:id].eq(other_units[:base_id])
+      .and(other_bases_units[:symbol].eq(Arel::Table.new(:bases_units)[:symbol]))
       .and(other_units[:symbol].eq(arel_table[:symbol]))
       .and(other_units[:user_id].not_eq(arel_table[:user_id]))
 
@@ -45,5 +46,9 @@ class Unit < ApplicationRecord
 
   def movable?
     subunits.empty?
+  end
+
+  def default?
+    user.nil?
   end
 end

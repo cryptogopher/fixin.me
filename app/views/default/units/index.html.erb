@@ -1,5 +1,9 @@
 <div class="rightside buttongrid">
-  <%= image_link_to t('.back'), 'arrow-left-bold-outline', units_path %>
+  <% if current_user.at_least(:active) %>
+    <%= image_link_to t('.import_all'), 'download-multiple-outline',
+      import_all_default_units_path, data: {turbo_stream: true} %>
+  <% end %>
+  <%= image_link_to t('.back'), 'arrow-left-bold-outline', units_path, class: 'tools' %>
 </div>
 
 <table class="main items">
@@ -12,6 +16,6 @@
     </tr>
   </thead>
   <tbody id="units">
-    <%= render(@units, partial: 'default') || render_no_items %>
+    <%= render(@units) || render_no_items %>
   </tbody>
 </table>

@@ -1,0 +1,19 @@
+<%= tag.tr do %>
+  <td class="<%= class_names({subunit: unit.base}) %>">
+    <%= unit.symbol %>
+  </td>
+
+  <td class="actions">
+    <% if current_user.at_least(:active) && unit.default? %>
+      <%= image_button_to t(".import"), "download-outline", import_default_unit_path(unit) %>
+    <% end %>
+    <% if current_user.at_least(:admin) %>
+      <% if !unit.default? %>
+        <%= image_button_to t(".export"), "upload-outline", export_default_unit_path(unit) %>
+      <% else %>
+        <%= image_button_to t(".delete"), "delete-outline", unit_path(unit),
+          method: :delete %>
+      <% end %>
+    <% end %>
+  </td>
+<% end %>
