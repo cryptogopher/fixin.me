@@ -3,22 +3,19 @@ Rails.application.routes.draw do
     controllers: {registrations: :registrations}
 
   resources :units, except: [:show], path_names: {new: '(/:id)/new'} do
-    member do
-      post :rebase
-    end
+    member { post :rebase }
   end
 
   namespace :default do
-    resources :units, only: :index
+    resources :units, only: [:index, :destroy] do
+      member { post :import, :export }
+      collection { post :import_all }
+    end
   end
 
   resources :users, only: [:index, :show, :update] do
-    member do
-      get :disguise
-    end
-    collection do
-      get :revert
-    end
+    member { get :disguise }
+    collection { get :revert }
   end
 
   devise_scope :user do
