@@ -70,7 +70,9 @@ en:
   default:
     units:
       unit:
-        delete_default: Delete default
+        delete: Delete
+        export: Export
+        import: Import
       index:
         import_all: Import all
         back: Back to units...
