@@ -1,5 +1,5 @@
 class UnitsController < ApplicationController
-  before_action only: [:new] do
+  before_action only: :new do
     find_unit if params[:id].present?
   end
   before_action :find_unit, only: [:edit, :update, :rebase, :destroy]

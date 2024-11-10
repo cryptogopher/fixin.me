@@ -2,11 +2,14 @@ class UsersController < ApplicationController
   helper_method :allow_disguise?
 
   before_action :find_user, only: [:show, :update, :disguise]
-  before_action except: :revert do
-    raise AccessForbidden unless current_user.at_least(:admin)
-  end
-  before_action only: :revert do
-    raise AccessForbidden unless current_user_disguised?
+
+  before_action do
+    case action_name.to_sym
+    when :revert
+      raise AccessForbidden unless current_user_disguised?
+    else
+      raise AccessForbidden unless current_user.at_least(:admin)
+    end
   end
 
   def index
