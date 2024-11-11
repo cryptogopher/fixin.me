@@ -74,6 +74,7 @@ en:
         export: Export
         import: Import
       index:
+        actions: Actions on defaults
         import_all: Import all
         back: Back to units...
   users:

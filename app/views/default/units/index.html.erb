@@ -11,7 +11,7 @@
     <tr>
       <th><%= User.human_attribute_name(:symbol).capitalize %></th>
       <% if current_user.at_least(:active) %>
-        <th><%= t :actions %></th>
+        <th><%= t '.actions' %></th>
       <% end %>
     </tr>
   </thead>
