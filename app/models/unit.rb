@@ -21,19 +21,16 @@ class Unit < ApplicationRecord
 
     # add 'portable' fields (import on !default == export) to select
     with_defaults
-      .where("NOT EXISTS (?)",
-             Unit.select(1).from(other_units).joins(
-               arel_table.create_join(
-                 other_bases_units,
-                 arel_table.create_on(other_bases_units[:id].eq(other_units[:base_id])),
-                 Arel::Nodes::OuterJoin
-               )
-             ).where(
-               other_bases_units[:symbol].eq(Arel::Table.new(:bases_units)[:symbol])
-               .and(other_units[:symbol].eq(arel_table[:symbol]))
-               .and(other_units[:user_id].not_eq(arel_table[:user_id]))
-             )
-            )
+      .where.not(
+        Arel::SelectManager.new.from(other_units)
+          .outer_join(other_bases_units)
+          .on(other_units[:base_id].eq(other_bases_units[:id]))
+          .where(
+            other_bases_units[:symbol].eq(Arel::Table.new(:bases_units)[:symbol])
+              .and(other_units[:symbol].eq(arel_table[:symbol]))
+              .and(other_units[:user_id].not_eq(arel_table[:user_id]))
+          ).project(1).exists
+      )
   }
   scope :ordered, ->{
     left_outer_joins(:base)
