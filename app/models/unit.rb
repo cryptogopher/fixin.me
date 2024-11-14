@@ -18,20 +18,22 @@ class Unit < ApplicationRecord
   scope :defaults_diff, ->{
     other_units = Unit.arel_table.alias('other_units')
     other_bases_units = Unit.arel_table.alias('other_bases_units')
-    constraints = other_bases_units[:id].eq(other_units[:base_id])
-      .and(other_bases_units[:symbol].eq(Arel::Table.new(:bases_units)[:symbol]))
-      .and(other_units[:symbol].eq(arel_table[:symbol]))
-      .and(other_units[:user_id].not_eq(arel_table[:user_id]))
 
+    # add 'portable' fields (import on !default == export) to select
     with_defaults
-      .joins(
-        arel_table.create_join(
-          arel_table.grouping([other_units, other_bases_units]),
-          arel_table.create_on(constraints),
-          Arel::Nodes::OuterJoin
-        ).to_sql
-      )
-      .where({other_units: {id: nil}})
+      .where("NOT EXISTS (?)",
+             Unit.select(1).from(other_units).joins(
+               arel_table.create_join(
+                 other_bases_units,
+                 arel_table.create_on(other_bases_units[:id].eq(other_units[:base_id])),
+                 Arel::Nodes::OuterJoin
+               )
+             ).where(
+               other_bases_units[:symbol].eq(Arel::Table.new(:bases_units)[:symbol])
+               .and(other_units[:symbol].eq(arel_table[:symbol]))
+               .and(other_units[:user_id].not_eq(arel_table[:user_id]))
+             )
+            )
   }
   scope :ordered, ->{
     left_outer_joins(:base)
