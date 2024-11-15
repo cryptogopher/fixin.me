@@ -5,7 +5,8 @@
 
   <td class="actions">
     <% if current_user.at_least(:active) && unit.default? %>
-      <%= image_button_to t('.import'), 'download-outline', import_default_unit_path(unit) %>
+      <%= image_button_to t('.import'), 'download-outline', import_default_unit_path(unit),
+        disabled: !unit.portable? %>
     <% end %>
     <% if current_user.at_least(:admin) %>
       <% if !unit.default? %>

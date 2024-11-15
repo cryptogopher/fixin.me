@@ -16,21 +16,34 @@ class Unit < ApplicationRecord
   scope :defaults, ->{ where(user: nil) }
   scope :with_defaults, ->{ self.or(Unit.where(user: nil)) }
   scope :defaults_diff, ->{
-    other_units = Unit.arel_table.alias('other_units')
-    other_bases_units = Unit.arel_table.alias('other_bases_units')
+    bases_units = arel_table.alias('bases_units')
+    other_units = arel_table.alias('other_units')
+    other_bases_units = arel_table.alias('other_bases_units')
+    parent_units = arel_table.alias('parent_units')
 
-    # add 'portable' fields (import on !default == export) to select
-    with_defaults
+    with(units: self.with_defaults).unscope(where: :user_id).left_joins(:base)
       .where.not(
-        Arel::SelectManager.new.from(other_units)
+        Arel::SelectManager.new.project(1).from(other_units)
           .outer_join(other_bases_units)
           .on(other_units[:base_id].eq(other_bases_units[:id]))
           .where(
-            other_bases_units[:symbol].eq(Arel::Table.new(:bases_units)[:symbol])
+            other_bases_units[:symbol].eq(bases_units[:symbol])
               .and(other_units[:symbol].eq(arel_table[:symbol]))
               .and(other_units[:user_id].not_eq(arel_table[:user_id]))
-          ).project(1).exists
+          ).exists
+      ).joins(
+        arel_table.create_join(parent_units,
+                               arel_table.create_on(
+                                 parent_units[:symbol].eq(bases_units[:symbol])
+                                   .and(parent_units[:user_id].not_eq(bases_units[:user_id]))
+                               ),
+                               Arel::Nodes::OuterJoin)
+      ).select(
+        arel_table[Arel.star],
+        Arel::Nodes::IsNotDistinctFrom.new(parent_units[:symbol], bases_units[:symbol])
+          .as('portable')
       )
+      # complete portability check with children
   }
   scope :ordered, ->{
     left_outer_joins(:base)
@@ -49,5 +62,9 @@ class Unit < ApplicationRecord
 
   def default?
     user.nil?
+  end
+
+  def exportable?
+    !default? && (base.nil? || base.default?)
   end
 end
