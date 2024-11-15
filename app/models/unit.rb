@@ -21,7 +21,8 @@ class Unit < ApplicationRecord
     other_bases_units = arel_table.alias('other_bases_units')
     parent_units = arel_table.alias('parent_units')
 
-    with(units: self.with_defaults).unscope(where: :user_id).left_joins(:base)
+    Unit.with(units: self.with_defaults).left_joins(:base)
+      # Exclude Units that are/have default counterpart
       .where.not(
         Arel::SelectManager.new.project(1).from(other_units)
           .outer_join(other_bases_units)
@@ -31,6 +32,7 @@ class Unit < ApplicationRecord
               .and(other_units[:symbol].eq(arel_table[:symbol]))
               .and(other_units[:user_id].not_eq(arel_table[:user_id]))
           ).exists
+      # Decide if Unit can be im-/exported based on existing hierarchy
       ).joins(
         arel_table.create_join(parent_units,
                                arel_table.create_on(
@@ -61,7 +63,7 @@ class Unit < ApplicationRecord
   end
 
   def default?
-    user.nil?
+    user_id.nil?
   end
 
   def exportable?
