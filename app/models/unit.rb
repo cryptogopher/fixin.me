@@ -19,7 +19,7 @@ class Unit < ApplicationRecord
     bases_units = arel_table.alias('bases_units')
     other_units = arel_table.alias('other_units')
     other_bases_units = arel_table.alias('other_bases_units')
-    parent_units = arel_table.alias('parent_units')
+    sub_units = arel_table.alias('sub_units')
 
     Unit.with(units: self.with_defaults).left_joins(:base)
       # Exclude Units that are/have default counterpart
@@ -32,20 +32,30 @@ class Unit < ApplicationRecord
               .and(other_units[:symbol].eq(arel_table[:symbol]))
               .and(other_units[:user_id].not_eq(arel_table[:user_id]))
           ).exists
-      # Decide if Unit can be im-/exported based on existing hierarchy
-      ).joins(
-        arel_table.create_join(parent_units,
-                               arel_table.create_on(
-                                 parent_units[:symbol].eq(bases_units[:symbol])
-                                   .and(parent_units[:user_id].not_eq(bases_units[:user_id]))
-                               ),
-                               Arel::Nodes::OuterJoin)
+      # Decide if Unit can be im-/exported based on existing hierarchy:
+      # * same base unit symbol has to exist
+      # * unit with subunits can only be ported to root
       ).select(
         arel_table[Arel.star],
-        Arel::Nodes::IsNotDistinctFrom.new(parent_units[:symbol], bases_units[:symbol])
-          .as('portable')
+        arel_table[:base_id].eq(nil).or(
+          (
+            Arel::SelectManager.new.project(1).from(other_units)
+              .join(sub_units).on(other_units[:id].eq(sub_units[:base_id]))
+              .where(
+                other_units[:symbol].eq(arel_table[:symbol])
+                  .and(other_units[:user_id].not_eq(arel_table[:user_id]))
+              )
+              .exists.not
+          ).and(
+            Arel::SelectManager.new.project(1).from(other_bases_units)
+              .where(
+                other_bases_units[:symbol].eq(bases_units[:symbol])
+                  .and(other_bases_units[:user_id].not_eq(bases_units[:user_id]))
+              )
+              .exists
+          )
+        ).as('portable')
       )
-      # complete portability check with children
   }
   scope :ordered, ->{
     left_outer_joins(:base)

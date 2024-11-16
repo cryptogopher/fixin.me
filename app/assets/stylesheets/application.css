@@ -410,7 +410,8 @@ table.items td.link a:hover:focus-visible {
   color: #006c9b;
 }
 
-table.items td:not(:first-child) {
+table.items td:not(:first-child),
+.grayed {
   color: var(--color-table-gray);
   fill: var(--color-table-gray);
 }
