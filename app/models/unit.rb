@@ -28,9 +28,9 @@ class Unit < ApplicationRecord
           .outer_join(other_bases_units)
           .on(other_units[:base_id].eq(other_bases_units[:id]))
           .where(
-            other_bases_units[:symbol].eq(bases_units[:symbol])
+            other_bases_units[:symbol].is_not_distinct_from(bases_units[:symbol])
               .and(other_units[:symbol].eq(arel_table[:symbol]))
-              .and(other_units[:user_id].not_eq(arel_table[:user_id]))
+              .and(other_units[:user_id].is_distinct_from(arel_table[:user_id]))
           ).exists
       # Decide if Unit can be im-/exported based on existing hierarchy:
       # * same base unit symbol has to exist
@@ -43,14 +43,14 @@ class Unit < ApplicationRecord
               .join(sub_units).on(other_units[:id].eq(sub_units[:base_id]))
               .where(
                 other_units[:symbol].eq(arel_table[:symbol])
-                  .and(other_units[:user_id].not_eq(arel_table[:user_id]))
+                  .and(other_units[:user_id].is_distinct_from(arel_table[:user_id]))
               )
               .exists.not
           ).and(
             Arel::SelectManager.new.project(1).from(other_bases_units)
               .where(
-                other_bases_units[:symbol].eq(bases_units[:symbol])
-                  .and(other_bases_units[:user_id].not_eq(bases_units[:user_id]))
+                other_bases_units[:symbol].is_not_distinct_from(bases_units[:symbol])
+                  .and(other_bases_units[:user_id].is_distinct_from(bases_units[:user_id]))
               )
               .exists
           )
