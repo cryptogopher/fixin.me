@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 ruby file: ".ruby-version"
 
-gem "rails", "~> 7.1.2"
+gem "rails", "~> 7.2.2"
 gem "sprockets-rails"
 gem "mysql2", "~> 0.5"
 gem "puma", "~> 6.0"
