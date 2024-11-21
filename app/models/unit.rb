@@ -14,48 +14,57 @@ class Unit < ApplicationRecord
   validates :multiplier, numericality: {other_than: 0}, if: :base
 
   scope :defaults, ->{ where(user: nil) }
-  scope :with_defaults, ->{ self.or(Unit.where(user: nil)) }
   scope :defaults_diff, ->{
+    actionable_units = Arel::Table.new('actionable_units')
+    units = actionable_units.alias('units')
     bases_units = arel_table.alias('bases_units')
     other_units = arel_table.alias('other_units')
     other_bases_units = arel_table.alias('other_bases_units')
     sub_units = arel_table.alias('sub_units')
 
-    Unit.with(units: self.with_defaults).left_joins(:base)
-      # Exclude Units that are/have default counterpart
-      .where.not(
-        Arel::SelectManager.new.project(1).from(other_units)
-          .outer_join(other_bases_units)
-          .on(other_units[:base_id].eq(other_bases_units[:id]))
-          .where(
-            other_bases_units[:symbol].is_not_distinct_from(bases_units[:symbol])
-              .and(other_units[:symbol].eq(arel_table[:symbol]))
-              .and(other_units[:user_id].is_distinct_from(arel_table[:user_id]))
-          ).exists
-      # Decide if Unit can be im-/exported based on existing hierarchy:
-      # * same base unit symbol has to exist
-      # * unit with subunits can only be ported to root
-      ).select(
-        arel_table[Arel.star],
-        arel_table[:base_id].eq(nil).or(
-          (
-            Arel::SelectManager.new.project(1).from(other_units)
-              .join(sub_units).on(other_units[:id].eq(sub_units[:base_id]))
-              .where(
-                other_units[:symbol].eq(arel_table[:symbol])
-                  .and(other_units[:user_id].is_distinct_from(arel_table[:user_id]))
-              )
-              .exists.not
-          ).and(
-            Arel::SelectManager.new.project(1).from(other_bases_units)
-              .where(
-                other_bases_units[:symbol].is_not_distinct_from(bases_units[:symbol])
-                  .and(other_bases_units[:user_id].is_distinct_from(bases_units[:user_id]))
-              )
-              .exists
-          )
-        ).as('portable')
-      )
+    Unit.with_recursive(actionable_units: [
+      Unit.with(units: self.or(Unit.defaults)).left_joins(:base)
+        .where.not(
+          # Exclude Units that are/have default counterpart
+          Arel::SelectManager.new.project(1).from(other_units)
+            .outer_join(other_bases_units)
+            .on(other_units[:base_id].eq(other_bases_units[:id]))
+            .where(
+              other_bases_units[:symbol].is_not_distinct_from(bases_units[:symbol])
+                .and(other_units[:symbol].eq(arel_table[:symbol]))
+                .and(other_units[:user_id].is_distinct_from(arel_table[:user_id]))
+            ).exists
+        )
+        .select(
+          arel_table[Arel.star],
+          # Decide if Unit can be im-/exported based on existing hierarchy:
+          # * same base unit symbol has to exist
+          # * unit with subunits can only be ported to root
+          arel_table[:base_id].eq(nil).or(
+            (
+              Arel::SelectManager.new.project(1).from(other_units)
+                .join(sub_units).on(other_units[:id].eq(sub_units[:base_id]))
+                .where(
+                  other_units[:symbol].eq(arel_table[:symbol])
+                    .and(other_units[:user_id].is_distinct_from(arel_table[:user_id]))
+                ).exists.not
+            ).and(
+              Arel::SelectManager.new.project(1).from(other_bases_units)
+                .where(
+                  other_bases_units[:symbol].is_not_distinct_from(bases_units[:symbol])
+                    .and(other_bases_units[:user_id].is_distinct_from(bases_units[:user_id]))
+                ).exists
+            )
+          ).as('portable')
+        ),
+      # TODO: replace AS and MIN with Arel
+      # TODO: turn off ONLY_FULL_GROUP_BY
+      # Add missing base Units. Duplicates will be removed by final group(), as
+      # actionable Units will differ on 'portable' column and can't be UNION-ed.
+      arel_table.join(actionable_units).on(actionable_units[:base_id].eq(arel_table[:id]))
+        .project(arel_table[Arel.star], 'NULL AS portable')
+    ]).select(units: column_names)#, 'MIN(units.portable)' => :portable)
+      .from(units).group(Unit.column_names)
   }
   scope :ordered, ->{
     left_outer_joins(:base)
