@@ -18,9 +18,10 @@ class Default::UnitsController < ApplicationController
   end
 
   def import
+    params = @unit.slice(Unit::ATTRIBUTES - [:symbol, :base_id])
     current_user.units
       .find_or_initialize_by(symbol: @unit.symbol)
-      .update!(base: @base, **@unit.slice(:name, :multiplier))
+      .update!(base: @base, **params)
     run_and_render :index
   end
 

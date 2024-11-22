@@ -1,4 +1,6 @@
 class Unit < ApplicationRecord
+  ATTRIBUTES = [:symbol, :name, :multiplier, :base_id]
+
   belongs_to :user, optional: true
   belongs_to :base, optional: true, class_name: "Unit"
   has_many :subunits, class_name: "Unit", dependent: :restrict_with_error, inverse_of: :base

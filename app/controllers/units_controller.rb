@@ -58,7 +58,7 @@ class UnitsController < ApplicationController
   private
 
   def unit_params
-    params.require(:unit).permit(:symbol, :name, :base_id, :multiplier)
+    params.require(:unit).permit(Unit::ATTRIBUTES)
   end
 
   def find_unit
