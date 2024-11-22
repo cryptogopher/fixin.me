@@ -123,6 +123,10 @@ module ApplicationHelper
     "Turbo.renderStreamMessage('#{j(render partial: partial, locals: locals)}'); return false;"
   end
 
+  def disabled_attributes(disabled)
+    disabled ? {disabled: true, aria: {disabled: true}, tabindex: -1} : {}
+  end
+
   private
 
   # Converts value to HTML formatted scientific notation

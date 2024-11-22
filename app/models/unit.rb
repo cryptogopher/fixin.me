@@ -57,13 +57,12 @@ class Unit < ApplicationRecord
             )
           ).as('portable')
         ),
-      # TODO: replace AS and MIN with Arel
-      # TODO: turn off ONLY_FULL_GROUP_BY
-      # Add missing base Units. Duplicates will be removed by final group(), as
-      # actionable Units will differ on 'portable' column and can't be UNION-ed.
+      # NOTE: turn off ONLY_FULL_GROUP_BY or is it incompatible with other DBs?
+      # Fill base Units to display proper hierarchy. Duplicates will be removed
+      # by final group() - can't be deduplicated with UNION due to 'portable' field.
       arel_table.join(actionable_units).on(actionable_units[:base_id].eq(arel_table[:id]))
-        .project(arel_table[Arel.star], 'NULL AS portable')
-    ]).select(units: column_names)#, 'MIN(units.portable)' => :portable)
+        .project(arel_table[Arel.star], Arel::Nodes.build_quoted(nil).as('portable'))
+    ]).select(units: column_names).select(units[:portable].minimum.as('portable'))
       .from(units).group(Unit.column_names)
   }
   scope :ordered, ->{
