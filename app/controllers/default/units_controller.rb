@@ -40,6 +40,6 @@ class Default::UnitsController < ApplicationController
 
   def find_unit(user)
     @unit = Unit.find_by!(id: params[:id], user: user)
-    @base = Unit.find_by!(symbol: @unit.base.symbol, user: user? ? nil : user) if @unit.base
+    @base = Unit.find_by!(symbol: @unit.base.symbol, user: user ? nil : current_user) if @unit.base
   end
 end
