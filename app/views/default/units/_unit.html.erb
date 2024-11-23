@@ -1,7 +1,7 @@
 <%= tag.tr do %>
   <td class="<%= class_names({subunit: unit.base,
                               grayed: unit.default? && !unit.portable.nil? }) %>">
-    <%= unit.symbol %>
+    <%= unit %>
   </td>
 
   <td class="actions">

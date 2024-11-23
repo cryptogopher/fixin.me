@@ -42,7 +42,7 @@ class UnitsController < ApplicationController
     permitted = params.require(:unit).permit(:base_id)
     if permitted[:base_id].blank? && @unit.multiplier != 1
       permitted.merge!(multiplier: 1)
-      flash.now[:notice] = t(".multiplier_reset", symbol: @unit.symbol)
+      flash.now[:notice] = t(".multiplier_reset", unit: @unit)
     end
 
     run_and_render :index if @unit.update(permitted)

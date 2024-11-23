@@ -5,7 +5,7 @@
            data: {drag_path: rebase_unit_path(unit), drop_id: dom_id(unit.base || unit)} do %>
 
   <td class="<%= class_names('link', {subunit: unit.base}) %>">
-    <%= link_to unit.symbol, edit_unit_path(unit), id: dom_id(unit, :edit),
+    <%= link_to unit, edit_unit_path(unit), id: dom_id(unit, :edit),
       onclick: 'this.blur();', data: {turbo_stream: true} %>
   </td>
   <td><%= unit.name %></td>

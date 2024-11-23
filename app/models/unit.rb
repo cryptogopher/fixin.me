@@ -78,6 +78,10 @@ class Unit < ApplicationRecord
     nil
   end
 
+  def to_s
+    symbol
+  end
+
   def movable?
     subunits.empty?
   end

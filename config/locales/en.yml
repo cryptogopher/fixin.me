@@ -64,7 +64,7 @@ en:
     update:
       success: Updated unit
     rebase:
-      multiplier_reset: Multiplier of "%{symbol}" has been reset to 1, due to repositioning
+      multiplier_reset: Multiplier of "%{unit}" has been reset to 1, due to repositioning
     destroy:
       success: Deleted unit
   default:
