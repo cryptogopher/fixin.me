@@ -84,7 +84,8 @@ module ApplicationHelper
   [:button_to, :link_to, :link_to_unless_current].each do |method_name|
     class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
       def image_#{method_name}(name, image = nil, options = nil, html_options = {}, &block)
-        name = svg_tag("pictograms/\#{image}") + name.to_s if image
+        name = name.to_s
+        name = svg_tag("pictograms/\#{image}") + name if image
 
         html_options[:class] = class_names(
           html_options[:class],
@@ -93,6 +94,11 @@ module ApplicationHelper
         )
         if html_options[:onclick]&.is_a? Hash
           html_options[:onclick] = "return confirm('\#{html_options[:onclick][:confirm]}');"
+        end
+
+        if __method__.start_with?('image_link_to') &&
+             !(html_options[:onclick] || html_options.dig(:data, :turbo_stream))
+          name = name + '...'
         end
 
         send :#{method_name}, name, options, html_options, &block

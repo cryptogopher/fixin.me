@@ -54,7 +54,7 @@ en:
       delete_unit: Delete
     index:
       add_unit: Add unit
-      import_units: Import...
+      import_units: Import
       no_items: There are no configured units. You can try to import some defaults.
       top_level_drop: Drop here to reposition into top-level unit
     new:
@@ -76,10 +76,10 @@ en:
       index:
         actions: Actions on defaults
         import_all: Import all
-        back: Back to units...
+        back: Back to units
   users:
     index:
-      disguise: View as...
+      disguise: View as
     passwords:
       edit:
         new_password: New password
