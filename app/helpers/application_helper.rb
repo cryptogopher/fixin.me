@@ -84,7 +84,7 @@ module ApplicationHelper
   [:button_to, :link_to, :link_to_unless_current].each do |method_name|
     class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
       def image_#{method_name}(name, image = nil, options = nil, html_options = {}, &block)
-        name = svg_tag("pictograms/\#{image}") + name if image
+        name = svg_tag("pictograms/\#{image}") + name.to_s if image
 
         html_options[:class] = class_names(
           html_options[:class],

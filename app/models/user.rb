@@ -13,6 +13,10 @@ class User < ApplicationRecord
 
   has_many :units, dependent: :destroy
 
+  def to_s
+    email
+  end
+
   def at_least(status)
     User.statuses[self.status] >= User.statuses[status]
   end
