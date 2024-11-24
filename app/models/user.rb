@@ -13,6 +13,10 @@ class User < ApplicationRecord
 
   has_many :units, dependent: :destroy
 
+  validates :email, presence: true, uniqueness: true,
+    length: {maximum: columns_hash['email'].limit}
+  validates :unconfirmed_email, length: {maximum: columns_hash['unconfirmed_email'].limit}
+
   def to_s
     email
   end
