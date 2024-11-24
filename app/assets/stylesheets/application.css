@@ -98,15 +98,20 @@ input[type=submit] {
   width: fit-content;
 }
 input:not([type=submit]):not([type=checkbox]),
-select {
+select,
+textarea {
   padding: 0.2em 0.4em;
 }
 .button,
 button,
 input,
-select {
+select,
+textarea {
   border: solid 1px var(--color-gray);
   border-radius: 0.25em;
+}
+textarea {
+  margin: 0
 }
 .button > svg,
 .tab > svg,
@@ -151,7 +156,8 @@ input[type=checkbox]:checked {
   -webkit-appearance: checkbox;
 }
 input:hover,
-select:hover {
+select:hover,
+textarea:hover {
   border-color: #009ade;
   outline: solid 1px #009ade;
 }
@@ -160,11 +166,13 @@ select:hover {
 }
 input:focus-visible,
 select:focus-within,
-select:focus-visible {
+select:focus-visible,
+textarea:focus-visible {
   accent-color: #006c9b;
   background-color: var(--color-focus-gray);
 }
-input[type=text]:read-only {
+input[type=text]:read-only,
+textarea:read-only {
   border: none;
   padding-left: 0;
   padding-right: 0;
@@ -336,7 +344,7 @@ table.items th,
 table.items td {
   padding-inline: 1em 0;
 }
-table.items td:has(input) {
+table.items td:has(input, textarea) {
   padding-inline-start: calc(0.6em - 0.9px);
 }
 table.items th:last-child {
@@ -367,7 +375,7 @@ table.items td.link a::after {
 table.items td.subunit {
   padding-inline-start: 1.8em;
 }
-table.items td.subunit:has(input) {
+table.items td.subunit:has(input, textarea) {
   padding-inline-start: calc(1.4em - 1px);
 }
 table.items td.actions {
@@ -389,6 +397,9 @@ table.items tr.dropzone::after {
 }
 table.items td.handle {
   cursor: move;
+}
+table.items tr.form td {
+  vertical-align: top;
 }
 
 /* TODO: replace :hover:focus-visible combos with proper LOVE stye order */
@@ -440,7 +451,8 @@ table.items input[type=submit] {
 table.items .button:not(:hover),
 table.items button:not(:hover),
 table.items input:not(:hover),
-table.items select:not(:hover) {
+table.items select:not(:hover),
+table.items textarea:not(:hover) {
   border-color: var(--color-border-gray);
 }
 table.items .button:not(:hover),

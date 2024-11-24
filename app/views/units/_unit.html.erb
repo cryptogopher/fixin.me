@@ -8,7 +8,7 @@
     <%= link_to unit, edit_unit_path(unit), id: dom_id(unit, :edit),
       onclick: 'this.blur();', data: {turbo_stream: true} %>
   </td>
-  <td><%= unit.name %></td>
+  <td><%= unit.description %></td>
   <td class="number"><%= scientifize(unit.multiplier) %></td>
 
   <% if current_user.at_least(:active) %>

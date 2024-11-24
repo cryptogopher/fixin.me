@@ -7,8 +7,8 @@
         maxlength: @unit.class.columns_hash['symbol'].limit, autocomplete: "off" %>
     </td>
     <td>
-      <%= form.text_field :name, form: :unit_form, size: 30,
-        maxlength: @unit.class.columns_hash['name'].limit, autocomplete: "off" %>
+      <%= form.text_area :description, form: :unit_form, cols: 30, rows: 1, escape: false,
+        maxlength: @unit.class.columns_hash['description'].limit, autocomplete: "off" %>
     </td>
     <td>
       <% unless @unit.base.nil? %>

@@ -1,5 +1,5 @@
 class Unit < ApplicationRecord
-  ATTRIBUTES = [:symbol, :name, :multiplier, :base_id]
+  ATTRIBUTES = [:symbol, :description, :multiplier, :base_id]
 
   belongs_to :user, optional: true
   belongs_to :base, optional: true, class_name: "Unit"
@@ -11,7 +11,7 @@ class Unit < ApplicationRecord
   end
   validates :symbol, presence: true, uniqueness: {scope: :user_id},
     length: {maximum: columns_hash['symbol'].limit}
-  validates :name, length: {maximum: columns_hash['name'].limit}
+  validates :description, length: {maximum: columns_hash['description'].limit}
   validates :multiplier, numericality: {equal_to: 1}, unless: :base
   validates :multiplier, numericality: {other_than: 0}, if: :base
 

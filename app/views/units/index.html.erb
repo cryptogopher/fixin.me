@@ -12,7 +12,7 @@
   <thead>
     <tr>
       <th><%= User.human_attribute_name(:symbol).capitalize %></th>
-      <th><%= User.human_attribute_name(:name).capitalize %></th>
+      <th><%= User.human_attribute_name(:description).capitalize %></th>
       <th><%= User.human_attribute_name(:multiplier).capitalize %></th>
       <% if current_user.at_least(:active) %>
         <th><%= t :actions %></th>
