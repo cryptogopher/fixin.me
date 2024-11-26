@@ -24,6 +24,8 @@ class Unit < ApplicationRecord
     other_bases_units = arel_table.alias('other_bases_units')
     sub_units = arel_table.alias('sub_units')
 
+    # TODO: move inner 'with' CTE to outer 'with recursive' - it can have multiple
+    # CTEs, even non recursive ones.
     Unit.with_recursive(actionable_units: [
       Unit.with(units: self.or(Unit.defaults)).left_joins(:base)
         .where.not(
@@ -90,7 +92,11 @@ class Unit < ApplicationRecord
     user_id.nil?
   end
 
-  def exportable?
-    !default? && (base.nil? || base.default?)
+  def port(recipient)
+    recipient_base = base && Unit.find_by(symbol: base.symbol, user: recipient)
+    return nil if recipient_base.nil? != base.nil?
+    params = slice(ATTRIBUTES - [:symbol, :base_id])
+    Unit.find_or_initialize_by(user: recipient, symbol: symbol)
+      .update(base: recipient_base, **params)
   end
 end

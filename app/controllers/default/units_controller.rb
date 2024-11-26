@@ -1,16 +1,13 @@
 class Default::UnitsController < ApplicationController
   navigation_tab :units
 
-  before_action -> { find_unit(current_user) }, only: :export
-  before_action -> { find_unit(nil) }, only: [:import, :destroy]
+  before_action :find_unit, only: [:import, :export, :destroy]
 
-  before_action except: :index do
-    case action_name.to_sym
-    when :import, :import_all
-      raise AccessForbidden unless current_user.at_least(:active)
-    else
-      raise AccessForbidden unless current_user.at_least(:admin)
-    end
+  before_action only: :import do
+    raise AccessForbidden unless current_user.at_least(:active)
+  end
+  before_action except: [:index, :import] do
+    raise AccessForbidden unless current_user.at_least(:admin)
   end
 
   def index
@@ -18,20 +15,19 @@ class Default::UnitsController < ApplicationController
   end
 
   def import
-    params = @unit.slice(Unit::ATTRIBUTES - [:symbol, :base_id])
-    current_user.units
-      .find_or_initialize_by(symbol: @unit.symbol)
-      .update!(base: @base, **params)
+    raise ParameterInvalid unless @unit.default? && @unit.port(current_user)
     run_and_render :index
   end
 
-  def import_all
+  #def import_all
     # From defaults_diff return not only portability, but reason for not being
     # portable: missing_base and nesting_too_deep. Add portable and
     # missing_base, if possible in one query
-  end
+  #end
 
   def export
+    raise ParameterInvalid unless !@unit.default? && @unit.port(nil)
+    run_and_render :index
   end
 
   def destroy
@@ -39,8 +35,7 @@ class Default::UnitsController < ApplicationController
 
   private
 
-  def find_unit(user)
-    @unit = Unit.find_by!(id: params[:id], user: user)
-    @base = Unit.find_by!(symbol: @unit.base.symbol, user: user ? nil : current_user) if @unit.base
+  def find_unit
+    @unit = Unit.find_by!(id: params[:id], user: [current_user, nil])
   end
 end

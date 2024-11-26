@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   namespace :default do
     resources :units, only: [:index, :destroy] do
       member { post :import, :export }
-      collection { post :import_all }
+      #collection { post :import_all }
     end
   end
 
