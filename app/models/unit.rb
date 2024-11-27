@@ -61,18 +61,23 @@ class Unit < ApplicationRecord
             )
           ).as('portable')
         ),
-      # NOTE: turn off ONLY_FULL_GROUP_BY or is it incompatible with other DBs?
       # Fill base Units to display proper hierarchy. Duplicates will be removed
       # by final group() - can't be deduplicated with UNION due to 'portable' field.
       arel_table.join(actionable_units).on(actionable_units[:base_id].eq(arel_table[:id]))
         .project(arel_table[Arel.star], Arel::Nodes.build_quoted(nil).as('portable'))
-    ]).select(units: column_names).select(units[:portable].minimum.as('portable'))
-      .from(units).group(Unit.column_names)
+    ]).select(units: [:base_id, :symbol])
+      .select(
+        units[:id].minimum.as('id'), # can be ANY_VALUE()
+        units[:user_id].minimum.as('user_id'), # prefer non-default
+        Arel::Nodes.build_quoted(1).as('multiplier'), # disregard multiplier when sorting
+        units[:portable].minimum.as('portable')
+      )
+      .from(units).group(:base_id, :symbol)
   }
   scope :ordered, ->{
     left_outer_joins(:base)
       .order(arel_table.coalesce(Arel::Table.new(:bases_units)[:symbol], arel_table[:symbol]),
-             arel_table[:base_id].asc.nulls_first, :multiplier, :symbol)
+             arel_table[:base_id].not_eq(nil), :multiplier, :symbol)
   }
 
   before_destroy do

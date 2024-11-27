@@ -1,6 +1,5 @@
 <%= tag.tr do %>
-  <td class="<%= class_names({subunit: unit.base,
-                              grayed: unit.default? && !unit.portable.nil? }) %>">
+  <td class="<%= class_names({subunit: unit.base, grayed: unit.default?}) %>">
     <%= unit %>
   </td>
 
