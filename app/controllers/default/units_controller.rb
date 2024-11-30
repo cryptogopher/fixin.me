@@ -1,7 +1,8 @@
 class Default::UnitsController < ApplicationController
   navigation_tab :units
 
-  before_action :find_unit, only: [:import, :export, :destroy]
+  before_action :find_unit, only: :export
+  before_action :find_unit_default, only: [:import, :destroy]
 
   before_action only: :import do
     raise AccessForbidden unless current_user.at_least(:active)
@@ -15,7 +16,9 @@ class Default::UnitsController < ApplicationController
   end
 
   def import
-    raise ParameterInvalid unless @unit.default? && @unit.port(current_user)
+    @unit.port!(current_user)
+    flash.now[:notice] = t('.success', unit: @unit)
+  ensure
     run_and_render :index
   end
 
@@ -26,16 +29,26 @@ class Default::UnitsController < ApplicationController
   #end
 
   def export
-    raise ParameterInvalid unless !@unit.default? && @unit.port(nil)
+    @unit.port!(nil)
+    flash.now[:notice] = t('.success', unit: @unit)
+  ensure
     run_and_render :index
   end
 
   def destroy
+    @unit.destroy!
+    flash.now[:notice] = t('.success', unit: @unit)
+  ensure
+    run_and_render :index
   end
 
   private
 
   def find_unit
-    @unit = Unit.find_by!(id: params[:id], user: [current_user, nil])
+    @unit = Unit.find_by!(id: params[:id], user: current_user)
+  end
+
+  def find_unit_default
+    @unit = Unit.find_by!(id: params[:id], user: nil)
   end
 end

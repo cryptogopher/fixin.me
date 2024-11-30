@@ -97,11 +97,11 @@ class Unit < ApplicationRecord
     user_id.nil?
   end
 
-  def port(recipient)
-    recipient_base = base && Unit.find_by(symbol: base.symbol, user: recipient)
-    return nil if recipient_base.nil? != base.nil?
+  # Should only by invoked on Units returned from #defaults_diff which are #portable
+  def port!(recipient)
+    recipient_base = base && Unit.find_by!(symbol: base.symbol, user: recipient)
     params = slice(ATTRIBUTES - [:symbol, :base_id])
     Unit.find_or_initialize_by(user: recipient, symbol: symbol)
-      .update(base: recipient_base, **params)
+      .update!(base: recipient_base, **params)
   end
 end

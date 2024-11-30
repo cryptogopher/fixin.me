@@ -33,6 +33,9 @@ en:
         forbidden: >
           You have not been granted access to this action (403 Forbidden).
           This should not happen, please notify site administrator.
+        not_found: >
+          The record that you requested operation on does not exist (404).
+          This should not happen, please notify site administrator.
         unprocessable_entity: >
           The request is semantically incorrect and was rejected (422 Unprocessable Entity).
           This should not happen, please notify site administrator.
@@ -77,6 +80,12 @@ en:
         actions: Actions on defaults
         import_all: Import all
         back: Back to units
+      import:
+        success: Imported unit "%{unit}"
+      export:
+        success: Exported unit "%{unit}"
+      destroy:
+        success: Deleted unit "%{unit}"
   users:
     index:
       disguise: View as
