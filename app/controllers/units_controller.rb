@@ -19,7 +19,7 @@ class UnitsController < ApplicationController
   def create
     @unit = current_user.units.new(unit_params)
     if @unit.save
-      flash.now[:notice] = t(".success")
+      flash.now[:notice] = t('.success', unit: @unit)
       run_and_render :index
     else
       render :new
@@ -31,7 +31,7 @@ class UnitsController < ApplicationController
 
   def update
     if @unit.update(unit_params.except(:base_id))
-      flash.now[:notice] = t(".success")
+      flash.now[:notice] = t('.success', unit: @unit)
       run_and_render :index
     else
       render :edit
@@ -40,18 +40,21 @@ class UnitsController < ApplicationController
 
   def rebase
     permitted = params.require(:unit).permit(:base_id)
-    if permitted[:base_id].blank? && @unit.multiplier != 1
-      permitted.merge!(multiplier: 1)
+    permitted.merge!(multiplier: 1) if permitted[:base_id].blank? && @unit.multiplier != 1
+
+    @unit.update!(permitted)
+
+    if @unit.multiplier_previously_changed?
       flash.now[:notice] = t(".multiplier_reset", unit: @unit)
     end
-
-    run_and_render :index if @unit.update(permitted)
+  ensure
+    run_and_render :index
   end
 
   def destroy
-    if @unit.destroy
-      flash.now[:notice] = t(".success")
-    end
+    @unit.destroy!
+    flash.now[:notice] = t('.success', unit: @unit)
+  ensure
     run_and_render :index
   end
 

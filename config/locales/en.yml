@@ -63,13 +63,13 @@ en:
     new:
       none: none
     create:
-      success: Created new unit
+      success: Created new unit "%{unit}"
     update:
-      success: Updated unit
+      success: Updated unit "%{unit}"
     rebase:
       multiplier_reset: Multiplier of "%{unit}" has been reset to 1, due to repositioning
     destroy:
-      success: Deleted unit
+      success: Deleted unit "%{unit}"
   default:
     units:
       unit:
