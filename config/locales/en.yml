@@ -58,7 +58,7 @@ en:
     index:
       add_unit: Add unit
       import_units: Import
-      no_items: There are no configured units. You can try to import some defaults.
+      no_items: There are no configured units. You can Add some or Import from defaults.
       top_level_drop: Drop here to reposition into top-level unit
     new:
       none: none
@@ -78,8 +78,9 @@ en:
         import: Import
       index:
         actions: Actions on defaults
-        import_all: Import all
         back: Back to units
+        import_all: Import all
+        no_items: There are no differences between default and user units.
       import:
         success: Imported unit "%{unit}"
       export:
