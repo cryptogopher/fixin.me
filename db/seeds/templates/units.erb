@@ -1,0 +1,9 @@
+Unit.transaction do
+  Unit.defaults.delete_all
+<% Unit.defaults.ordered.each do |unit| %>
+<%= "\n" if unit.base.nil? %>
+  unit_<%= unit.symbol %> =
+    Unit.create symbol: "<%= unit.symbol %>",<% unless unit.base.nil? %> base: unit_<%= unit.base.symbol %>, multiplier: <%= unit.multiplier.to_scientific %>,<% end %>
+                description: "<%= unit.description %>"
+<% end %>
+end

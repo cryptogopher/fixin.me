@@ -20,19 +20,4 @@ end
 # Formulas will be deleted as dependent on Quantities
 #[Source, Quantity, Unit].each { |model| model.defaults.delete_all }
 
-Unit.transaction do
-  Unit.defaults.delete_all
-
-  unit_1 = Unit.create symbol: "1",   name: "dimensionless, one"
-           Unit.create symbol: "%",   base: unit_1, multiplier: 1e-2, name: "percent"
-           Unit.create symbol: "‰",   base: unit_1, multiplier: 1e-3, name: "promille"
-           Unit.create symbol: "‱",   base: unit_1, multiplier: 1e-4, name: "basis point"
-           Unit.create symbol: "ppm", base: unit_1, multiplier: 1e-6, name: "parts per million"
-
-  unit_g = Unit.create symbol: "g",  name: "gram"
-           Unit.create symbol: "ug", base: unit_g, multiplier: 1e-6, name: "microgram"
-           Unit.create symbol: "mg", base: unit_g, multiplier: 1e-3, name: "milligram"
-           Unit.create symbol: "kg", base: unit_g, multiplier: 1e3,  name: "kilogram"
-
-  Unit.create symbol: "kcal", name: "kilocalorie"
-end
+require 'seeds/units.rb'
