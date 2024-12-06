@@ -9,7 +9,7 @@
       onclick: 'this.blur();', data: {turbo_stream: true} %>
   </td>
   <td><%= unit.description %></td>
-  <td class="number"><%= scientifize(unit.multiplier) %></td>
+  <td class="number"><%= unit.multiplier.to_html %></td>
 
   <% if current_user.at_least(:active) %>
     <td class="actions">

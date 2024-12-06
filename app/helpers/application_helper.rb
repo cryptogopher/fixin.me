@@ -132,28 +132,4 @@ module ApplicationHelper
   def disabled_attributes(disabled)
     disabled ? {disabled: true, aria: {disabled: true}, tabindex: -1} : {}
   end
-
-  private
-
-  # Converts value to HTML formatted scientific notation
-  def scientifize(d)
-    sign, coefficient, base, exponent = d.split
-    return 'NaN' unless sign
-
-    result = (sign == -1 ? '-' : '')
-    unless coefficient == '1' && sign == 1
-      if coefficient.length > 1
-        result += coefficient.insert(1, '.')
-      elsif
-        result += coefficient
-      end
-      if exponent != 1
-        result += "&times;"
-      end
-    end
-    if exponent != 1
-      result += "10<sup>% d</sup>" % [exponent-1]
-    end
-    result.html_safe
-  end
 end
