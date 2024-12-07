@@ -1,4 +1,4 @@
-module FixinMe
+module CoreExt
   module BigDecimalScientificNotation
     def to_scientific
       return 'NaN' unless finite?
@@ -33,4 +33,4 @@ module FixinMe
   end
 end
 
-BigDecimal.prepend(FixinMe::BigDecimalScientificNotation)
+BigDecimal.prepend CoreExt::BigDecimalScientificNotation

@@ -1,4 +1,4 @@
-module CoreExt::ActionDispatch::SystemTesting::TestHelpers::CustomScreenshotHelperUniqueId
+module CoreExt::ActionDispatch::SystemTesting::TestHelpers::ScreenshotHelperUniqueId
   private
 
   def unique
