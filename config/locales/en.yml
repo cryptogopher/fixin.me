@@ -1,4 +1,8 @@
 en:
+  errors:
+    messages:
+      precision_exceeded: must not exceed %{value} significant digits
+      scale_exceeded: must not exceed %{value} decimal digits
   activerecord:
     attributes:
       unit:

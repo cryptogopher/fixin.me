@@ -13,7 +13,8 @@
     <td>
       <% unless @unit.base.nil? %>
         <%= form.hidden_field :base_id, form: :unit_form %>
-        <%= form.number_field :multiplier, form: :unit_form, required: true, step: "any",
+        <%= form.number_field :multiplier, form: :unit_form, required: true,
+          step: BigDecimal(10).power(-@unit.class.type_for_attribute(:multiplier).scale),
           size: 10, autocomplete: "off" %>
       <% end %>
     </td>
