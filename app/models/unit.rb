@@ -10,8 +10,8 @@ class Unit < ApplicationRecord
     errors.add(:base, :multilevel_nesting) if base.base.present?
   end
   validates :symbol, presence: true, uniqueness: {scope: :user_id},
-    length: {maximum: columns_hash['symbol'].limit}
-  validates :description, length: {maximum: columns_hash['description'].limit}
+    length: {maximum: type_for_attribute(:symbol).limit}
+  validates :description, length: {maximum: type_for_attribute(:description).limit}
   validates :multiplier, numericality: {equal_to: 1}, unless: :base
   validates :multiplier, numericality: {other_than: 0, precision: true, scale: true}, if: :base
 

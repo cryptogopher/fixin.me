@@ -4,11 +4,11 @@
 
     <td class="<%= class_names({subunit: @unit.base}) %>">
       <%= form.text_field :symbol, form: :unit_form, required: true, autofocus: true, size: 12,
-        maxlength: @unit.class.columns_hash['symbol'].limit, autocomplete: "off" %>
+        maxlength: @unit.class.type_for_attribute(:symbol).limit, autocomplete: "off" %>
     </td>
     <td>
       <%= form.text_area :description, form: :unit_form, cols: 30, rows: 1, escape: false,
-        maxlength: @unit.class.columns_hash['description'].limit, autocomplete: "off" %>
+        maxlength: @unit.class.type_for_attribute(:description).limit, autocomplete: "off" %>
     </td>
     <td>
       <% unless @unit.base.nil? %>
