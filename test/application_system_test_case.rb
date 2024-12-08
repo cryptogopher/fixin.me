@@ -4,7 +4,9 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   include ActionView::Helpers::UrlHelper
 
   # NOTE: geckodriver installed with Firefox, ignore incompatibility warning
-  Selenium::WebDriver.logger.ignore(:selenium_manager)
+  Selenium::WebDriver.logger
+    .ignore(:selenium_manager, :clear_session_storage, :clear_local_storage)
+
   Capybara.configure do |config|
     config.save_path = "#{Rails.root}/tmp/screenshots/"
   end

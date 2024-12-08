@@ -20,16 +20,17 @@ class UnitsTest < ApplicationSystemTestCase
     end
   end
 
+  # TODO: extend with add subunit
   test "add unit" do
     click_on t('units.index.add_unit')
 
     within 'tbody > tr:has(input[type=text], textarea)' do
       assert_selector ':focus'
-      maxlength = all(:fillable_field).to_h { |f| [f[:name], f[:maxlength].to_i || 1000] }
+      maxlength = all(:fillable_field).to_h { |f| [f[:description], f[:maxlength].to_i || 1000] }
       fill_in 'unit[symbol]',
         with: SecureRandom.random_symbol(rand([1..15, 15..maxlength['unit[symbol]']].sample))
-      fill_in 'unit[name]',
-        with: [nil, SecureRandom.alphanumeric(rand(1..maxlength['unit[name]']))].sample
+      fill_in 'unit[description]',
+        with: [nil, SecureRandom.alphanumeric(rand(1..maxlength['unit[description]']))].sample
       assert_difference ->{ Unit.count }, 1 do
         click_on t('helpers.submit.create')
       end
