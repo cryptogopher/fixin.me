@@ -9,8 +9,11 @@ Software requirements
 
 * Server side:
     * Ruby version: developed on Ruby 3.x
-    * database with recursive Common Table Expressions (CTE) support, e.g.
-      MySQL >= 8.0, MariaDB >= 10.2.2
+    * database with:
+        * recursive Common Table Expressions (CTE) support, e.g.
+          MySQL >= 8.0, MariaDB >= 10.2.2
+        * decimal type with precision of at least 30 (not sure if SQLite3
+          supports this)
     * for testing: browser as specified in _Client side_ requirements
 * Client side:
     * browser supporting below requirements (e.g. Firefox >= 121):
