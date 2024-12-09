@@ -12,7 +12,8 @@ class UnitsTest < ApplicationSystemTestCase
       assert_selector 'tr', count: @user.units.count
     end
 
-    Unit.destroy_all
+    # Cannot #destroy_all due to {dependent: :restrict*} on Unit.subunits association
+    @user.units.delete_all
     visit units_path
     within 'tbody' do
       assert_selector 'tr', count: 1
