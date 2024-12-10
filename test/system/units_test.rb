@@ -1,6 +1,8 @@
 require "application_system_test_case"
 
 class UnitsTest < ApplicationSystemTestCase
+  ADD_UNIT_LABELS = [t('units.index.add_unit'), t('units.unit.add_subunit')]
+
   setup do
     @user = sign_in
     visit units_path
@@ -49,36 +51,28 @@ class UnitsTest < ApplicationSystemTestCase
   test "add unit on validation error" do
   end
 
+  # TODO: add non-empty form closing warning
   test "add and edit disallow opening multiple forms" do
-    # Once new/edit form is open, other actions on the same page either replace
-    # the form or leave it untouched
-    # TODO: add non-empty form closing warning
+    # Once new/edit form is open, attempt to open another one will close it
     links = {}
-    link_labels = {1 => [t('units.index.add_unit'), t('units.unit.add_subunit')],
-                   0 => units.map(&:symbol)}
+    # Define tr count change depending on link clicked
+    link_labels = {1 => ADD_UNIT_LABELS, 0 => units.map(&:symbol)}
     link_labels.each_pair do |row_change, labels|
       all(:link_or_button, exact_text: Regexp.union(labels)).map { |l| links[l] = row_change }
     end
+
     link, rows = links.assoc(links.keys.sample).tap { |l, _| links.delete(l) }
     assert_difference ->{ all('tbody tr').count }, rows do
       link.click
     end
-    find 'tbody tr:has(input[type=text]:focus)'
-
-    # Link should be now unavailable or unclickable
-    begin
-      assert_raises(Selenium::WebDriver::Error::ElementClickInterceptedError) do
-        link.click
-      end if link.visible?
-    rescue Selenium::WebDriver::Error::StaleElementReferenceError
-      link = nil
-    end
+    find('tbody tr:has(input[type=text])').assert_selector ':focus'
+    assert !link.visible? || link[:disabled]
 
     link = links.keys.select(&:visible?).sample
     assert_difference ->{ all('tbody tr').count }, links[link] - rows do
       link.click
     end
-    assert_selector 'tbody tr:has(input[type=text]:focus)', count: 1
+    find('tbody tr:has(input[type=text])').assert_selector ':focus'
   end
 
   # NOTE: extend with any add/edit link

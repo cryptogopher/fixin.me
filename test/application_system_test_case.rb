@@ -1,6 +1,7 @@
 require "test_helper"
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  extend ActionView::Helpers::TranslationHelper
   include ActionView::Helpers::UrlHelper
 
   # NOTE: geckodriver installed with Firefox, ignore incompatibility warning
@@ -32,4 +33,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   #def assert_stale(element)
   #  assert_raises(Selenium::WebDriver::Error::StaleElementReferenceError) { element.tag_name }
   #end
+
+  test "click disabled link" do
+    # Link should be unclickable
+    # assert_raises(Selenium::WebDriver::Error::ElementClickInterceptedError) do
+    #   # Use custom selector for disabled links
+    #   find('a[disabled]').click
+    # end
+  end
 end

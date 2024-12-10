@@ -9,8 +9,8 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
-  include AbstractController::Translation
   include ActionMailer::TestHelper
+  include ActionView::Helpers::TranslationHelper
 
   # NOTE: use public #alphanumeric(chars: ...) from Ruby 3.3 onwards
   SecureRandom.class_eval do
