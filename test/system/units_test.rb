@@ -21,13 +21,14 @@ class UnitsTest < ApplicationSystemTestCase
     end
   end
 
+  # TODO: check if Add buton is properly disabled/enabled
   # TODO: extend with add subunit
   test "add unit" do
     click_on t('units.index.add_unit')
 
     within 'tbody > tr:has(input[type=text], textarea)' do
       assert_selector ':focus'
-      maxlength = all(:fillable_field).to_h { |f| [f[:description], f[:maxlength].to_i || 1000] }
+      maxlength = all(:fillable_field).to_h { |f| [f[:name], f[:maxlength].to_i || 1000] }
       fill_in 'unit[symbol]',
         with: SecureRandom.random_symbol(rand([1..15, 15..maxlength['unit[symbol]']].sample))
       fill_in 'unit[description]',
@@ -41,7 +42,11 @@ class UnitsTest < ApplicationSystemTestCase
       assert_no_selector :fillable_field
       assert_selector 'tr', count: @user.units.count
     end
-    assert_selector '.flash.notice', text: /^#{t('units.create.success')}/
+    assert_selector '.flash.notice', text: /^#{t('units.create.success', unit: @user.units.last)}/
+  end
+
+  # TODO: check proper form/button redisplay and flash messages
+  test "add unit on validation error" do
   end
 
   test "add and edit disallow opening multiple forms" do
