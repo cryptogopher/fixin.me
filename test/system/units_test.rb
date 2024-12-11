@@ -23,18 +23,24 @@ class UnitsTest < ApplicationSystemTestCase
     end
   end
 
-  # TODO: check if Add buton is properly disabled/enabled
-  # TODO: extend with add subunit
   test "add unit" do
-    click_on t('units.index.add_unit')
+    add_link = all(:link, exact_text: ADD_UNIT_LABELS.sample).sample
+    add_link.click
+    assert_equal 'disabled', add_link[:disabled]
 
     within 'tbody > tr:has(input[type=text], textarea)' do
       assert_selector ':focus'
-      maxlength = all(:fillable_field).to_h { |f| [f[:name], f[:maxlength].to_i || 1000] }
+
+      maxlength = all(:fillable_field).to_h { |f| [f[:name], f[:maxlength].to_i || 2**16] }
+
       fill_in 'unit[symbol]',
         with: SecureRandom.random_symbol(rand([1..15, 15..maxlength['unit[symbol]']].sample))
       fill_in 'unit[description]',
         with: [nil, SecureRandom.alphanumeric(rand(1..maxlength['unit[description]']))].sample
+      within :field, 'unit[multiplier]' do |field|
+        fill_in with: random_number(field[:max], field[:step])
+      end if add_link[:text] != t('units.index.add_unit')
+
       assert_difference ->{ Unit.count }, 1 do
         click_on t('helpers.submit.create')
       end
@@ -44,7 +50,9 @@ class UnitsTest < ApplicationSystemTestCase
       assert_no_selector :fillable_field
       assert_selector 'tr', count: @user.units.count
     end
-    assert_selector '.flash.notice', text: /^#{t('units.create.success', unit: @user.units.last)}/
+    assert_no_selector :element, :a, 'disabled': 'disabled',
+      exact_text: Regexp.union(ADD_UNIT_LABELS)
+    assert_selector '.flash.notice', text: t('units.create.success', unit: @user.units.last.symbol)
   end
 
   # TODO: check proper form/button redisplay and flash messages

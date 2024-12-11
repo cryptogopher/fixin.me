@@ -32,6 +32,18 @@ class ActiveSupport::TestCase
     "%s@%s.%s" % (1..3).map { SecureRandom.alphanumeric(rand(1..20)) }
   end
 
+  # Assumes: max >= step and step = 1e[-]N, both as strings
+  def random_number(max, step)
+    max.delete!('.')
+    precision = max.length
+    start = rand(precision) + 1
+    d = (rand(max.to_i) + 1) % 10**start
+    length = rand([0, 1..4, 4..precision].sample)
+    d = d.truncate(-start + length)
+    d = 10**(start - length) if d.zero?
+    BigDecimal(step) * d
+  end
+
   def with_last_email
     yield(ActionMailer::Base.deliveries.last)
   end

@@ -132,4 +132,10 @@ module ApplicationHelper
   def disabled_attributes(disabled)
     disabled ? {disabled: true, aria: {disabled: true}, tabindex: -1} : {}
   end
+
+  def number_attributes(type)
+    step = BigDecimal(10).power(-type.scale)
+    max = BigDecimal(10).power(type.precision - type.scale) - step
+    {min: -max, max: max, step: step}
+  end
 end

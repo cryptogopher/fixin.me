@@ -34,6 +34,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   #  assert_raises(Selenium::WebDriver::Error::StaleElementReferenceError) { element.tag_name }
   #end
 
+  # HTML does not allow [disabled] attribute on <a> tag, so it's not possible to
+  # easily find them using e.g. :link selector
+  #Capybara.add_selector(:disabled_link) do
+  #  label "<a> tag with [disabled] attribute"
+  #end
+
   test "click disabled link" do
     # Link should be unclickable
     # assert_raises(Selenium::WebDriver::Error::ElementClickInterceptedError) do
