@@ -23,7 +23,7 @@ class UnitsTest < ApplicationSystemTestCase
     end
   end
 
-  test "add unit" do
+  test "new" do
     add_link = all(:link, exact_text: ADD_UNIT_LABELS.sample).sample
     add_link.click
     assert_equal 'disabled', add_link[:disabled]
@@ -55,12 +55,12 @@ class UnitsTest < ApplicationSystemTestCase
     assert_selector '.flash.notice', text: t('units.create.success', unit: @user.units.last.symbol)
   end
 
-  # TODO: check proper form/button redisplay and flash messages
-  test "add unit on validation error" do
+  # TODO: check proper form/button redisplay and flash messages on add/edit
+  test "new and edit form on validation error" do
   end
 
   # TODO: add non-empty form closing warning
-  test "add and edit disallow opening multiple forms" do
+  test "new and edit disallow opening multiple forms" do
     # Once new/edit form is open, attempt to open another one will close it
     links = {}
     targets = {}
