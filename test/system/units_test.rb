@@ -55,24 +55,39 @@ class UnitsTest < ApplicationSystemTestCase
   test "add and edit disallow opening multiple forms" do
     # Once new/edit form is open, attempt to open another one will close it
     links = {}
-    # Define tr count change depending on link clicked
-    link_labels = {1 => ADD_UNIT_LABELS, 0 => units.map(&:symbol)}
-    link_labels.each_pair do |row_change, labels|
-      all(:link_or_button, exact_text: Regexp.union(labels)).map { |l| links[l] = row_change }
+    targets = {}
+    {
+      add_unit: t('units.index.add_unit'),
+      add_subunit: t('units.unit.add_subunit'),
+      edit: Regexp.union(units.map(&:symbol))
+    }.each_pair do |type, labels|
+      links[type] = all(:link_or_button, exact_text: labels).to_a
+      targets[type] = links[type].sample
     end
+    # Define tr count change depending on link clicked
+    row_change = {add_unit: 1, add_subunit: 1, edit: 0}
 
-    link, rows = links.assoc(links.keys.sample).tap { |l, _| links.delete(l) }
+    type, link = targets.assoc(targets.keys.sample).tap { |t, _| targets.delete(t) }
+    rows = row_change[type]
     assert_difference ->{ all('tbody tr').count }, rows do
       link.click
     end
-    find('tbody tr:has(input[type=text])').assert_selector ':focus'
-    assert !link.visible? || link[:disabled]
+    within('tbody tr:has(input[type=text])') { assert_selector ':focus' }
+    if type == :edit
+      assert !link.visible?
+      [:add_subunit, :edit].each do |t|
+        assert_difference(->{ links[t].length }, -1) { links[t].select!(&:visible?) }
+      end
+    else
+      assert link[:disabled]
+    end
 
-    link = links.keys.select(&:visible?).sample
-    assert_difference ->{ all('tbody tr').count }, links[link] - rows do
+    targets.merge([:add_subunit, :edit].map { |t| [t, links[t].sample] }.to_h)
+    type, link = targets.assoc(targets.keys.sample)
+    assert_difference ->{ all('tbody tr').count }, row_change[type] - rows do
       link.click
     end
-    find('tbody tr:has(input[type=text])').assert_selector ':focus'
+    within('tbody tr:has(input[type=text])') { assert_selector ':focus' }
   end
 
   # NOTE: extend with any add/edit link
