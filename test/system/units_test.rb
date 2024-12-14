@@ -1,10 +1,16 @@
 require "application_system_test_case"
 
 class UnitsTest < ApplicationSystemTestCase
-  ADD_UNIT_LABELS = [t('units.index.add_unit'), t('units.unit.add_subunit')]
+  LINK_LABELS = {
+    add_unit: t('units.index.add_unit'),
+    add_subunit: t('units.unit.add_subunit'),
+    edit: nil
+  }
 
   setup do
     @user = sign_in
+    LINK_LABELS[:edit] = Regexp.union(@user.units.map(&:symbol))
+
     visit units_path
   end
 
@@ -24,7 +30,8 @@ class UnitsTest < ApplicationSystemTestCase
   end
 
   test "new" do
-    add_link = all(:link, exact_text: ADD_UNIT_LABELS.sample).sample
+    type, label = LINK_LABELS.assoc([:add_unit, :add_subunit].sample)
+    add_link = all(:link, exact_text: label).sample
     add_link.click
     assert_equal 'disabled', add_link[:disabled]
 
@@ -34,9 +41,8 @@ class UnitsTest < ApplicationSystemTestCase
       maxlength = all(:fillable_field).to_h { |f| [f[:name], f[:maxlength].to_i || 2**16] }
 
       fill_in 'unit[symbol]',
-        with: SecureRandom.random_symbol(rand([1..15, 15..maxlength['unit[symbol]']].sample))
-      fill_in 'unit[description]',
-        with: [nil, SecureRandom.alphanumeric(rand(1..maxlength['unit[description]']))].sample
+        with: random_string(rand([1..3, 4..maxlength['unit[symbol]']].sample))
+      fill_in 'unit[description]', with: random_string(rand(0..maxlength['unit[description]']))
       within :field, 'unit[multiplier]' do |field|
         fill_in with: random_number(field[:max], field[:step])
       end if add_link[:text] != t('units.index.add_unit')
@@ -51,8 +57,8 @@ class UnitsTest < ApplicationSystemTestCase
       assert_selector 'tr', count: @user.units.count
     end
     assert_no_selector :element, :a, 'disabled': 'disabled',
-      exact_text: Regexp.union(ADD_UNIT_LABELS)
-    assert_selector '.flash.notice', text: t('units.create.success', unit: @user.units.last.symbol)
+      exact_text: Regexp.union(LINK_LABELS.fetch_values(:add_unit, :add_subunit))
+    assert_selector '.flash.notice', text: t('units.create.success', unit: Unit.all.last.symbol)
   end
 
   # TODO: check proper form/button redisplay and flash messages on add/edit
@@ -64,11 +70,7 @@ class UnitsTest < ApplicationSystemTestCase
     # Once new/edit form is open, attempt to open another one will close it
     links = {}
     targets = {}
-    {
-      add_unit: t('units.index.add_unit'),
-      add_subunit: t('units.unit.add_subunit'),
-      edit: Regexp.union(units.map(&:symbol))
-    }.each_pair do |type, labels|
+    LINK_LABELS.each_pair do |type, labels|
       links[type] = all(:link_or_button, exact_text: labels).to_a
       targets[type] = links[type].sample
     end

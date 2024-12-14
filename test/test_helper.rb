@@ -12,24 +12,26 @@ class ActiveSupport::TestCase
   include ActionMailer::TestHelper
   include ActionView::Helpers::TranslationHelper
 
-  # NOTE: use public #alphanumeric(chars: ...) from Ruby 3.3 onwards
-  SecureRandom.class_eval do
-    def self.random_symbol(n = 10)
-      # Unicode characters: 32-126, 160-383
-      choose([*' '..'~', 160.chr(Encoding::UTF_8), *'¡'..'ſ'], n)
+  # List of categorized Unicode characters:
+  # * http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
+  # File format: http://www.unicode.org/L2/L1999/UnicodeData.html
+  # Select from graphic ranges: L, M, N, P, S, Zs
+  UNICODE_CHARS = {
+    1 => [*"\u0020".."\u007E"],
+    2 => [*"\u00A0".."\u00AC",
+          *"\u00AE".."\u05FF",
+          *"\u0606".."\u061B",
+          *"\u061D".."\u06DC",
+          *"\u06DE".."\u070E",
+          *"\u0710".."\u07FF"]
+  }
+  UNICODE_CHARS.default = UNICODE_CHARS[1] + UNICODE_CHARS[2]
+  def random_string(bytes = 10)
+    result = ''
+    while bytes > 0
+      result += UNICODE_CHARS[bytes].sample.tap { |c| bytes -= c.bytesize }
     end
-  end
-
-  def randomize_user_password!(user)
-    random_password.tap { |p| user.update!(password: p) }
-  end
-
-  def random_password
-    SecureRandom.alphanumeric rand(Rails.configuration.devise.password_length)
-  end
-
-  def random_email
-    "%s@%s.%s" % (1..3).map { SecureRandom.alphanumeric(rand(1..20)) }
+    result
   end
 
   # Assumes: max >= step and step = 1e[-]N, both as strings
@@ -42,6 +44,18 @@ class ActiveSupport::TestCase
     d = d.truncate(-start + length)
     d = 10**(start - length) if d.zero?
     BigDecimal(step) * d
+  end
+
+  def randomize_user_password!(user)
+    random_password.tap { |p| user.update!(password: p) }
+  end
+
+  def random_password
+    Random.alphanumeric rand(Rails.configuration.devise.password_length)
+  end
+
+  def random_email
+    "%s@%s.%s" % (1..3).map { Random.alphanumeric(rand(1..20)) }
   end
 
   def with_last_email
