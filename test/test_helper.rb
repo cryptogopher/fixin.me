@@ -26,11 +26,11 @@ class ActiveSupport::TestCase
           *"\u0710".."\u07FF"]
   }
   UNICODE_CHARS.default = UNICODE_CHARS[1] + UNICODE_CHARS[2]
-  def random_string(bytes = 10)
-    result = ''
-    while bytes > 0
-      result += UNICODE_CHARS[bytes].sample.tap { |c| bytes -= c.bytesize }
-    end
+  def random_string(bytes = 10, except: [])
+    begin
+      result = ''
+      result += UNICODE_CHARS[bytes - result.bytesize].sample while bytes > result.bytesize
+    end while except.include?(result)
     result
   end
 

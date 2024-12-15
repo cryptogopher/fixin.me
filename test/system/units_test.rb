@@ -29,23 +29,27 @@ class UnitsTest < ApplicationSystemTestCase
     end
   end
 
-  test "new" do
+  test "new and create" do
     type, label = LINK_LABELS.assoc([:add_unit, :add_subunit].sample)
     add_link = all(:link, exact_text: label).sample
     add_link.click
     assert_equal 'disabled', add_link[:disabled]
 
+    params = nil
     within 'tbody > tr:has(input[type=text], textarea)' do
       assert_selector ':focus'
 
       maxlength = all(:fillable_field).to_h { |f| [f[:name], f[:maxlength].to_i || 2**16] }
-
-      fill_in 'unit[symbol]',
-        with: random_string(rand([1..3, 4..maxlength['unit[symbol]']].sample))
-      fill_in 'unit[description]', with: random_string(rand(0..maxlength['unit[description]']))
+      params = {
+        symbol: random_string(rand([1..3, 4..maxlength['unit[symbol]']].sample),
+                              except: units.map(&:symbol)),
+        description: random_string(rand(0..maxlength['unit[description]']))
+      }.with_indifferent_access
       within :field, 'unit[multiplier]' do |field|
-        fill_in with: random_number(field[:max], field[:step])
-      end if add_link[:text] != t('units.index.add_unit')
+        params[:multiplier] = random_number(field[:max], field[:step])
+      end if type == :add_subunit
+
+      params.each_pair { |name, value| fill_in "unit[#{name}]", with: value }
 
       assert_difference ->{ Unit.count }, 1 do
         click_on t('helpers.submit.create')
@@ -58,7 +62,8 @@ class UnitsTest < ApplicationSystemTestCase
     end
     assert_no_selector :element, :a, 'disabled': 'disabled',
       exact_text: Regexp.union(LINK_LABELS.fetch_values(:add_unit, :add_subunit))
-    assert_selector '.flash.notice', text: t('units.create.success', unit: Unit.all.last.symbol)
+    assert_selector '.flash.notice', text: t('units.create.success', unit: Unit.last.symbol)
+    assert_equal params, Unit.last.attributes.slice(*params.keys)
   end
 
   # TODO: check proper form/button redisplay and flash messages on add/edit
