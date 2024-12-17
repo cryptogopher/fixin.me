@@ -125,7 +125,7 @@ module ApplicationHelper
     tag.tr tag.td t('.no_items'), colspan: 10, class: 'hint'
   end
 
-  def render_turbo_stream(partial, locals)
+  def render_turbo_stream(partial, locals = {})
     "Turbo.renderStreamMessage('#{j(render partial: partial, locals: locals)}'); return false;"
   end
 
