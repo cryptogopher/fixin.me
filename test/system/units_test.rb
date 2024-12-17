@@ -1,5 +1,10 @@
 require "application_system_test_case"
 
+# Fixture prerequisites:
+#  * user with multiple units + subunits
+#  * user with single unit
+#  * user with no units
+
 class UnitsTest < ApplicationSystemTestCase
   LINK_LABELS = {
     add_unit: t('units.index.add_unit'),
@@ -56,18 +61,44 @@ class UnitsTest < ApplicationSystemTestCase
       end
     end
 
+    assert_selector '.flash.notice', text: t('units.create.success', unit: Unit.last.symbol)
     within 'tbody' do
       assert_no_selector :fillable_field
       assert_selector 'tr', count: @user.units.count
     end
     assert_no_selector :element, :a, 'disabled': 'disabled',
       exact_text: Regexp.union(LINK_LABELS.fetch_values(:add_unit, :add_subunit))
-    assert_selector '.flash.notice', text: t('units.create.success', unit: Unit.last.symbol)
     assert_equal values, Unit.last.attributes.slice(*values.keys)
   end
 
-  # TODO: check proper form/button redisplay and flash messages on add/edit
-  test "new and edit form on validation error" do
+  test "new and edit on validation error" do
+    # It's not possible to cause validation error on :edit with single unit
+    LINK_LABELS.delete(:edit) unless @user.units.count > 1
+    type, label = LINK_LABELS.assoc(LINK_LABELS.keys.sample)
+    link = all(:link, exact_text: label).sample
+    link.click
+
+    get_values = -> { all(:field).map { |f| [f[:name], f[:value]] }.to_h }
+    values = nil
+    within 'tbody > tr:has(input[type=text])' do
+      # Provide duplicate :symbol as input invalidatable server side
+      fill_in 'unit[symbol]',
+        with: (@user.units.map(&:symbol) - [find_field('unit[symbol]').value]).sample
+      values = get_values[]
+      send_keys :enter
+    end
+
+    # Wait for flash before checking link :disabled status
+    assert_selector '.flash.alert'
+    if type == :edit
+      assert_no_selector :link, exact_text: link[:text]
+    else
+      assert_equal 'disabled', link[:disabled]
+    end
+
+    within 'tbody > tr:has(input[type=text])' do
+      assert_equal values, get_values[]
+    end
   end
 
   # TODO: add non-empty form closing warning

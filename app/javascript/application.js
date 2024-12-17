@@ -21,7 +21,7 @@ Turbo.StreamElement.prototype.removePreviousForm = function(form) {
   form.remove()
   if (row) {
     row.id = id
-    row.style.display = "revert"
+    row.removeAttribute("style")
   }
   if (form.hasAttribute("data-link-id")) {
     const link = document.getElementById(form.getAttribute("data-link-id"))
@@ -71,9 +71,11 @@ Turbo.StreamActions.after_form = function() {
 
 Turbo.StreamActions.replace_form = function() {
   this.targetElements.forEach((e) => {
+    const id = e.id;
     [...e.parentElement?.getElementsByClassName("form")].forEach((f) => {
       this.removePreviousForm(f)
     })
+    e = document.getElementById(id)
     e.style.display = "none"
     e.id = e.id + "_cached"
     e.parentElement?.insertBefore(this.templateContent, e.nextSibling)
