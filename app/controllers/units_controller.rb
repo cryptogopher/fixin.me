@@ -19,8 +19,8 @@ class UnitsController < ApplicationController
   def create
     @unit = current_user.units.new(unit_params)
     if @unit.save
+      @before = @unit.successive
       flash.now[:notice] = t('.success', unit: @unit)
-      run_and_render :index
     else
       render :new
     end
