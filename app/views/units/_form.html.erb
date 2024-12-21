@@ -1,28 +1,28 @@
 <%= tabular_fields_for @unit do |form| %>
-  <%= tag.tr id: dom_id(@unit), class: "form", onkeydown: "processKey(event)",
-    data: {link_id: link_id} do %>
+  <%- tag.tr id: row, class: "form", onkeydown: "processKey(event)",
+    data: {link: link, form: form_tag, hidden_row: hidden_row} do %>
 
     <td class="<%= class_names({subunit: @unit.base}) %>">
-      <%= form.text_field :symbol, form: :unit_form, required: true, autofocus: true, size: 12,
+      <%= form.text_field :symbol, form: form_tag, required: true, autofocus: true, size: 12,
         maxlength: @unit.class.type_for_attribute(:symbol).limit, autocomplete: "off" %>
     </td>
     <td>
-      <%= form.text_area :description, form: :unit_form, cols: 30, rows: 1, escape: false,
+      <%= form.text_area :description, form: form_tag, cols: 30, rows: 1, escape: false,
         maxlength: @unit.class.type_for_attribute(:description).limit, autocomplete: "off" %>
     </td>
     <td>
       <% unless @unit.base.nil? %>
-        <%= form.hidden_field :base_id, form: :unit_form %>
-        <%= form.number_field :multiplier, form: :unit_form, required: true,
+        <%= form.hidden_field :base_id, form: form_tag %>
+        <%= form.number_field :multiplier, form: form_tag, required: true,
           size: 10, autocomplete: "off",
           **number_attributes(@unit.class.type_for_attribute(:multiplier)) %>
       <% end %>
     </td>
 
     <td class="actions">
-      <%= form.submit form: :unit_form %>
+      <%= form.submit form: form_tag %>
       <%= image_link_to t(:cancel), "close-outline", units_path, class: 'dangerous',
-        name: :cancel, onclick: render_turbo_stream('form_close') %>
+        name: :cancel, onclick: render_turbo_stream('form_close', {row: row}) %>
     </td>
     <td></td>
   <% end %>

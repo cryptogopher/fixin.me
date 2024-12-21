@@ -48,6 +48,8 @@ class UnitsController < ApplicationController
       flash.now[:notice] = t(".multiplier_reset", unit: @unit)
     end
   ensure
+    # TODO: Avoid double table width change by first un-hiding table header,
+    # then displaying index, e.g. by re-displaying header in index
     run_and_render :index
   end
 

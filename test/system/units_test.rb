@@ -7,8 +7,8 @@ require "application_system_test_case"
 
 class UnitsTest < ApplicationSystemTestCase
   LINK_LABELS = {
-    add_unit: t('units.index.add_unit'),
-    add_subunit: t('units.unit.add_subunit'),
+    new_unit: t('units.index.new_unit'),
+    new_subunit: t('units.unit.new_subunit'),
     edit: nil
   }
 
@@ -35,10 +35,10 @@ class UnitsTest < ApplicationSystemTestCase
   end
 
   test "new and create" do
-    type, label = LINK_LABELS.assoc([:add_unit, :add_subunit].sample)
-    add_link = all(:link, exact_text: label).sample
-    add_link.click
-    assert_equal 'disabled', add_link[:disabled]
+    type, label = LINK_LABELS.assoc([:new_unit, :new_subunit].sample)
+    new_link = all(:link, exact_text: label).sample
+    new_link.click
+    assert_equal 'disabled', new_link[:disabled]
 
     values = nil
     within 'tbody > tr:has(input[type=text], textarea)' do
@@ -52,7 +52,7 @@ class UnitsTest < ApplicationSystemTestCase
       }.with_indifferent_access
       within :field, 'unit[multiplier]' do |field|
         values[:multiplier] = random_number(field[:max], field[:step])
-      end if type == :add_subunit
+      end if type == :new_subunit
 
       values.each_pair { |name, value| fill_in "unit[#{name}]", with: value }
 
@@ -67,7 +67,7 @@ class UnitsTest < ApplicationSystemTestCase
       assert_selector 'tr', count: @user.units.count
     end
     assert_no_selector :element, :a, 'disabled': 'disabled',
-      exact_text: Regexp.union(LINK_LABELS.fetch_values(:add_unit, :add_subunit))
+      exact_text: Regexp.union(LINK_LABELS.fetch_values(:new_unit, :new_subunit))
     assert_equal values, Unit.last.attributes.slice(*values.keys)
   end
 
@@ -111,7 +111,7 @@ class UnitsTest < ApplicationSystemTestCase
       targets[type] = links[type].sample
     end
     # Define tr count change depending on link clicked
-    row_change = {add_unit: 1, add_subunit: 1, edit: 0}
+    row_change = {new_unit: 1, new_subunit: 1, edit: 0}
 
     type, link = targets.assoc(targets.keys.sample).tap { |t, _| targets.delete(t) }
     rows = row_change[type]
@@ -121,14 +121,14 @@ class UnitsTest < ApplicationSystemTestCase
     within('tbody tr:has(input[type=text])') { assert_selector ':focus' }
     if type == :edit
       assert !link.visible?
-      [:add_subunit, :edit].each do |t|
+      [:new_subunit, :edit].each do |t|
         assert_difference(->{ links[t].length }, -1) { links[t].select!(&:visible?) }
       end
     else
       assert link[:disabled]
     end
 
-    targets.merge([:add_subunit, :edit].map { |t| [t, links[t].sample] }.to_h)
+    targets.merge([:new_subunit, :edit].map { |t| [t, links[t].sample] }.to_h)
     type, link = targets.assoc(targets.keys.sample)
     assert_difference ->{ all('tbody tr').count }, row_change[type] - rows do
       link.click
@@ -136,9 +136,13 @@ class UnitsTest < ApplicationSystemTestCase
     within('tbody tr:has(input[type=text])') { assert_selector ':focus' }
   end
 
+  test "edit" do
+    # NOTE: Check if displayed attributes match record
+  end
+
   # NOTE: extend with any add/edit link
   test "close new unit form with escape key" do
-    click_on t('units.index.add_unit')
+    click_on t('units.index.new_unit')
     first('tbody > tr').all(:field).sample.send_keys :escape
     within 'tbody' do
       assert_no_selector :fillable_field
@@ -147,12 +151,15 @@ class UnitsTest < ApplicationSystemTestCase
 
   # NOTE: extend with any add/edit link
   test "close and reopen new unit form" do
-    click_on t('units.index.add_unit')
+    click_on t('units.index.new_unit')
     within 'tbody' do
       find(:link_or_button, exact_text: t(:cancel)).click
       assert_no_selector :fillable_field
     end
-    click_on t('units.index.add_unit')
+    click_on t('units.index.new_unit')
     assert_selector 'tbody > tr:has(input, textarea)'
+  end
+
+  test "destroy" do
   end
 end

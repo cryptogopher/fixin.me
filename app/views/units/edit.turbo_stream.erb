@@ -1,6 +1,13 @@
-<%= turbo_stream.replace :unit_form do %>
-  <%= form_with model: @unit, html: {id: :unit_form} do %>
+<% ids = {row: dom_id(@unit, :edit),
+          hidden_row: dom_id(@unit),
+          link: nil,
+          form_tag: dom_id(@unit, :edit, :form)} %>
+
+<%= turbo_stream.append :unit_form do %>
+  <%- form_with model: @unit, html: {id: ids[:form_tag]} do %>
   <% end %>
 <% end %>
 
-<%= turbo_stream.replace_form @unit, partial: 'form', locals: {link_id: dom_id(@unit, :edit)} %>
+<%= turbo_stream.hide ids[:hidden_row] %>
+<%= turbo_stream.remove ids[:row] %>
+<%= turbo_stream.after @unit, partial: 'form', locals: ids -%>

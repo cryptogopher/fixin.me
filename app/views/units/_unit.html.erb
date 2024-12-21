@@ -5,8 +5,7 @@
            data: {drag_path: rebase_unit_path(unit), drop_id: dom_id(unit.base || unit)} do %>
 
   <td class="<%= class_names('link', {subunit: unit.base}) %>">
-    <%= link_to unit, edit_unit_path(unit), id: dom_id(unit, :edit),
-      onclick: 'this.blur();', data: {turbo_stream: true} %>
+    <%= link_to unit, edit_unit_path(unit), onclick: 'this.blur();', data: {turbo_stream: true} %>
   </td>
   <td><%= unit.description %></td>
   <td class="number"><%= unit.multiplier.to_html %></td>
@@ -14,9 +13,8 @@
   <% if current_user.at_least(:active) %>
     <td class="actions">
       <% if unit.base.nil? %>
-        <%= image_link_to t('.add_subunit'), 'plus-outline', new_unit_path(unit),
-          id: dom_id(unit, :add), onclick: 'this.blur();',
-          data: {turbo_stream: true} %>
+        <%= image_link_to t('.new_subunit'), 'plus-outline', new_unit_path(unit),
+          id: dom_id(unit, :new, :link), onclick: 'this.blur();', data: {turbo_stream: true} %>
       <% end %>
 
       <%= image_button_to t('.delete_unit'), 'delete-outline', unit_path(unit),

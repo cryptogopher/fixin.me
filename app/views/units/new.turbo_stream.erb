@@ -1,9 +1,19 @@
-<% link_id = dom_id(@unit.base || @unit, :add) %>
+<% dom_obj = @unit.base || @unit %>
+<% ids = {row: dom_id(dom_obj, :new),
+          hidden_row: nil,
+          link: dom_id(dom_obj, :new, :link),
+          form_tag: dom_id(dom_obj, :new, :form)} %>
 
-<%= turbo_stream.replace :unit_form do %>
-  <%= form_with model: @unit, html: {id: :unit_form} do %>
+<%= turbo_stream.disable ids[:link] -%>
+
+<%= turbo_stream.append :unit_form do %>
+  <%- form_with model: @unit, html: {id: ids[:form_tag]} do %>
   <% end %>
 <% end %>
 
-<%= turbo_stream.insert_form (@unit.base || :units), partial: 'form', locals: {link_id: link_id} %>
-<%= turbo_stream.disable link_id -%>
+<% if @unit.base %>
+  <%= turbo_stream.remove ids[:row] %>
+  <%= turbo_stream.after @unit.base, partial: 'form', locals: ids %>
+<% else %>
+  <%= turbo_stream.prepend :units, partial: 'form', locals: ids %>
+<% end %>

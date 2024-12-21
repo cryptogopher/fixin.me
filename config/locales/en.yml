@@ -57,10 +57,10 @@ en:
       users: Users
   units:
     unit:
-      add_subunit: Subunit
+      new_subunit: Subunit
       delete_unit: Delete
     index:
-      add_unit: Add unit
+      new_unit: Add unit
       import_units: Import
       no_items: There are no configured units. You can Add some or Import from defaults.
       top_level_drop: Drop here to reposition into top-level unit

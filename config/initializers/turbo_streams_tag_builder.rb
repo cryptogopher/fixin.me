@@ -15,24 +15,8 @@ ActiveSupport.on_load :turbo_streams_tag_builder do
     action_all :enable, targets, allow_inferred_rendering: false
   end
 
-  def blur_all
-    action :blur, nil, allow_inferred_rendering: false
-  end
-
-  def focus(target)
-    action :focus, target, allow_inferred_rendering: false
-  end
-
-  def insert_form(target, content = nil, **rendering, &block)
-    if target.is_a? Symbol
-      action :prepend_form, target, content, **rendering, &block
-    else
-      action :after_form, target, content, **rendering, &block
-    end
-  end
-
-  def replace_form(target, content = nil, **rendering, &block)
-    action :replace_form, target, content, **rendering, &block
+  def hide(target)
+    action :hide, target, allow_inferred_rendering: false
   end
 
   def close_form(target)
