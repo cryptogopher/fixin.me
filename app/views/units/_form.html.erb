@@ -20,7 +20,7 @@
     </td>
 
     <td class="actions">
-      <%= form.submit form: form_tag %>
+      <%= form.button form: form_tag %>
       <%= image_link_to t(:cancel), "close-outline", units_path, class: 'dangerous',
         name: :cancel, onclick: render_turbo_stream('form_close', {row: row}) %>
     </td>

@@ -55,9 +55,24 @@ module ApplicationHelper
     form_for(record, **options) { |f| f.form_for(&block) }
   end
 
+  class TabularFormBuilder < ActionView::Helpers::FormBuilder
+    private
+
+    def submit_default_value
+      svg_name = object ? (object.persisted? ? 'update' : 'plus-circle-outline') : ''
+      @template.svg_tag("pictograms/#{svg_name}") + super
+    end
+  end
+
   def tabular_fields_for(record_name, record_object = nil, options = {}, &block)
+    options.merge! builder: TabularFormBuilder
     render_errors(record_name)
     fields_for(record_name, record_object, **options, &block)
+  end
+
+  def tabular_form_with(**options, &block)
+    options.merge! builder: TabularFormBuilder
+    form_with(**options, &block)
   end
 
   def svg_tag(source, options = {})
