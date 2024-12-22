@@ -1,0 +1,3 @@
+<%= turbo_stream.replace @unit.base unless @unit.base.nil? %>
+<%= turbo_stream.remove @unit %>
+<%= turbo_stream.append(:units, render_no_items) if current_user.units.empty? %>

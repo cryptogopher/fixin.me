@@ -32,32 +32,29 @@ class UnitsController < ApplicationController
   def update
     if @unit.update(unit_params.except(:base_id))
       flash.now[:notice] = t('.success', unit: @unit)
-      run_and_render :index
     else
       render :edit
     end
   end
 
+  # TODO: Avoid double table width change by first un-hiding table header,
+  # then displaying index, e.g. by re-displaying header in index
   def rebase
     permitted = params.require(:unit).permit(:base_id)
     permitted.merge!(multiplier: 1) if permitted[:base_id].blank? && @unit.multiplier != 1
 
+    @previous_base = @unit.base
     @unit.update!(permitted)
 
+    @before = @unit.successive
     if @unit.multiplier_previously_changed?
       flash.now[:notice] = t(".multiplier_reset", unit: @unit)
     end
-  ensure
-    # TODO: Avoid double table width change by first un-hiding table header,
-    # then displaying index, e.g. by re-displaying header in index
-    run_and_render :index
   end
 
   def destroy
     @unit.destroy!
     flash.now[:notice] = t('.success', unit: @unit)
-  ensure
-    run_and_render :index
   end
 
   private

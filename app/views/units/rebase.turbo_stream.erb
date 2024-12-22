@@ -1,1 +1,4 @@
-<% render_errors @unit %>
+<%= turbo_stream.remove @unit %>
+<%= turbo_stream.replace @previous_base unless @previous_base.nil? %>
+<%= turbo_stream.replace @unit.base unless @unit.base.nil? || @previous_base == @unit.base %>
+<%= @before.nil? ? turbo_stream.append(:units, @unit) : turbo_stream.before(@before, @unit) %>
