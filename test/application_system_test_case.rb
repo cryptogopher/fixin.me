@@ -40,11 +40,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   #  label "<a> tag with [disabled] attribute"
   #end
 
-  test "click disabled link" do
+  #test "click disabled link" do
     # Link should be unclickable
     # assert_raises(Selenium::WebDriver::Error::ElementClickInterceptedError) do
     #   # Use custom selector for disabled links
     #   find('a[disabled]').click
     # end
-  end
+  #end
 end

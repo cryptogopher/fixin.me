@@ -136,9 +136,9 @@ class UnitsTest < ApplicationSystemTestCase
     within('tbody tr:has(input[type=text])') { assert_selector ':focus' }
   end
 
-  test "edit" do
+  #test "edit" do
     # NOTE: Check if displayed attributes match record
-  end
+  #end
 
   # NOTE: extend with any add/edit link
   test "close new unit form with escape key" do
@@ -160,6 +160,6 @@ class UnitsTest < ApplicationSystemTestCase
     assert_selector 'tbody > tr:has(input, textarea)'
   end
 
-  test "destroy" do
-  end
+  #test "destroy" do
+  #end
 end
