@@ -446,6 +446,11 @@ table.items input[type=submit] {
   font-weight: normal;
   padding: 0.3em;
 }
+table.items input:not([type=submit]):not([type=checkbox]),
+table.items select,
+table.items textarea {
+  padding-block: 0.375em;
+}
 /* TODO: find a way (layers?) to style inputs differently while making sure
  * hover works properly without using :not(:hover) selectors here. */
 table.items .button:not(:hover),
