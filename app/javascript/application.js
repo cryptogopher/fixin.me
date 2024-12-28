@@ -34,6 +34,13 @@ Turbo.StreamActions.hide = function() {
 
 Turbo.StreamActions.close_form = function() {
   this.targetElements.forEach((e) => {
+    /* Move focus if there's no focus or focus inside form being closed */
+    const focused = document.activeElement
+    if (!focused || (focused == document.body) || e.contains(focused)) {
+      let nextForm = e.parentElement.querySelector(`#${e.id} ~ tr:has([autofocus])`)
+      nextForm ??= e.parentElement.querySelector("tr:has([autofocus])")
+      nextForm?.querySelector("[autofocus]").focus()
+    }
     document.getElementById(e.getAttribute("data-form")).remove()
     if (e.hasAttribute("data-link")) {
       this.enableElement(document.getElementById(e.getAttribute("data-link")))

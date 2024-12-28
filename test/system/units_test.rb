@@ -101,9 +101,7 @@ class UnitsTest < ApplicationSystemTestCase
     end
   end
 
-  # TODO: add non-empty form closing warning
-  test "new and edit disallow opening multiple forms" do
-    # Once new/edit form is open, attempt to open another one will close it
+  test "new and edit allow opening multiple forms" do
     links = {}
     targets = {}
     LINK_LABELS.each_pair do |type, labels|
@@ -111,14 +109,16 @@ class UnitsTest < ApplicationSystemTestCase
       targets[type] = links[type].sample
     end
     # Define tr count change depending on link clicked
-    row_change = {new_unit: 1, new_subunit: 1, edit: 0}
+    tr_diff = {new_unit: 1, new_subunit: 1, edit: 0}
 
     type, link = targets.assoc(targets.keys.sample).tap { |t, _| targets.delete(t) }
-    rows = row_change[type]
-    assert_difference ->{ all('tbody tr').count }, rows do
-      link.click
+    assert_difference ->{ all('tbody tr').count }, tr_diff[type] do
+      assert_difference ->{ all('tbody tr:has(input[type=text])').count }, 1 do
+        link.click
+      end
     end
-    within('tbody tr:has(input[type=text])') { assert_selector ':focus' }
+    form = find('tbody tr:has(input:focus)')
+
     if type == :edit
       assert !link.visible?
       [:new_subunit, :edit].each do |t|
@@ -130,10 +130,12 @@ class UnitsTest < ApplicationSystemTestCase
 
     targets.merge([:new_subunit, :edit].map { |t| [t, links[t].sample] }.to_h)
     type, link = targets.assoc(targets.keys.sample)
-    assert_difference ->{ all('tbody tr').count }, row_change[type] - rows do
-      link.click
+    assert_difference ->{ all('tbody tr').count }, tr_diff[type] do
+      assert_difference ->{ all('tbody tr:has(input[type=text])').count }, 1 do
+        link.click
+      end
     end
-    within('tbody tr:has(input[type=text])') { assert_selector ':focus' }
+    assert_not_equal form, find('tbody tr:has(input:focus)')
   end
 
   #test "edit" do

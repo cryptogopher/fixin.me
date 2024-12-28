@@ -65,7 +65,9 @@ module ApplicationHelper
   end
 
   def tabular_fields_for(record_name, record_object = nil, options = {}, &block)
-    options.merge! builder: TabularFormBuilder
+    # skip_default_ids causes turbo to generate unique ID for element with [autofocus].
+    # Otherwise IDs are not unique when multiple forms are open and the first input gets focus.
+    options.merge! builder: TabularFormBuilder, skip_default_ids: true
     render_errors(record_name)
     fields_for(record_name, record_object, **options, &block)
   end
