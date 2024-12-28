@@ -12,7 +12,7 @@ class Default::UnitsController < ApplicationController
   end
 
   def index
-    @units = current_user.units.defaults_diff.includes(:base).ordered
+    @units = current_user.units.defaults_diff.includes(:base).includes(:subunits).ordered
   end
 
   def import

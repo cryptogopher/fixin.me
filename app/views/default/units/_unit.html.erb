@@ -12,7 +12,7 @@
       <% if current_user.at_least(:admin) %>
         <% if unit.default? %>
           <%= image_button_to t('.delete'), 'delete-outline', default_unit_path(unit),
-            method: :delete %>
+            method: :delete, **disabled_attributes(!unit.movable?) %>
         <% else %>
           <%= image_button_to t('.export'), 'upload-outline', export_default_unit_path(unit),
             disabled_attributes(!unit.portable?) %>

@@ -59,7 +59,7 @@ en:
     no_items: There are no configured units. You can Add some or Import from defaults.
     unit:
       new_subunit: Subunit
-      delete_unit: Delete
+      destroy: Delete
     index:
       new_unit: Add unit
       import_units: Import

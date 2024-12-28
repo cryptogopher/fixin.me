@@ -162,6 +162,13 @@ class UnitsTest < ApplicationSystemTestCase
     assert_selector 'tbody > tr:has(input, textarea)'
   end
 
-  #test "destroy" do
-  #end
+  test "destroy" do
+    link = all(:link_or_button, exact_text: t('units.unit.destroy')).sample
+    label = link.ancestor('tr').first(:link)[:text]
+    assert_difference ->{ @user.units.count }, -1 do
+      link.click
+    end
+    assert_selector 'tbody tr', count: [@user.units.count, 1].max
+    assert_selector '.flash.notice', text: t('units.destroy.success', unit: label)
+  end
 end

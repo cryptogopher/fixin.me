@@ -17,8 +17,8 @@
           id: dom_id(unit, :new, :link), onclick: 'this.blur();', data: {turbo_stream: true} %>
       <% end %>
 
-      <%= image_button_to t('.delete_unit'), 'delete-outline', unit_path(unit),
-        method: :delete %>
+      <%= image_button_to t('.destroy'), 'delete-outline', unit_path(unit),
+        method: :delete, **disabled_attributes(!unit.movable?) %>
     </td>
     <% if unit.movable? %>
       <td class="handle" draggable="true">&#x283F</td>
