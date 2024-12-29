@@ -30,7 +30,7 @@ class UnitsTest < ApplicationSystemTestCase
     visit units_path
     within 'tbody' do
       assert_selector 'tr', count: 1
-      assert_text t('units.index.no_items')
+      assert_text t('units.no_items')
     end
   end
 
@@ -74,7 +74,7 @@ class UnitsTest < ApplicationSystemTestCase
   test "new and edit on validation error" do
     # It's not possible to cause validation error on :edit with single unit
     LINK_LABELS.delete(:edit) unless @user.units.count > 1
-    type, label = LINK_LABELS.assoc(LINK_LABELS.keys.sample)
+    type, label = LINK_LABELS.to_a.sample
     link = all(:link, exact_text: label).sample
     link.click
 
@@ -102,16 +102,15 @@ class UnitsTest < ApplicationSystemTestCase
   end
 
   test "new and edit allow opening multiple forms" do
-    links = {}
-    targets = {}
-    LINK_LABELS.each_pair do |type, labels|
-      links[type] = all(:link_or_button, exact_text: labels).to_a
-      targets[type] = links[type].sample
-    end
+    # Requires at least 1 unit to be able to open 2 forms
+    links = LINK_LABELS.transform_values { |labels| all(:link, exact_text: labels).to_a }
+    random_link = ->{ links.transform_values(&:sample).compact.to_a.sample }
     # Define tr count change depending on link clicked
     tr_diff = {new_unit: 1, new_subunit: 1, edit: 0}
 
-    type, link = targets.assoc(targets.keys.sample).tap { |t, _| targets.delete(t) }
+    type, link = random_link[].tap { |t, l| links[t].delete(l) }
+    subunit_link = link.ancestor('tr')
+      .first(:link, LINK_LABELS[:new_subunit], between: 0..1) if type == :edit
     assert_difference ->{ all('tbody tr').count }, tr_diff[type] do
       assert_difference ->{ all('tbody tr:has(input[type=text])').count }, 1 do
         link.click
@@ -120,16 +119,14 @@ class UnitsTest < ApplicationSystemTestCase
     form = find('tbody tr:has(input:focus)')
 
     if type == :edit
-      assert !link.visible?
-      [:new_subunit, :edit].each do |t|
-        assert_difference(->{ links[t].length }, -1) { links[t].select!(&:visible?) }
-      end
+      refute link.visible?
+      refute subunit_link&.visible?
+      links[:new_subunit].delete(subunit_link)
     else
       assert link[:disabled]
     end
 
-    targets.merge([:new_subunit, :edit].map { |t| [t, links[t].sample] }.to_h)
-    type, link = targets.assoc(targets.keys.sample)
+    type, link = random_link[]
     assert_difference ->{ all('tbody tr').count }, tr_diff[type] do
       assert_difference ->{ all('tbody tr:has(input[type=text])').count }, 1 do
         link.click
