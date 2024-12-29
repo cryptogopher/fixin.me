@@ -3,21 +3,24 @@
     <%= unit %>
   </td>
 
-  <td class="actions">
-    <% unless unit.portable.nil? %>
-      <% if current_user.at_least(:active) && unit.default? %>
-        <%= image_button_to t('.import'), 'download-outline', import_default_unit_path(unit),
-          disabled_attributes(!unit.portable?) %>
-      <% end %>
-      <% if current_user.at_least(:admin) %>
+  <% if current_user.at_least(:active) %>
+    <td class="actions">
+      <% unless unit.portable.nil? %>
         <% if unit.default? %>
-          <%= image_button_to t('.delete'), 'delete-outline', default_unit_path(unit),
-            method: :delete, **disabled_attributes(!unit.movable?) %>
-        <% else %>
-          <%= image_button_to t('.export'), 'upload-outline', export_default_unit_path(unit),
+          <%= image_button_to t('.import'), 'download-outline', import_default_unit_path(unit),
             disabled_attributes(!unit.portable?) %>
         <% end %>
+
+        <% if current_user.at_least(:admin) %>
+          <% if unit.default? %>
+            <%= image_button_to t('.delete'), 'delete-outline', default_unit_path(unit),
+              method: :delete, **disabled_attributes(!unit.movable?) %>
+          <% else %>
+            <%= image_button_to t('.export'), 'upload-outline', export_default_unit_path(unit),
+              disabled_attributes(!unit.portable?) %>
+          <% end %>
+        <% end %>
       <% end %>
-    <% end %>
-  </td>
+    </td>
+  <% end %>
 <% end %>

@@ -355,7 +355,7 @@ table.items td:last-child {
 }
 table.items td {
   border-top: solid 1px var(--color-border-gray);
-  min-height: 2.4em;
+  height: 2.4em;
   padding-block: 0.1em;
 }
 /* For <a> to fill <td> completely, we use an ::after pseudoelement. */
