@@ -16,13 +16,6 @@
  *= require_self
  */
 
-/* Colors:
- *   dark blue: #006c9b
- *   light blue: #009ade
- *   dark red: #b21237
- *   light red: #ff1f5b
- * */
-
 :root {
   --color-focus-gray: #f3f3f3;
   --color-border-gray: #dddddd;
@@ -30,6 +23,11 @@
   --color-gray: #a0a0a0;
   --color-table-gray: #909090;
   --color-text-gray: #707070;
+
+  --color-dark-blue: #006c9b;
+  --color-blue: #009ade;
+  --color-dark-red: #b21237;
+  --color-red: #ff1f5b;
 
   --z-index-flashes: 100;
   --z-index-table-row-outline: 10;
@@ -41,7 +39,7 @@
   box-sizing: border-box;
 }
 ::selection {
-  background-color: #009ade;
+  background-color: var(--color-blue);
   color: white;
 }
 :focus-visible {
@@ -132,18 +130,18 @@ input[type=submit]:focus-visible {
 .button:hover,
 button:hover,
 input[type=submit]:hover {
-  background-color: #009ade;
-  border-color: #009ade;
+  background-color: var(--color-blue);
+  border-color: var(--color-blue);
   color: white;
   fill: white;
 }
 .dangerous:hover {
-  background-color: #ff1f5b;
-  border-color: #ff1f5b;
+  background-color: var(--color-red);
+  border-color: var(--color-red);
 }
 
 input[type=checkbox] {
-  accent-color: #009ade;
+  accent-color: var(--color-blue);
   appearance: none;
   -webkit-appearance: none;
   display: flex;
@@ -158,8 +156,8 @@ input[type=checkbox]:checked {
 input:hover,
 select:hover,
 textarea:hover {
-  border-color: #009ade;
-  outline: solid 1px #009ade;
+  border-color: var(--color-blue);
+  outline: solid 1px var(--color-blue);
 }
 select:hover {
   cursor: pointer;
@@ -168,7 +166,7 @@ input:focus-visible,
 select:focus-within,
 select:focus-visible,
 textarea:focus-visible {
-  accent-color: #006c9b;
+  accent-color: var(--color-dark-blue);
   background-color: var(--color-focus-gray);
 }
 input[type=text]:read-only,
@@ -205,9 +203,9 @@ textarea:read-only {
   background-color: var(--color-focus-gray);
 }
 .navigation > .tab.active {
-  border-bottom: solid 4px #009ade;
-  color: #009ade;
-  fill: #009ade;
+  border-bottom: solid 4px var(--color-blue);
+  color: var(--color-blue);
+  fill: var(--color-blue);
 }
 
 
@@ -249,8 +247,8 @@ textarea:read-only {
   width: 1.4em;
 }
 .flash.alert {
-  border-color: #ff1f5b;
-  background-color: #ff1f5b;
+  border-color: var(--color-red);
+  background-color: var(--color-red);
 }
 .flash.notice:before {
   content: url('pictograms/check-circle-outline.svg');
@@ -259,8 +257,8 @@ textarea:read-only {
   width: 1.4em;
 }
 .flash.notice {
-  border-color: #009ade;
-  background-color: #009ade;
+  border-color: var(--color-blue);
+  background-color: var(--color-blue);
 }
 .flash > div {
   grid-column: 2;
@@ -297,7 +295,7 @@ form label.required {
 }
 form label.error,
 form td.error::after {
-  color: #ff1f5b;
+  color: var(--color-red);
 }
 form td.error {
   display: -webkit-box;
@@ -391,7 +389,7 @@ table.items tr.dropzone::after {
   content: '';
   inset: 1px 0 0 0;
   position: absolute;
-  outline: dashed 2px #009ade;
+  outline: dashed 2px var(--color-blue);
   outline-offset: -1px;
   z-index: var(--z-index-table-row-outline);
 }
@@ -412,13 +410,13 @@ table.items td.link a:hover:focus-visible {
   text-underline-offset: 0.2rem;
 }
 table.items td.link a:hover {
-  color: #009ade;
+  color: var(--color-blue);
 }
 table.items td.link a:focus-visible {
   text-decoration-color: var(--color-gray);
 }
 table.items td.link a:hover:focus-visible {
-  color: #006c9b;
+  color: var(--color-dark-blue);
 }
 
 table.items td:not(:first-child),
