@@ -56,24 +56,64 @@ module ApplicationHelper
   end
 
   class TabularFormBuilder < ActionView::Helpers::FormBuilder
+    def initialize(...)
+      super(...)
+      @default_options.merge!(@options.slice(:form))
+    end
+
+    [:text_field, :password_field, :text_area].each do |selector|
+      class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+        def #{selector}(method, options = {})
+          options[:maxlength] ||= object.class.type_for_attribute(method).limit
+          if object.errors.include?(method)
+            options[:pattern] = except_pattern(object.public_send(method), options[:pattern])
+          end
+          super
+        end
+      RUBY_EVAL
+    end
+
+    def number_field(method, options = {})
+      value = object.public_send(method)
+      if value.is_a? BigDecimal
+        options[:value] = value.to_scientific
+        type = object.class.type_for_attribute(method)
+        options[:step] ||= BigDecimal(10).power(-type.scale)
+        options[:max] ||= BigDecimal(10).power(type.precision - type.scale) - options[:step]
+        options[:min] = options[:min] == :step ? options[:step] : options[:min] || -options[:max]
+      end
+      super
+    end
+
+    def button(value = nil, options = {}, &block)
+      # button does not use #objectify_options
+      options.merge!(@options.slice(:form))
+      super
+    end
+
     private
 
     def submit_default_value
       svg_name = object ? (object.persisted? ? 'update' : 'plus-circle-outline') : ''
       @template.svg_tag("pictograms/#{svg_name}") + super
     end
+
+    def except_pattern(value, pattern = nil)
+      "(?!^#{Regexp.escape(value)}$)" + (pattern || ".*")
+    end
   end
 
   def tabular_fields_for(record_name, record_object = nil, options = {}, &block)
     # skip_default_ids causes turbo to generate unique ID for element with [autofocus].
     # Otherwise IDs are not unique when multiple forms are open and the first input gets focus.
+    record_object, options = nil, record_object if record_object.is_a? Hash
     options.merge! builder: TabularFormBuilder, skip_default_ids: true
     render_errors(record_name)
     fields_for(record_name, record_object, **options, &block)
   end
 
   def tabular_form_with(**options, &block)
-    options.merge! builder: TabularFormBuilder
+    options = options.deep_merge builder: TabularFormBuilder, html: {autocomplete: 'off'}
     form_with(**options, &block)
   end
 
@@ -150,11 +190,5 @@ module ApplicationHelper
 
   def disabled_attributes(disabled)
     disabled ? {disabled: true, aria: {disabled: true}, tabindex: -1} : {}
-  end
-
-  def number_attributes(type)
-    step = BigDecimal(10).power(-type.scale)
-    max = BigDecimal(10).power(type.precision - type.scale) - step
-    {min: -max, max: max, step: step}
   end
 end

@@ -159,6 +159,12 @@ textarea:hover {
   border-color: var(--color-blue);
   outline: solid 1px var(--color-blue);
 }
+input:invalid,
+select:invalid,
+textarea:invalid {
+  border-color: var(--color-red);
+  outline: solid 1px var(--color-red);
+}
 select:hover {
   cursor: pointer;
 }
