@@ -20,10 +20,10 @@ Rails.application.routes.draw do
 
   unauthenticated do
     as :user do
-      root to: 'devise/sessions#new'
+      root to: redirect('/sign_in')
     end
   end
-  root to: 'units#index', as: :user_root
+  root to: redirect('/units'), as: :user_root
 
   direct(:source_code) { 'https://gitea.michalczyk.pro/fixin.me/fixin.me' }
   direct(:issue_tracker) { 'https://gitea.michalczyk.pro/fixin.me/fixin.me/issues' }
