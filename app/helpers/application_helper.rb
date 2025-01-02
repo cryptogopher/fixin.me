@@ -131,7 +131,7 @@ module ApplicationHelper
 
     menu_tabs.map do |name, image, status, css_class|
       if current_user.at_least(status)
-        link_to svg_tag("pictograms/#{image}") + t(".#{name}"),
+        link_to svg_tag("pictograms/#{image}") + t("#{name}.navigation"),
           {controller: "/#{name}", action: "index"},
           class: class_names('tab', css_class, active: name == current_tab)
       end

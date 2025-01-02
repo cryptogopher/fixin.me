@@ -53,9 +53,8 @@ en:
       revert: Revert
       sign_out: Sign out
       source_code: Get code
-      units: Units
-      users: Users
   units:
+    navigation: Units
     no_items: There are no configured units. You can Add some or Import from defaults.
     unit:
       new_subunit: Subunit
@@ -92,6 +91,7 @@ en:
       destroy:
         success: Deleted unit "%{unit}"
   users:
+    navigation: Users
     index:
       disguise: View as
     passwords:
