@@ -18,9 +18,12 @@ Rails.application.routes.draw do
     collection { get :revert }
   end
 
-  devise_scope :user do
-    root to: "devise/sessions#new"
+  unauthenticated do
+    as :user do
+      root to: 'devise/sessions#new'
+    end
   end
+  root to: 'units#index', as: :user_root
 
   direct(:source_code) { "https://gitea.michalczyk.pro/fixin.me/fixin.me" }
   direct(:issue_tracker) { "https://gitea.michalczyk.pro/fixin.me/fixin.me/issues" }
