@@ -51,7 +51,7 @@ module ApplicationHelper
   end
 
   def labelled_form_for(record, options = {}, &block)
-    options.merge! builder: LabelledFormBuilder
+    options = options.deep_merge builder: LabelledFormBuilder, data: {turbo: false}
     form_for(record, **options) { |f| f.form_for(&block) }
   end
 

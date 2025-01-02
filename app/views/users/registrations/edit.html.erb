@@ -5,7 +5,8 @@
 
 <div class="rightside buttongrid">
   <%= image_button_to t(".delete"), "account-remove-outline", user_registration_path,
-    method: :delete, form_class: 'tools', onclick: {confirm: t(".confirm_delete")} %>
+    form_class: 'tools', method: :delete, data: {turbo: false},
+    onclick: {confirm: t(".confirm_delete")} %>
 </div>
 
 <%= labelled_form_for resource, url: registration_path(resource),

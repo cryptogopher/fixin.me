@@ -34,7 +34,7 @@
           <%= image_link_to t(".revert"), "incognito-off", revert_users_path %>
         <% else %>
           <%= image_button_to t(".sign_out"), "logout", destroy_user_session_path,
-            method: :delete %>
+            method: :delete, data: {turbo: false} %>
         <% end %>
       <% else %>
         <%= image_link_to_unless_current(t(:sign_in), "login", new_user_session_path) {} %>
