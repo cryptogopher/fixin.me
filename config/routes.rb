@@ -25,6 +25,6 @@ Rails.application.routes.draw do
   end
   root to: 'units#index', as: :user_root
 
-  direct(:source_code) { "https://gitea.michalczyk.pro/fixin.me/fixin.me" }
-  direct(:issue_tracker) { "https://gitea.michalczyk.pro/fixin.me/fixin.me/issues" }
+  direct(:source_code) { 'https://gitea.michalczyk.pro/fixin.me/fixin.me' }
+  direct(:issue_tracker) { 'https://gitea.michalczyk.pro/fixin.me/fixin.me/issues' }
 end
