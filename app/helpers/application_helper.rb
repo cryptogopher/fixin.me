@@ -179,7 +179,7 @@ module ApplicationHelper
 
   def render_no_items
     tag.tr id: :no_items do
-      tag.td t("#{controller_name}.no_items"), colspan: 10, class: 'hint'
+      tag.td t("#{controller_path.tr('/', '.')}.no_items"), colspan: 10, class: 'hint'
     end
   end
 

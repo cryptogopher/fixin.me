@@ -75,6 +75,7 @@ en:
       success: Deleted unit "%{unit}"
   default:
     units:
+      no_items: There are no importable defaults or exportable units.
       unit:
         delete: Delete
         export: Export
