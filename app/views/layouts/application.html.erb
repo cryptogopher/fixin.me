@@ -29,7 +29,7 @@
             class: "extendedright" %>
       <% if user_signed_in? %>
         <%= image_link_to_unless_current(current_user, "account-wrench-outline",
-          edit_user_registration_path) {} %>
+          edit_user_registration_path) %>
         <% if current_user_disguised? %>
           <%= image_link_to t(".revert"), "incognito-off", revert_users_path %>
         <% else %>
@@ -37,9 +37,9 @@
             method: :delete, data: {turbo: false} %>
         <% end %>
       <% else %>
-        <%= image_link_to_unless_current(t(:sign_in), "login", new_user_session_path) {} %>
+        <%= image_link_to_unless_current(t(:sign_in), "login", new_user_session_path) %>
         <%= image_link_to_unless_current(t(:register), "account-plus-outline",
-          new_user_registration_path) {} %>
+          new_user_registration_path) %>
       <% end %>
     </header>
 

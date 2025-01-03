@@ -138,29 +138,28 @@ module ApplicationHelper
     end.join.html_safe
   end
 
-  [:button_to, :link_to, :link_to_unless_current].each do |method_name|
-    class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
-      def image_#{method_name}(name, image = nil, options = nil, html_options = {}, &block)
-        name = name.to_s
-        name = svg_tag("pictograms/\#{image}") + name if image
+  def image_button_to(name, image = nil, options = nil, html_options = {})
+    name, html_options = link_or_button_options(:button, name, image, html_options)
+    button_to name, options, html_options
+  end
 
-        html_options[:class] = class_names(
-          html_options[:class],
-          'button',
-          dangerous: html_options[:method] == :delete
-        )
-        if html_options[:onclick]&.is_a? Hash
-          html_options[:onclick] = "return confirm('\#{html_options[:onclick][:confirm]}');"
-        end
+  def image_link_to(name, image = nil, options = nil, html_options = {})
+    name, html_options = link_or_button_options(:link, name, image, html_options)
+    link_to name, options, html_options
+  end
 
-        if __method__.start_with?('image_link_to') &&
-             !(html_options[:onclick] || html_options.dig(:data, :turbo_stream))
-          name = name + '...'
-        end
+  DISABLED_ATTRIBUTES = {disabled: true, aria: {disabled: true}, tabindex: -1}
 
-        send :#{method_name}, name, options, html_options, &block
-      end
-    RUBY_EVAL
+  def image_button_to_if(condition, name, image = nil, options = nil, html_options = {})
+    name, html_options = link_or_button_options(:button, name, image, html_options)
+    html_options = html_options.deep_merge DISABLED_ATTRIBUTES unless condition
+    button_to name, options, html_options
+  end
+
+  def image_link_to_unless_current(name, image = nil, options = nil, html_options = {})
+    name, html_options = link_or_button_options(:link, name, image, html_options)
+    html_options = html_options.deep_merge DISABLED_ATTRIBUTES if current_page?(options)
+    link_to name, options, html_options
   end
 
   def render_errors(record)
@@ -188,7 +187,25 @@ module ApplicationHelper
     "Turbo.renderStreamMessage('#{j(render partial: partial, locals: locals)}'); return false;"
   end
 
-  def disabled_attributes(disabled)
-    disabled ? {disabled: true, aria: {disabled: true}, tabindex: -1} : {}
+  private
+
+  def link_or_button_options(type, name, image = nil, html_options)
+    name = (image ? svg_tag("pictograms/#{image}") : '') + name.to_s
+
+    html_options[:class] = class_names(
+      html_options[:class],
+      'button',
+      dangerous: html_options[:method] == :delete
+    )
+
+    if html_options[:onclick]&.is_a? Hash
+      html_options[:onclick] = "return confirm('\#{html_options[:onclick][:confirm]}');"
+    end
+
+    if type == :link && !(html_options[:onclick] || html_options.dig(:data, :turbo_stream))
+      name += '...'
+    end
+
+    [name, html_options]
   end
 end

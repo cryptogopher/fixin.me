@@ -7,17 +7,17 @@
     <td class="actions">
       <% unless unit.portable.nil? %>
         <% if unit.default? %>
-          <%= image_button_to t('.import'), 'download-outline', import_default_unit_path(unit),
-            disabled_attributes(!unit.portable?) %>
+          <%= image_button_to_if unit.portable?, t('.import'), 'download-outline',
+            import_default_unit_path(unit) %>
         <% end %>
 
         <% if current_user.at_least(:admin) %>
           <% if unit.default? %>
-            <%= image_button_to t('.delete'), 'delete-outline', default_unit_path(unit),
-              method: :delete, **disabled_attributes(!unit.movable?) %>
+            <%= image_button_to_if unit.movable?, t('.delete'), 'delete-outline',
+              default_unit_path(unit), method: :delete %>
           <% else %>
-            <%= image_button_to t('.export'), 'upload-outline', export_default_unit_path(unit),
-              disabled_attributes(!unit.portable?) %>
+            <%= image_button_to_if unit.portable?, t('.export'), 'upload-outline',
+              export_default_unit_path(unit) %>
           <% end %>
         <% end %>
       <% end %>
