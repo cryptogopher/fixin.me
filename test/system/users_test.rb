@@ -47,7 +47,7 @@ class UsersTest < ApplicationSystemTestCase
     assert_emails 1 do
       click_on t("users.passwords.edit.update_password")
       # Wait until redirected to make sure async request has been processed
-      assert_current_path /#{users_path}|#{edit_user_registration_path}/
+      assert_current_path units_path
     end
     assert_text t("devise.passwords.updated")
   end
@@ -99,7 +99,7 @@ class UsersTest < ApplicationSystemTestCase
 
   test "show profile" do
     sign_in user: users.select(&:admin?).select(&:confirmed?).sample
-    click_on t("layouts.application.users")
+    click_on t("users.navigation")
     within all('tr').drop(1).sample do |tr|
       email = first(:link).text
       click_on email
@@ -111,11 +111,12 @@ class UsersTest < ApplicationSystemTestCase
     user = users.select(&:admin?).select(&:confirmed?).sample
     sign_in user: user
 
-    click_on t("layouts.application.users")
-    all(:link_or_button, text: t("users.index.disguise")).sample.click
-    assert_current_path edit_user_registration_path
-    # TODO: test for "Profile" link button after root_url changed to different
-    # path then profile in routes.rb
+    click_on t("users.navigation")
+    link = all(:link_or_button, text: t("users.index.disguise")).sample
+    email = link.ancestor('tr').first(:link)[:text]
+    link.click
+    assert_current_path units_path
+    assert_link email
 
     click_on t("layouts.application.revert")
     assert_current_path users_path
@@ -126,7 +127,7 @@ class UsersTest < ApplicationSystemTestCase
     user = users.select(&:admin?).select(&:confirmed?).sample
     sign_in user: user
 
-    click_on t("layouts.application.users")
+    click_on t("users.navigation")
     text = t("users.index.disguise")
     # Pick row without 'disguise' button
     undisguisable = all(:xpath, "//tbody//tr[not(descendant::*[contains(text(),\"#{text}\")])]")
