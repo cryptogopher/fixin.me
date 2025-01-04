@@ -13,7 +13,7 @@ class Unit < ApplicationRecord
     length: {maximum: type_for_attribute(:symbol).limit}
   validates :description, length: {maximum: type_for_attribute(:description).limit}
   validates :multiplier, numericality: {equal_to: 1}, unless: :base
-  validates :multiplier, numericality: {other_than: 0, precision: true, scale: true}, if: :base
+  validates :multiplier, numericality: {greater_than: 0, precision: true, scale: true}, if: :base
 
   scope :defaults, ->{ where(user: nil) }
   scope :defaults_diff, ->{
