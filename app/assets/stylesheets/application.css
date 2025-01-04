@@ -66,6 +66,10 @@ textarea {
   background-color: inherit;
   font: inherit;
 }
+input,
+select {
+  text-align: inherit;
+}
 
 
 /* blue - target for interaction with pointer */
@@ -152,6 +156,17 @@ input[type=checkbox] {
 input[type=checkbox]:checked {
   appearance: checkbox;
   -webkit-appearance: checkbox;
+}
+/* Hide spin buttons in input number fields */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 input:hover,
 select:hover,

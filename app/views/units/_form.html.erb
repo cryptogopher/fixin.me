@@ -8,7 +8,7 @@
     <td>
       <%= form.text_area :description, cols: 30, rows: 1, escape: false %>
     </td>
-    <td>
+    <td class="number">
       <% unless @unit.base.nil? %>
         <%= form.hidden_field :base_id %>
         <%= form.number_field :multiplier, required: true, size: 10, min: :step %>
