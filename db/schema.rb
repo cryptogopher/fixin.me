@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2023_06_02_185352) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_04_194343) do
+  create_table "quantities", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id"
+    t.integer "domain"
+    t.string "name", limit: 31, null: false
+    t.text "description"
+    t.bigint "parent_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_id"], name: "index_quantities_on_parent_id"
+    t.index ["user_id"], name: "index_quantities_on_user_id"
+  end
+
   create_table "units", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "symbol", limit: 15, null: false
@@ -42,5 +54,8 @@ ActiveRecord::Schema[7.2].define(version: 2023_06_02_185352) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "quantities", "quantities", column: "parent_id"
+  add_foreign_key "quantities", "users"
+  add_foreign_key "units", "units", column: "base_id"
   add_foreign_key "units", "users"
 end
