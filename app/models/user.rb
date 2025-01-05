@@ -11,6 +11,7 @@ class User < ApplicationRecord
     disabled: 0,    # administratively disallowed to sign in
   }, default: :active
 
+  has_many :quantities, dependent: :destroy
   has_many :units, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true,
