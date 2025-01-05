@@ -53,6 +53,8 @@ en:
       revert: Revert
       sign_out: Sign out
       source_code: Get code
+  quantities:
+    navigation: Quantities
   units:
     navigation: Units
     no_items: There are no configured units. You can Add some or Import from defaults.

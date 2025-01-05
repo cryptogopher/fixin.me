@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users, path: '', path_names: {registration: 'profile'},
-    controllers: {registrations: :registrations}
+  resources :quantities
 
   resources :units, except: [:show], path_names: {new: '(/:id)/new'} do
     member { post :rebase }
@@ -13,6 +12,8 @@ Rails.application.routes.draw do
     end
   end
 
+  devise_for :users, path: '', path_names: {registration: 'profile'},
+    controllers: {registrations: :registrations}
   resources :users, only: [:index, :show, :update] do
     member { get :disguise }
     collection { get :revert }

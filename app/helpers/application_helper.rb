@@ -125,8 +125,9 @@ module ApplicationHelper
 
   def navigation_menu
     menu_tabs = [
-      ['units', "weight-kilogram", :restricted, 'right'],
-      ['users', "account-multiple-outline", :admin],
+      ['quantities', 'axis-arrow', :restricted, 'right'],
+      ['units', 'weight-gram', :restricted],
+      ['users', 'account-multiple-outline', :admin],
     ]
 
     menu_tabs.map do |name, image, status, css_class|
