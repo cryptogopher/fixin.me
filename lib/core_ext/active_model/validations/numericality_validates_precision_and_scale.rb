@@ -4,6 +4,9 @@ module CoreExt::ActiveModel::Validations::NumericalityValidatesPrecisionAndScale
 
     if options[:precision] || options[:scale]
       attr_type = record.class.type_for_attribute(attr_name)
+      # For conversion of 'value' to BigDecimal 'ndigits' is not supplied intentionally,
+      # to avoid silent rounding. It is only required for conversion from Float and
+      # Rational, which should not happen.
       value = BigDecimal(value) unless value.is_a? BigDecimal
       if options[:precision] && (value.precision > attr_type.precision)
         record.errors.add(attr_name, :precision_exceeded, **filtered_options(attr_type.precision))
