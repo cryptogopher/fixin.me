@@ -12,14 +12,44 @@ class Quantity < ApplicationRecord
 
   scope :defaults, ->{ where(user: nil) }
   scope :ordered, ->{
-    left_outer_joins(:parent).order(ordering)
+    cte = Arel::Table.new('cte')
+    numbered = Arel::Table.new('numbered')
+    Quantity.with(numbered: numbered(:parent_id, :name)).with_recursive(
+      cte:
+      [
+        Arel::SelectManager.new.project(
+          numbered[Arel.star],
+          numbered.cast(numbered[:child_number], 'BINARY').as('path')
+        ).from(numbered).where(numbered[:parent_id].eq(nil)),
+        Arel::SelectManager.new.project(
+          numbered[Arel.star],
+          cte[:path].concat(numbered[:child_number])
+        ).from(numbered).join(cte).on(numbered[:parent_id].eq(cte[:id]))
+      ]
+    ).select(cte[Arel.star]).from(cte).order(cte[:path])
   }
 
-  def self.ordering
-    [arel_table.coalesce(Arel::Table.new(:parents_quantities)[:name], arel_table[:name]),
-     arel_table[:parent_id].not_eq(nil),
-     :name]
-  end
+  scope :numbered, ->(parent_column, order_column){
+    select(
+      arel_table[Arel.star],
+      Arel::Nodes::NamedFunction.new(
+        'LPAD',
+        [
+          Arel::Nodes::NamedFunction.new(
+            'ROW_NUMBER', []
+          ).over(
+            Arel::Nodes::Window.new.partition(parent_column).order(order_column)
+          ),
+          Arel::SelectManager.new.project(
+            Arel::Nodes::NamedFunction.new(
+              'LENGTH', [Arel::Nodes::NamedFunction.new('COUNT', [Arel.star])]
+            )
+          ),
+          Arel::Nodes.build_quoted('0')
+        ],
+      ).as('child_number')
+    )
+  }
 
   def to_s
     name
