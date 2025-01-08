@@ -19,11 +19,13 @@ class Quantity < ApplicationRecord
       [
         Arel::SelectManager.new.project(
           numbered[Arel.star],
-          numbered.cast(numbered[:child_number], 'BINARY').as('path')
+          numbered.cast(numbered[:child_number], 'BINARY').as('path'),
+          Arel::Nodes.build_quoted(0).as('depth')
         ).from(numbered).where(numbered[:parent_id].eq(nil)),
         Arel::SelectManager.new.project(
           numbered[Arel.star],
-          cte[:path].concat(numbered[:child_number])
+          cte[:path].concat(numbered[:child_number]),
+          cte[:depth] + 1
         ).from(numbered).join(cte).on(numbered[:parent_id].eq(cte[:id]))
       ]
     ).select(cte[Arel.star]).from(cte).order(cte[:path])

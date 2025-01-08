@@ -379,7 +379,8 @@ table.items td {
 }
 /* For <a> to fill <td> completely, we use an ::after pseudoelement. */
 table.items td.link {
-  padding: 0 0 0 1em;
+  padding: 0;
+  padding-inline-start: calc(1em + var(--depth) * 0.8em);
   position: relative;
 }
 table.items td.link a {
