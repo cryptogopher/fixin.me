@@ -12,10 +12,9 @@ class Quantity < ApplicationRecord
 
   scope :defaults, ->{ where(user: nil) }
   scope :ordered, ->{
-    cte = Arel::Table.new('cte')
     numbered = Arel::Table.new('numbered')
     Quantity.with(numbered: numbered(:parent_id, :name)).with_recursive(
-      cte:
+      quantities:
       [
         Arel::SelectManager.new.project(
           numbered[Arel.star],
@@ -24,11 +23,11 @@ class Quantity < ApplicationRecord
         ).from(numbered).where(numbered[:parent_id].eq(nil)),
         Arel::SelectManager.new.project(
           numbered[Arel.star],
-          cte[:path].concat(numbered[:child_number]),
-          cte[:depth] + 1
-        ).from(numbered).join(cte).on(numbered[:parent_id].eq(cte[:id]))
+          arel_table[:path].concat(numbered[:child_number]),
+          arel_table[:depth] + 1
+        ).from(numbered).join(arel_table).on(numbered[:parent_id].eq(arel_table[:id]))
       ]
-    ).select(cte[Arel.star]).from(cte).order(cte[:path])
+    ).select(arel_table[Arel.star]).from(arel_table).order(arel_table[:path])
   }
 
   scope :numbered, ->(parent_column, order_column){
@@ -63,5 +62,14 @@ class Quantity < ApplicationRecord
 
   def default?
     parent_id.nil?
+  end
+
+  def successive
+    quantities = Quantity.arel_table
+    Quantity.with(
+      quantities: user.quantities.ordered.select(
+        Arel::Nodes::NamedFunction.new('LAG', [quantities[:id]]).over.as('lag_id')
+      )
+    ).where(quantities[:lag_id].eq(id)).first
   end
 end
