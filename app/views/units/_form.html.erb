@@ -10,7 +10,6 @@
     </td>
     <td class="number">
       <% unless @unit.base.nil? %>
-        <%= form.hidden_field :base_id %>
         <%= form.number_field :multiplier, required: true, size: 10, min: :step %>
       <% end %>
     </td>
