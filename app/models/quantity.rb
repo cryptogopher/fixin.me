@@ -58,12 +58,23 @@ class Quantity < ApplicationRecord
     parent_id.nil?
   end
 
+  # Return: record, its ancestors and succesive record in order of appearance,
+  # including :depth attribute. Used for table view reload.
   def successive
     quantities = Quantity.arel_table
+    ancestors = Arel::Table.new('ancestors')
     Quantity.with(
-      quantities: user.quantities.ordered.select(
+      ancestors: user.quantities.ordered.select(
         Arel::Nodes::NamedFunction.new('LAG', [quantities[:id]]).over.as('lag_id')
       )
-    ).where(quantities[:lag_id].eq(id)).first
+    )
+    .with_recursive(quantities: [
+      Arel::SelectManager.new.project(ancestors[Arel.star]).from(ancestors)
+        .where(ancestors[:id].eq(id).or(ancestors[:lag_id].eq(id))),
+      Arel::SelectManager.new.project(ancestors[Arel.star]).from(ancestors)
+        .join(quantities).on(quantities[:parent_id].eq(ancestors[:id]))
+        .where(quantities[:lag_id].not_eq(id))
+    ]).order(quantities[:path])
+    # return: .first == self ? nul, ancestors : ancestors.pop, ancestors
   end
 end
