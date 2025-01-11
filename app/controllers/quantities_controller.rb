@@ -26,6 +26,18 @@ class QuantitiesController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    if @quantity.update(quantity_params.except(:parent_id))
+      @ancestors = @quantity.ancestors(include_self: true)
+      flash.now[:notice] = t('.success', quantity: @quantity)
+    else
+      render :edit
+    end
+  end
+
   def destroy
     @quantity.destroy!
     @ancestors = @quantity.ancestors

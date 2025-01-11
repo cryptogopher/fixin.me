@@ -84,7 +84,7 @@ class Quantity < ApplicationRecord
       end
   end
 
-  def ancestors
+  def ancestors(include_self: false)
     quantities = Quantity.arel_table
     ancestors = Arel::Table.new('ancestors')
 
@@ -93,7 +93,7 @@ class Quantity < ApplicationRecord
     # amount needed to set biggest negative depth to 0.
     Quantity.with_recursive(ancestors: [
       user.quantities.select(quantities[Arel.star], Arel::Nodes.build_quoted(0).as('depth'))
-        .where(id: parent_id),
+        .where(id: include_self ? id : parent_id),
       user.quantities.select(quantities[Arel.star], ancestors[:depth] - 1)
         .joins(quantities.create_join(
           ancestors, quantities.create_on(quantities[:id].eq(ancestors[:parent_id]))

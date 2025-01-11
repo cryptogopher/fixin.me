@@ -63,6 +63,8 @@ en:
       new_quantity: Add quantity
     create:
       success: Created new quantity "%{quantity}"
+    update:
+      success: Updated quantity "%{quantity}"
     destroy:
       success: Deleted quantity "%{quantity}"
   units:
