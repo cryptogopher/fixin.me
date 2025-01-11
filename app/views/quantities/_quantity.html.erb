@@ -1,0 +1,28 @@
+<%= tag.tr id: dom_id(quantity),
+           ondragstart: 'dragStart(event)', ondragend: 'dragEnd(event)',
+           ondragover: 'dragOver(event)', ondrop: 'drop(event)',
+           ondragenter: 'dragEnter(event)', ondragleave: 'dragLeave(event)',
+           data: {drag_path: rebase_quantity_path(quantity),
+                  drop_id: dom_id(quantity.parent || quantity)} do %>
+
+  <td class="link" style="--depth:<%= quantity.depth %>">
+    <%= link_to quantity, edit_quantity_path(quantity), onclick: 'this.blur();',
+      data: {turbo_stream: true} %>
+  </td>
+  <td><%= quantity.description %></td>
+
+  <% if current_user.at_least(:active) %>
+    <td class="actions">
+      <%= image_link_to t('.new_subquantity'), 'plus-outline', new_quantity_path(quantity),
+        id: dom_id(quantity, :new, :link), onclick: 'this.blur();', data: {turbo_stream: true} %>
+
+      <%= image_button_to_if quantity.movable?, t('.destroy'), 'delete-outline',
+        quantity_path(quantity), method: :delete %>
+    </td>
+    <% if quantity.movable? %>
+      <td class="handle" draggable="true">&#x283F</td>
+    <% else %>
+      <td></td>
+    <% end %>
+  <% end %>
+<% end %>

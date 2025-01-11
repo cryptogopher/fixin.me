@@ -1,0 +1,20 @@
+<% dom_obj = @quantity.parent || @quantity %>
+<% ids = {row: dom_id(dom_obj, :new),
+          hidden_row: nil,
+          link: dom_id(dom_obj, :new, :link),
+          form_tag: dom_id(dom_obj, :new, :form)} %>
+
+<%= turbo_stream.disable ids[:link] -%>
+
+<%= turbo_stream.append :quantity_form do %>
+  <%- tabular_form_with model: @quantity, html: {id: ids[:form_tag]} do |form| %>
+    <%= form.hidden_field :parent_id unless @quantity.parent.nil? %>
+  <% end %>
+<% end %>
+
+<% if @quantity.parent %>
+  <%= turbo_stream.remove ids[:row] %>
+  <%= turbo_stream.after @quantity.parent, partial: 'form', locals: ids %>
+<% else %>
+  <%= turbo_stream.prepend :quantities, partial: 'form', locals: ids %>
+<% end %>

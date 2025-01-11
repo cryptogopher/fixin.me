@@ -1,0 +1,5 @@
+<% @ancestors.map do |ancestor| %>
+  <%= turbo_stream.replace ancestor %>
+<% end %>
+<%= turbo_stream.remove @quantity %>
+<%= turbo_stream.append(:quantities, render_no_items) if current_user.quantities.empty? %>

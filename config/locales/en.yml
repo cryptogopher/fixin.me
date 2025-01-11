@@ -56,8 +56,15 @@ en:
   quantities:
     navigation: Quantities
     no_items: There are no configured quantities. You can Add some or Import from defaults.
+    quantity:
+      new_subquantity: Child
+      destroy: Delete
     index:
-      new_quantity: New quantity
+      new_quantity: Add quantity
+    create:
+      success: Created new quantity "%{quantity}"
+    destroy:
+      success: Deleted quantity "%{quantity}"
   units:
     navigation: Units
     no_items: There are no configured units. You can Add some or Import from defaults.
@@ -68,8 +75,6 @@ en:
       new_unit: Add unit
       import_units: Import
       top_level_drop: Drop here to reposition into top-level unit
-    new:
-      none: none
     create:
       success: Created new unit "%{unit}"
     update:

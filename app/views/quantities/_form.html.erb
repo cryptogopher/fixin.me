@@ -1,0 +1,19 @@
+<%= tabular_fields_for @quantity, form: form_tag do |form| %>
+  <%- tag.tr id: row, class: "form", onkeydown: "processKey(event)",
+    data: {link: link, form: form_tag, hidden_row: hidden_row} do %>
+
+    <td class="<%= class_names({subquantity: @quantity.parent}) %>">
+      <%= form.text_field :name, required: true, autofocus: true, size: 20 %>
+    </td>
+    <td>
+      <%= form.text_area :description, cols: 30, rows: 1, escape: false %>
+    </td>
+
+    <td class="actions">
+      <%= form.button %>
+      <%= image_link_to t(:cancel), "close-outline", quantities_path, class: 'dangerous',
+        name: :cancel, onclick: render_turbo_stream('form_close', {row: row}) %>
+    </td>
+    <td></td>
+  <% end %>
+<% end %>

@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :quantities
+  resources :quantities, except: [:show], path_names: {new: '(/:id)/new'} do
+    member { post :rebase }
+  end
 
   resources :units, except: [:show], path_names: {new: '(/:id)/new'} do
     member { post :rebase }

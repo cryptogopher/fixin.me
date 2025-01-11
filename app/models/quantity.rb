@@ -1,4 +1,6 @@
 class Quantity < ApplicationRecord
+  ATTRIBUTES = [:name, :description, :parent_id]
+
   belongs_to :user, optional: true
   belongs_to :parent, optional: true, class_name: "Quantity"
   has_many :subquantities, class_name: "Quantity", inverse_of: :parent,
@@ -38,7 +40,7 @@ class Quantity < ApplicationRecord
           Arel::Nodes::NamedFunction.new('ROW_NUMBER', [])
             .over(Arel::Nodes::Window.new.partition(parent_column).order(order_column)),
           Arel::SelectManager.new.project(
-            Arel::Nodes::NamedFunction.new('LENGTH', [Arel.star.count])])
+            Arel::Nodes::NamedFunction.new('LENGTH', [Arel.star.count])
           ),
           Arel::Nodes.build_quoted('0')
         ],
@@ -51,30 +53,54 @@ class Quantity < ApplicationRecord
   end
 
   def movable?
-    subunits.empty?
+    subquantities.empty?
   end
 
   def default?
     parent_id.nil?
   end
 
-  # Return: record, its ancestors and succesive record in order of appearance,
-  # including :depth attribute. Used for table view reload.
-  def successive
+  # Return: self, ancestors and successive record in order of appearance,
+  # including :depth attribute. Used for partial view reload.
+  def succ_and_ancestors
     quantities = Quantity.arel_table
     ancestors = Arel::Table.new('ancestors')
+
     Quantity.with(
       ancestors: user.quantities.ordered.select(
         Arel::Nodes::NamedFunction.new('LAG', [quantities[:id]]).over.as('lag_id')
       )
     )
-    .with_recursive(quantities: [
-      Arel::SelectManager.new.project(ancestors[Arel.star]).from(ancestors)
-        .where(ancestors[:id].eq(id).or(ancestors[:lag_id].eq(id))),
-      Arel::SelectManager.new.project(ancestors[Arel.star]).from(ancestors)
-        .join(quantities).on(quantities[:parent_id].eq(ancestors[:id]))
-        .where(quantities[:lag_id].not_eq(id))
-    ]).order(quantities[:path])
-    # return: .first == self ? nul, ancestors : ancestors.pop, ancestors
+      .with_recursive(quantities: [
+        Arel::SelectManager.new.project(ancestors[Arel.star]).from(ancestors)
+          .where(ancestors[:id].eq(id).or(ancestors[:lag_id].eq(id))),
+        Arel::SelectManager.new.project(ancestors[Arel.star]).from(ancestors)
+          .join(quantities).on(quantities[:parent_id].eq(ancestors[:id]))
+          .where(quantities[:lag_id].not_eq(id))])
+      .order(quantities[:path]).to_a
+      .then do |records|
+        [records.last == self ? nil : records.pop, records.pop, records]
+      end
+  end
+
+  def ancestors
+    quantities = Quantity.arel_table
+    ancestors = Arel::Table.new('ancestors')
+
+    # Ancestors are listed bottom up, so it's impossible to know depth at the
+    # start. Start with depth = 0 and count downwards, then adjust by the
+    # amount needed to set biggest negative depth to 0.
+    Quantity.with_recursive(ancestors: [
+      user.quantities.select(quantities[Arel.star], Arel::Nodes.build_quoted(0).as('depth'))
+        .where(id: parent_id),
+      user.quantities.select(quantities[Arel.star], ancestors[:depth] - 1)
+        .joins(quantities.create_join(
+          ancestors, quantities.create_on(quantities[:id].eq(ancestors[:parent_id]))
+        ))
+    ]).select(ancestors[Arel.star]).from(ancestors).to_a.then do |records|
+      records.map(&:depth).min&.abs.then do |maxdepth|
+        records.each { |r| r.depth += maxdepth }
+      end
+    end
   end
 end
