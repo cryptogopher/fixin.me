@@ -9,7 +9,8 @@ class Quantity < ApplicationRecord
   validate if: ->{ parent.present? } do
     errors.add(:parent, :user_mismatch) unless user == parent.user
   end
-  validates :name, presence: true, length: {maximum: type_for_attribute(:name).limit}
+  validates :name, presence: true, uniqueness: {scope: [:user_id, :parent_id]},
+    length: {maximum: type_for_attribute(:name).limit}
   validates :description, length: {maximum: type_for_attribute(:description).limit}
 
   scope :defaults, ->{ where(user: nil) }

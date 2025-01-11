@@ -13,13 +13,13 @@
 ActiveRecord::Schema[7.2].define(version: 2025_01_04_194343) do
   create_table "quantities", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
-    t.integer "domain"
     t.string "name", limit: 31, null: false
     t.text "description"
     t.bigint "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["parent_id"], name: "index_quantities_on_parent_id"
+    t.index ["user_id", "parent_id", "name"], name: "index_quantities_on_user_id_and_parent_id_and_name", unique: true
     t.index ["user_id"], name: "index_quantities_on_user_id"
   end
 
