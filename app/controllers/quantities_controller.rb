@@ -9,7 +9,7 @@ class QuantitiesController < ApplicationController
   end
 
   def index
-    @quantities = current_user.quantities.includes(:parent).includes(:subquantities).ordered
+    @quantities = current_user.quantities.ordered.includes(:parent).includes(:subquantities)
   end
 
   def new
