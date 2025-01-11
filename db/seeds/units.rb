@@ -1,5 +1,6 @@
 Unit.transaction do
   ActiveRecord::Base.connection.truncate(Unit.table_name)
+  units = {}
 
   units['1'] =
     Unit.create symbol: '1',

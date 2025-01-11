@@ -1,5 +1,6 @@
 Unit.transaction do
   ActiveRecord::Base.connection.truncate(Unit.table_name)
+  units = {}
 <% Unit.defaults.ordered.each do |unit| %>
 <%= "\n" if unit.base.nil? %>
   units['<%= unit.symbol %>'] =
