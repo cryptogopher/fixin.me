@@ -13,6 +13,9 @@ class Quantity < ApplicationRecord
     length: {maximum: type_for_attribute(:name).limit}
   validates :description, length: {maximum: type_for_attribute(:description).limit}
 
+  # Not persisted attribute
+  attribute :depth, :integer
+
   scope :defaults, ->{ where(user: nil) }
   scope :ordered, ->{
     numbered = Arel::Table.new('numbered')
@@ -84,7 +87,9 @@ class Quantity < ApplicationRecord
       end
   end
 
-  def ancestors(include_self: false)
+  # Return: ancestors of (possibly destroyed) self; include depths, also on
+  # self (unless destroyed)
+  def ancestors
     quantities = Quantity.arel_table
     ancestors = Arel::Table.new('ancestors')
 
@@ -93,13 +98,14 @@ class Quantity < ApplicationRecord
     # amount needed to set biggest negative depth to 0.
     Quantity.with_recursive(ancestors: [
       user.quantities.select(quantities[Arel.star], Arel::Nodes.build_quoted(0).as('depth'))
-        .where(id: include_self ? id : parent_id),
+        .where(id: parent_id),
       user.quantities.select(quantities[Arel.star], ancestors[:depth] - 1)
         .joins(quantities.create_join(
           ancestors, quantities.create_on(quantities[:id].eq(ancestors[:parent_id]))
         ))
     ]).select(ancestors[Arel.star]).from(ancestors).to_a.then do |records|
       records.map(&:depth).min&.abs.then do |maxdepth|
+        self.depth = (maxdepth || -1) + 1 unless frozen?
         records.each { |r| r.depth += maxdepth }
       end
     end

@@ -31,7 +31,7 @@ class QuantitiesController < ApplicationController
 
   def update
     if @quantity.update(quantity_params.except(:parent_id))
-      @ancestors = @quantity.ancestors(include_self: true)
+      @ancestors = @quantity.ancestors
       flash.now[:notice] = t('.success', quantity: @quantity)
     else
       render :edit
