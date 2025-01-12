@@ -8,6 +8,10 @@ class Quantity < ApplicationRecord
 
   validate if: ->{ parent.present? } do
     errors.add(:parent, :user_mismatch) unless user == parent.user
+    errors.add(:parent, :self_reference) if self == parent
+  end
+  validate if: ->{ parent.present? }, on: :update do
+    errors.add(:parent, :descendant_reference) if ancestor_of?(parent)
   end
   validates :name, presence: true, uniqueness: {scope: [:user_id, :parent_id]},
     length: {maximum: type_for_attribute(:name).limit}
@@ -98,5 +102,16 @@ class Quantity < ApplicationRecord
         records.each { |r| r.depth += maxdepth }
       end
     end
+  end
+
+  def ancestor_of?(descendant)
+    quantities = Quantity.arel_table
+    ancestors = Arel::Table.new('ancestors')
+    Quantity.with_recursive(ancestors: [
+      user.quantities.where(id: descendant.id),
+      user.quantities.joins(quantities.create_join(
+          ancestors, quantities.create_on(quantities[:id].eq(ancestors[:parent_id]))
+      ))
+    ]).from(ancestors).exists?(ancestors: {id: id})
   end
 end

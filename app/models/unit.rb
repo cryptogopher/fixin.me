@@ -7,6 +7,7 @@ class Unit < ApplicationRecord
 
   validate if: ->{ base.present? } do
     errors.add(:base, :user_mismatch) unless user == base.user
+    errors.add(:base, :self_reference) if self == base
     errors.add(:base, :multilevel_nesting) if base.base.present?
   end
   validates :symbol, presence: true, uniqueness: {scope: :user_id},

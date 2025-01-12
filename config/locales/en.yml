@@ -23,11 +23,18 @@ en:
           attributes:
             base:
               multilevel_nesting: has to be a top-level unit
+              self_reference: of an unit cannot be the unit itself
               user_mismatch: has to belong to the same user as unit
             multiplier:
               equal_to: for a top-level unit has to be 1
             symbol:
               taken: has to be unique
+        quantity:
+          attributes:
+            parent:
+              descendant_reference: of the quantity cannot be its descendant
+              self_reference: of the quantitiy cannot be the quantity itself
+              user_mismatch: has to belong to the same user as quantity
   actioncontroller:
     exceptions:
       status:
