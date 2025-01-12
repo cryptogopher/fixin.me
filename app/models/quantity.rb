@@ -66,25 +66,14 @@ class Quantity < ApplicationRecord
 
   # Return: self, ancestors and successive record in order of appearance,
   # including :depth attribute. Used for partial view reload.
-  def succ_and_ancestors
+  def successive
     quantities = Quantity.arel_table
-    ancestors = Arel::Table.new('ancestors')
 
     Quantity.with(
-      ancestors: user.quantities.ordered.select(
+      quantities: user.quantities.ordered.select(
         Arel::Nodes::NamedFunction.new('LAG', [quantities[:id]]).over.as('lag_id')
       )
-    )
-      .with_recursive(quantities: [
-        Arel::SelectManager.new.project(ancestors[Arel.star]).from(ancestors)
-          .where(ancestors[:id].eq(id).or(ancestors[:lag_id].eq(id))),
-        Arel::SelectManager.new.project(ancestors[Arel.star]).from(ancestors)
-          .join(quantities).on(quantities[:parent_id].eq(ancestors[:id]))
-          .where(quantities[:lag_id].not_eq(id))])
-      .order(quantities[:path]).to_a
-      .then do |records|
-        [records.last == self ? nil : records.pop, records.pop, records]
-      end
+    ).where(quantities[:lag_id].eq(id)).first
   end
 
   # Return: ancestors of (possibly destroyed) self; include depths, also on

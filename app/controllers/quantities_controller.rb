@@ -19,7 +19,8 @@ class QuantitiesController < ApplicationController
   def create
     @quantity = current_user.quantities.new(quantity_params)
     if @quantity.save
-      @before, @quantity, @ancestors = @quantity.succ_and_ancestors
+      @before = @quantity.successive
+      @ancestors = @quantity.ancestors
       flash.now[:notice] = t('.success', quantity: @quantity)
     else
       render :new
