@@ -1,9 +1,10 @@
 <%= tag.tr id: dom_id(quantity),
-           ondragstart: 'dragStart(event)', ondragend: 'dragEnd(event)',
-           ondragover: 'dragOver(event)', ondrop: 'drop(event)',
-           ondragenter: 'dragEnter(event)', ondragleave: 'dragLeave(event)',
-           data: {drag_path: rebase_quantity_path(quantity),
-                  drop_id: dom_id(quantity.parent || quantity)} do %>
+           ondragstart: "dragStart(event)", ondragend: "dragEnd(event)",
+           ondragover: "dragOver(event)", ondrop: "drop(event)",
+           ondragenter: "dragEnter(event)", ondragleave: "dragLeave(event)",
+           data: {drag_path: reparent_quantity_path(quantity),
+                  drop_id: dom_id(quantity.parent || quantity),
+                  drop_id_param: "quantity[parent_id]"} do %>
 
   <td class="link" style="--depth:<%= quantity.depth %>">
     <%= link_to quantity, edit_quantity_path(quantity), onclick: 'this.blur();',

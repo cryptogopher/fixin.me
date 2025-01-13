@@ -19,10 +19,10 @@
         <th></th>
       <% end %>
     </tr>
-    <%= tag.tr id: 'unit_', hidden: true,
-               ondragover: 'dragOver(event)', ondrop: 'drop(event)',
-               ondragenter: 'dragEnter(event)', ondragleave: 'dragLeave(event)',
-               data: {drop_id: 'unit_'} do %>
+    <%= tag.tr id: "unit_", hidden: true,
+               ondragover: "dragOver(event)", ondrop: "drop(event)",
+               ondragenter: "dragEnter(event)", ondragleave: "dragLeave(event)",
+               data: {drop_id: "unit_", drop_id_param: "unit[base_id]"} do %>
       <th colspan="5"><%= t '.top_level_drop' %></th>
     <% end %>
   </thead>
@@ -30,81 +30,3 @@
     <%= render(@units) || render_no_items %>
   </tbody>
 </table>
-
-<%= javascript_tag do %>
-  function processKey(event) {
-    if (event.key == "Escape") {
-      event.currentTarget.querySelector("a[name=cancel]").click();
-    }
-  }
-
-  var lastEnterTime;
-  function dragStart(event) {
-    lastEnterTime = event.timeStamp;
-    var row = event.currentTarget;
-    row.closest("table").querySelectorAll("thead tr").forEach((tr) => {
-      tr.toggleAttribute("hidden");
-    });
-    event.dataTransfer.setData("text/plain", row.getAttribute("data-drag-path"));
-    var rowRectangle = row.getBoundingClientRect();
-    event.dataTransfer.setDragImage(row, event.x - rowRectangle.left, event.y - rowRectangle.top);
-    event.dataTransfer.dropEffect = "move";
-  }
-
-  /*
-  * Drag tracking assumptions (based on FF 122.0 experience):
-  *   * Enter/Leave events at the same timeStamp may not be logically ordered
-  *     (e.g. E -> E -> L, not E -> L -> E),
-  *   * not every Enter event has corresponding Leave event, especially during
-  *     rapid pointer moves
-  * NOTE: sometimes Leave is not emitted when pointer goes fast over table
-  * and outside. This should probably be fixed in browser, than patched here.
-  */
-  function dragEnter(event) {
-    //console.log(event.timeStamp + " " + event.type + ": " + event.currentTarget.id);
-    dragLeave(event);
-    lastEnterTime = event.timeStamp;
-    const id = event.currentTarget.getAttribute("data-drop-id");
-    document.getElementById(id).classList.add("dropzone");
-  }
-
-  function dragOver(event) {
-    event.preventDefault();
-  }
-
-  function dragLeave(event) {
-    //console.log(event.timeStamp + " " + event.type + ": " + event.currentTarget.id);
-    // Leave has been accounted for by Enter at the same timestamp, processed earlier
-    if (event.timeStamp <= lastEnterTime) return;
-    event.currentTarget.closest("table").querySelectorAll(".dropzone").forEach((tr) => {
-      tr.classList.remove("dropzone");
-    })
-  }
-
-  function dragEnd(event) {
-    dragLeave(event);
-    event.currentTarget.closest("table").querySelectorAll("thead tr").forEach((tr) => {
-      tr.toggleAttribute("hidden");
-    });
-  }
-
-  function drop(event) {
-    event.preventDefault();
-
-    var params = new URLSearchParams();
-    var base_id = event.currentTarget.getAttribute("data-drop-id").split("_").pop();
-    params.append("unit[base_id]", base_id);
-
-    fetch(event.dataTransfer.getData("text/plain"), {
-      body: params,
-      headers: {
-        "Accept": "text/vnd.turbo-stream.html",
-        "X-CSRF-Token": document.head.querySelector("meta[name=csrf-token]").content,
-        "X-Requested-With": "XMLHttpRequest"
-      },
-      method: "POST"
-    })
-    .then(response => response.text())
-    .then(html => Turbo.renderStreamMessage(html))
-  }
-<% end %>
