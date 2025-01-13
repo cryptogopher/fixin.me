@@ -21,19 +21,21 @@ class Quantity < ApplicationRecord
   attribute :depth, :integer
 
   scope :defaults, ->{ where(user: nil) }
-  scope :ordered, ->{
+
+  scope :ordered, ->(root: nil) {
     numbered = Arel::Table.new('numbered')
-    Quantity.with(numbered: numbered(:parent_id, :name)).with_recursive(quantities: [
-      Arel::SelectManager.new.project(
+
+    self.model.with(numbered: numbered(:parent_id, :name)).with_recursive(arel_table.name => [
+      numbered.project(
         numbered[Arel.star],
         numbered.cast(numbered[:child_number], 'BINARY').as('path'),
         Arel::Nodes.build_quoted(0).as('depth')
-      ).from(numbered).where(numbered[:parent_id].eq(nil)),
-      Arel::SelectManager.new.project(
+      ).where(numbered[:parent_id].eq(root)),
+      numbered.project(
         numbered[Arel.star],
         arel_table[:path].concat(numbered[:child_number]),
         arel_table[:depth] + 1
-      ).from(numbered).join(arel_table).on(numbered[:parent_id].eq(arel_table[:id]))
+      ).join(arel_table).on(numbered[:parent_id].eq(arel_table[:id]))
     ]).select(arel_table[Arel.star]).from(arel_table).order(arel_table[:path])
   }
 
@@ -79,6 +81,17 @@ class Quantity < ApplicationRecord
       )
     ).where(quantities[:lag_id].eq(id)).first
   end
+
+  # Return: descendants of `quantity`, sorted in order of appearance, including :depth
+  scope :progenies, ->(quantity) {
+    selected = Arel::Table.new('selected')
+
+    self.model.with(selected: self).with_recursive(arel_table.name => [
+      selected.project(selected[Arel.star]).where(selected[:id].eq(quantity.id)),
+      selected.project(selected[Arel.star])
+        .join(arel_table).on(arel_table[:id].eq(selected[:parent_id]))
+    ]).ordered(root: quantity.id)
+  }
 
   # Return: ancestors of (possibly destroyed) self; include depths, also on
   # self (unless destroyed)
