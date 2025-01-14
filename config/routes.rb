@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :quantities, except: [:show], path_names: {new: '(/:id)/new'} do
-    member { post :rebase }
+    member { post :reparent }
   end
 
   resources :units, except: [:show], path_names: {new: '(/:id)/new'} do

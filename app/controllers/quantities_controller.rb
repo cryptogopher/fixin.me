@@ -2,7 +2,7 @@ class QuantitiesController < ApplicationController
   before_action only: :new do
     find_quantity if params[:id].present?
   end
-  before_action :find_quantity, only: [:edit, :update, :rebase, :destroy]
+  before_action :find_quantity, only: [:edit, :update, :reparent, :destroy]
 
   before_action except: :index do
     raise AccessForbidden unless current_user.at_least(:active)
@@ -37,6 +37,18 @@ class QuantitiesController < ApplicationController
     else
       render :edit
     end
+  end
+
+  def reparent
+    permitted = params.require(:quantity).permit(:parent_id)
+    @previous_ancestors = @quantity.ancestors
+
+    @quantity.update!(permitted)
+
+    @ancestors = @quantity.ancestors
+    @quantity.depth = @ancestors.length
+    @self_and_progenies = @quantity.progenies.unshift(@quantity)
+    @before = @self_and_progenies.last.successive
   end
 
   def destroy

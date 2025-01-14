@@ -68,6 +68,7 @@ en:
       destroy: Delete
     index:
       new_quantity: Add quantity
+      top_level_drop: Drop here to reposition into top-level quantity
     create:
       success: Created new quantity "%{quantity}"
     update:

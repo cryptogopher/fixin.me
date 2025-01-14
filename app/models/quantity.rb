@@ -29,8 +29,8 @@ class Quantity < ApplicationRecord
       numbered.project(
         numbered[Arel.star],
         numbered.cast(numbered[:child_number], 'BINARY').as('path'),
-        Arel::Nodes.build_quoted(0).as('depth')
-      ).where(numbered[:parent_id].eq(root)),
+        Arel::Nodes.build_quoted(root&.depth&.succ || 0).as('depth')
+      ).where(numbered[:parent_id].eq(root&.id)),
       numbered.project(
         numbered[Arel.star],
         arel_table[:path].concat(numbered[:child_number]),
@@ -70,8 +70,8 @@ class Quantity < ApplicationRecord
     parent_id.nil?
   end
 
-  # Return: self, ancestors and successive record in order of appearance,
-  # including :depth attribute. Used for partial view reload.
+  # Return: successive record in order of appearance, including :depth
+  # attribute. Used for partial view reload.
   def successive
     quantities = Quantity.arel_table
 
@@ -90,8 +90,12 @@ class Quantity < ApplicationRecord
       selected.project(selected[Arel.star]).where(selected[:id].eq(quantity.id)),
       selected.project(selected[Arel.star])
         .join(arel_table).on(arel_table[:id].eq(selected[:parent_id]))
-    ]).ordered(root: quantity.id)
+    ]).ordered(root: quantity)
   }
+
+  def progenies
+    user.quantities.progenies(self).to_a
+  end
 
   # Return: ancestors of (possibly destroyed) self; include depths, also on
   # self (unless destroyed)
@@ -111,7 +115,7 @@ class Quantity < ApplicationRecord
         ))
     ]).select(ancestors[Arel.star]).from(ancestors).to_a.then do |records|
       records.map(&:depth).min&.abs.then do |maxdepth|
-        self.depth = (maxdepth || -1) + 1 unless frozen?
+        self.depth = maxdepth&.succ || 0 unless frozen?
         records.each { |r| r.depth += maxdepth }
       end
     end
