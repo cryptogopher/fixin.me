@@ -2,8 +2,7 @@
            ondragstart: "dragStart(event)", ondragend: "dragEnd(event)",
            ondragover: "dragOver(event)", ondrop: "drop(event)",
            ondragenter: "dragEnter(event)", ondragleave: "dragLeave(event)",
-           data: {drag_path: reparent_quantity_path(quantity),
-                  drop_id: dom_id(quantity.parent || quantity),
+           data: {drag_path: reparent_quantity_path(quantity), drop_id: dom_id(quantity),
                   drop_id_param: "quantity[parent_id]"} do %>
 
   <td class="link" style="--depth:<%= quantity.depth %>">

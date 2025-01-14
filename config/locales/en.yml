@@ -31,8 +31,10 @@ en:
               taken: has to be unique
         quantity:
           attributes:
+            name:
+              taken: has to be unique among siblings
             parent:
-              descendant_reference: of the quantity cannot be its descendant
+              descendant_reference: cannot be changed to any of descendants
               self_reference: of the quantitiy cannot be the quantity itself
               user_mismatch: has to belong to the same user as quantity
   actioncontroller:

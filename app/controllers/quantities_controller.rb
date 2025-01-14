@@ -43,7 +43,8 @@ class QuantitiesController < ApplicationController
     permitted = params.require(:quantity).permit(:parent_id)
     @previous_ancestors = @quantity.ancestors
 
-    @quantity.update!(permitted)
+    # Until UI blocks all disallowed reparents, render error messages if present
+    render_no_content(@quantity) unless @quantity.update(permitted)
 
     @ancestors = @quantity.ancestors
     @quantity.depth = @ancestors.length

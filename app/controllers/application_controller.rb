@@ -43,6 +43,11 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def render_no_content(record)
+    helpers.render_errors(record)
+    render html: nil, layout: true
+  end
+
   def rescue_turbo(exception)
     raise unless request.format.to_sym == :turbo_stream
 
