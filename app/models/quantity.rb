@@ -62,7 +62,7 @@ class Quantity < ApplicationRecord
     name
   end
 
-  def movable?
+  def destroyable?
     subquantities.empty?
   end
 
