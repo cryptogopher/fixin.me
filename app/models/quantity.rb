@@ -22,6 +22,7 @@ class Quantity < ApplicationRecord
 
   scope :defaults, ->{ where(user: nil) }
 
+  # Return: ordered [sub]hierarchy
   scope :ordered, ->(root: nil) {
     numbered = Arel::Table.new('numbered')
 
@@ -29,19 +30,21 @@ class Quantity < ApplicationRecord
       numbered.project(
         numbered[Arel.star],
         numbered.cast(numbered[:child_number], 'BINARY').as('path'),
-        Arel::Nodes.build_quoted(root&.depth&.succ || 0).as('depth')
-      ).where(numbered[:parent_id].eq(root&.id)),
+        Arel::Nodes.build_quoted(root&.depth || 0).as('depth')
+      ).where(root.nil? ? numbered[:parent_id].eq(nil) : numbered[:id].eq(root.id)),
       numbered.project(
         numbered[Arel.star],
         arel_table[:path].concat(numbered[:child_number]),
         arel_table[:depth] + 1
       ).join(arel_table).on(numbered[:parent_id].eq(arel_table[:id]))
-    ]).select(arel_table[Arel.star]).from(arel_table).order(arel_table[:path])
+    ]).order(arel_table[:path])
   }
 
   # TODO: extract named functions to custom Arel extension
+  # NOTE: once recursive queries allow use of window functions, this scope can
+  # be merged with :ordered
   # https://gist.github.com/ProGM/c6df08da14708dcc28b5ca325df37ceb#extending-arel
-  scope :numbered, ->(parent_column, order_column){
+  scope :numbered, ->(parent_column, order_column) {
     select(
       arel_table[Arel.star],
       Arel::Nodes::NamedFunction.new(
@@ -51,7 +54,7 @@ class Quantity < ApplicationRecord
             .over(Arel::Nodes::Window.new.partition(parent_column).order(order_column)),
           Arel::SelectManager.new.project(
             Arel::Nodes::NamedFunction.new('LENGTH', [Arel.star.count])
-          ),
+          ).from(arel_table),
           Arel::Nodes.build_quoted('0')
         ],
       ).as('child_number')
@@ -82,16 +85,9 @@ class Quantity < ApplicationRecord
     ).where(quantities[:lag_id].eq(id)).first
   end
 
-  # Return: descendants of `quantity`, sorted in order of appearance, including :depth
-  scope :progenies, ->(quantity) {
-    selected = Arel::Table.new('selected')
-
-    self.model.with(selected: self).with_recursive(arel_table.name => [
-      selected.project(selected[Arel.star]).where(selected[:id].eq(quantity.id)),
-      selected.project(selected[Arel.star])
-        .join(arel_table).on(arel_table[:id].eq(selected[:parent_id]))
-    ]).ordered(root: quantity)
-  }
+  def with_progenies
+    user.quantities.ordered(root: self).to_a
+  end
 
   def progenies
     user.quantities.progenies(self).to_a

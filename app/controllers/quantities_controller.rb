@@ -48,7 +48,7 @@ class QuantitiesController < ApplicationController
 
     @ancestors = @quantity.ancestors
     @quantity.depth = @ancestors.length
-    @self_and_progenies = @quantity.progenies.unshift(@quantity)
+    @self_and_progenies = @quantity.with_progenies
     @before = @self_and_progenies.last.successive
   end
 
