@@ -93,28 +93,28 @@ class Quantity < ApplicationRecord
     user.quantities.progenies(self).to_a
   end
 
-  # Return: ancestors of (possibly destroyed) self; include depths, also on
-  # self (unless destroyed)
-  def ancestors
-    quantities = Quantity.arel_table
-    ancestors = Arel::Table.new('ancestors')
+  # Return: record `of` with its ancestors, sorted by `depth`
+  scope :with_ancestors, ->(of) {
+    selected = Arel::Table.new('selected')
 
-    # Ancestors are listed bottom up, so it's impossible to know depth at the
-    # start. Start with depth = 0 and count downwards, then adjust by the
-    # amount needed to set biggest negative depth to 0.
-    Quantity.with_recursive(ancestors: [
-      user.quantities.select(quantities[Arel.star], Arel::Nodes.build_quoted(0).as('depth'))
-        .where(id: parent_id),
-      user.quantities.select(quantities[Arel.star], ancestors[:depth] - 1)
-        .joins(quantities.create_join(
-          ancestors, quantities.create_on(quantities[:id].eq(ancestors[:parent_id]))
-        ))
-    ]).select(ancestors[Arel.star]).from(ancestors).to_a.then do |records|
-      records.map(&:depth).min&.abs.then do |maxdepth|
-        self.depth = maxdepth&.succ || 0 unless frozen?
-        records.each { |r| r.depth += maxdepth }
-      end
-    end
+    model.with(selected: self).with_recursive(arel_table.name => [
+      selected.project(selected[Arel.star], Arel::Nodes.build_quoted(0).as('depth'))
+        .where(selected[:id].eq(of&.id)),
+      # Ancestors are listed bottom up, so it's impossible to know depth at the
+      # start. Start with depth = 0 and count downwards, then adjust by the
+      # amount needed to set biggest negative depth to 0.
+      selected.project(selected[Arel.star], arel_table[:depth] - 1)
+        .join(arel_table).on(selected[:id].eq(arel_table[:parent_id]))
+    ]).select(
+      arel_table[Arel.star],
+      (arel_table[:depth] + Arel::SelectManager.new.project(Arel.star.count).from(arel_table) - 1)
+        .as('depth')
+    ).order(arel_table[:depth])
+  }
+
+  # Return: ancestors of (possibly destroyed) self
+  def ancestors
+    user.quantities.with_ancestors(parent)
   end
 
   def ancestor_of?(descendant)
