@@ -45,7 +45,7 @@ class Default::UnitsController < ApplicationController
   private
 
   def find_unit
-    @unit = Unit.find_by!(id: params[:id], user: current_user)
+    @unit = current_user.units.find_by!(id: params[:id])
   end
 
   def find_unit_default

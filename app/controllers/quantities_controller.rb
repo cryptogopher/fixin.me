@@ -65,6 +65,6 @@ class QuantitiesController < ApplicationController
   end
 
   def find_quantity
-    @quantity = Quantity.find_by!(id: params[:id], user: current_user)
+    @quantity = current_user.quantities.find_by!(id: params[:id])
   end
 end
