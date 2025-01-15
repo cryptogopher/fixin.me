@@ -73,13 +73,12 @@ class Quantity < ApplicationRecord
     parent_id.nil?
   end
 
-  # Return: successive record in order of appearance, including :depth
-  # attribute. Used for partial view reload.
+  # Return: successive record in order of appearance; used for partial view reload
   def successive
     quantities = Quantity.arel_table
-
     Quantity.with(
       quantities: user.quantities.ordered.select(
+        quantities[Arel.star],
         Arel::Nodes::NamedFunction.new('LAG', [quantities[:id]]).over.as('lag_id')
       )
     ).where(quantities[:lag_id].eq(id)).first
@@ -89,17 +88,13 @@ class Quantity < ApplicationRecord
     user.quantities.ordered(root: self).to_a
   end
 
-  def progenies
-    user.quantities.progenies(self).to_a
-  end
-
-  # Return: record `of` with its ancestors, sorted by `depth`
+  # Return: record with ID `of` with its ancestors, sorted by `depth`
   scope :with_ancestors, ->(of) {
     selected = Arel::Table.new('selected')
 
     model.with(selected: self).with_recursive(arel_table.name => [
       selected.project(selected[Arel.star], Arel::Nodes.build_quoted(0).as('depth'))
-        .where(selected[:id].eq(of&.id)),
+        .where(selected[:id].eq(of)),
       # Ancestors are listed bottom up, so it's impossible to know depth at the
       # start. Start with depth = 0 and count downwards, then adjust by the
       # amount needed to set biggest negative depth to 0.
@@ -114,17 +109,10 @@ class Quantity < ApplicationRecord
 
   # Return: ancestors of (possibly destroyed) self
   def ancestors
-    user.quantities.with_ancestors(parent)
+    user.quantities.with_ancestors(parent_id).order(:depth).to_a
   end
 
-  def ancestor_of?(descendant)
-    quantities = Quantity.arel_table
-    ancestors = Arel::Table.new('ancestors')
-    Quantity.with_recursive(ancestors: [
-      user.quantities.where(id: descendant.id),
-      user.quantities.joins(quantities.create_join(
-          ancestors, quantities.create_on(quantities[:id].eq(ancestors[:parent_id]))
-      ))
-    ]).from(ancestors).exists?(ancestors: {id: id})
+  def ancestor_of?(progeny)
+    user.quantities.with_ancestors(progeny.id).exists?(id)
   end
 end
