@@ -17,8 +17,46 @@ class Quantity < ApplicationRecord
     length: {maximum: type_for_attribute(:name).limit}
   validates :description, length: {maximum: type_for_attribute(:description).limit}
 
-  # Not persisted attribute
-  attribute :depth, :integer
+  # Update `depth`s of progenies after parent change
+  after_update if: :depth_previously_changed? do
+    quantities = Quantity.arel_table
+    selected = Arel::Table.new('selected')
+
+    self.class.connection.update(
+      Arel::UpdateManager.new.table(
+        Arel::Nodes::JoinSource.new(
+          quantities,
+          [
+            quantities.create_join(
+              # TODO: user .with(quanities: user.quantities) once the '?' problem is fixed
+              Quantity.with_recursive(selected: [
+                quantities.project(quantities[:id], quantities[:depth])
+                  .where(quantities[:id].eq(id).and(quantities[:user_id].eq(user.id))),
+                quantities.project(quantities[:id], selected[:depth] + 1)
+                  .join(selected).on(selected[:id].eq(quantities[:parent_id]))
+              ]).select(selected[Arel.star]).from(selected).arel.as('selected'),
+              quantities.create_on(quantities[:id].eq(selected[:id]))
+            )
+          ]
+        )
+      ).set(quantities[:depth] => selected[:depth]),
+      "#{self.class} Update All"
+    )
+  end
+
+  def parent=(value)
+    super
+    self[:depth] = parent&.depth&.succ || 0
+  end
+
+  def parent_id=(value)
+    super
+    self[:depth] = parent&.depth&.succ || 0
+  end
+
+  def depth=(value)
+    raise ActiveRecord::ReadonlyAttributeError
+  end
 
   scope :defaults, ->{ where(user: nil) }
 
@@ -30,12 +68,10 @@ class Quantity < ApplicationRecord
       numbered.project(
         numbered[Arel.star],
         numbered.cast(numbered[:child_number], 'BINARY').as('path'),
-        Arel::Nodes.build_quoted(root&.depth || 0).as('depth')
       ).where(root.nil? ? numbered[:parent_id].eq(nil) : numbered[:id].eq(root.id)),
       numbered.project(
         numbered[Arel.star],
         arel_table[:path].concat(numbered[:child_number]),
-        arel_table[:depth] + 1
       ).join(arel_table).on(numbered[:parent_id].eq(arel_table[:id]))
     ]).order(arel_table[:path])
   }
@@ -93,18 +129,10 @@ class Quantity < ApplicationRecord
     selected = Arel::Table.new('selected')
 
     model.with(selected: self).with_recursive(arel_table.name => [
-      selected.project(selected[Arel.star], Arel::Nodes.build_quoted(0).as('depth'))
-        .where(selected[:id].eq(of)),
-      # Ancestors are listed bottom up, so it's impossible to know depth at the
-      # start. Start with depth = 0 and count downwards, then adjust by the
-      # amount needed to set biggest negative depth to 0.
-      selected.project(selected[Arel.star], arel_table[:depth] - 1)
+      selected.project(selected[Arel.star]).where(selected[:id].eq(of)),
+      selected.project(selected[Arel.star])
         .join(arel_table).on(selected[:id].eq(arel_table[:parent_id]))
-    ]).select(
-      arel_table[Arel.star],
-      (arel_table[:depth] + Arel::SelectManager.new.project(Arel.star.count).from(arel_table) - 1)
-        .as('depth')
-    ).order(arel_table[:depth])
+    ])
   }
 
   # Return: ancestors of (possibly destroyed) self

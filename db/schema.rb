@@ -16,6 +16,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_04_194343) do
     t.string "name", limit: 31, null: false
     t.text "description"
     t.bigint "parent_id"
+    t.integer "depth", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["parent_id"], name: "index_quantities_on_parent_id"

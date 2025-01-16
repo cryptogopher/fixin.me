@@ -5,6 +5,7 @@ class CreateQuantities < ActiveRecord::Migration[7.2]
       t.string :name, null: false, limit: 31
       t.text :description
       t.references :parent, foreign_key: {to_table: :quantities}
+      t.integer :depth, null: false, default: 0
 
       t.timestamps null: false
     end
