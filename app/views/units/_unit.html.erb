@@ -6,7 +6,7 @@
                   drop_id: dom_id(unit.base || unit),
                   drop_id_param: "unit[base_id]"} do %>
 
-  <td class="<%= class_names('link', {subunit: unit.base}) %>">
+  <td class="link" style="--depth:<%= unit.base_id? ? 1 : 0 %>">
     <%= link_to unit, edit_unit_path(unit), onclick: 'this.blur();', data: {turbo_stream: true} %>
   </td>
   <td><%= unit.description %></td>

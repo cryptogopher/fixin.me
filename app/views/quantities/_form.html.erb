@@ -2,7 +2,7 @@
   <%- tag.tr id: row, class: "form", onkeydown: "processKey(event)",
     data: {link: link, form: form_tag, hidden_row: hidden_row} do %>
 
-    <td class="<%= class_names({subquantity: @quantity.parent}) %>">
+    <td style="--depth:<%= @quantity.depth %>">
       <%= form.text_field :name, required: true, autofocus: true, size: 20 %>
     </td>
     <td>

@@ -1,5 +1,6 @@
 <%= tag.tr do %>
-  <td class="<%= class_names({subunit: unit.base_id?, grayed: unit.default?}) %>">
+  <td class="<%= class_names({grayed: unit.default?}) %>"
+      style="--depth:<%= unit.base_id? ? 1 : 0 %>">
     <%= unit %>
   </td>
 

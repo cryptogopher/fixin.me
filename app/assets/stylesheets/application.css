@@ -29,6 +29,8 @@
   --color-dark-red: #b21237;
   --color-red: #ff1f5b;
 
+  --depth: 0;
+
   --z-index-flashes: 100;
   --z-index-table-row-outline: 10;
 }
@@ -363,24 +365,9 @@ table.items th,
 table.items td {
   padding-inline: 1em 0;
 }
-table.items td:has(input, textarea) {
-  padding-inline-start: calc(0.6em - 0.9px);
-}
-table.items th:last-child {
-  padding-inline-end: 0.4em;
-}
-table.items td:last-child {
-  padding-inline-end: 0.1em;
-}
-table.items td {
-  border-top: solid 1px var(--color-border-gray);
-  height: 2.4em;
-  padding-block: 0.1em;
-}
 /* For <a> to fill <td> completely, we use an ::after pseudoelement. */
 table.items td.link {
   padding: 0;
-  padding-inline-start: calc(1em + var(--depth) * 0.8em);
   position: relative;
 }
 table.items td.link a {
@@ -392,11 +379,25 @@ table.items td.link a::after {
   inset: 0;
   position: absolute;
 }
-table.items td.subunit {
-  padding-inline-start: 1.8em;
+table.items td:first-child {
+  padding-inline-start: calc(1em + var(--depth) * 0.8em);
 }
-table.items td.subunit:has(input, textarea) {
-  padding-inline-start: calc(1.4em - 1px);
+table.items td:has(input, textarea) {
+  padding-inline-start: calc(0.6em - 0.9px);
+}
+table.items td:first-child:has(input, textarea) {
+  padding-inline-start: calc(0.6em + var(--depth) * 0.8em - 0.9px);
+}
+table.items th:last-child {
+  padding-inline-end: 0.4em;
+}
+table.items td:last-child {
+  padding-inline-end: 0.1em;
+}
+table.items td {
+  border-top: solid 1px var(--color-border-gray);
+  height: 2.4em;
+  padding-block: 0.1em;
 }
 table.items td.actions {
   align-items: center;

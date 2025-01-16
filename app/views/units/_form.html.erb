@@ -2,7 +2,7 @@
   <%- tag.tr id: row, class: "form", onkeydown: "processKey(event)",
     data: {link: link, form: form_tag, hidden_row: hidden_row} do %>
 
-    <td class="<%= class_names({subunit: @unit.base_id?}) %>">
+    <td style="--depth:<%= @unit.base_id? ? 1 : 0 %>">
       <%= form.text_field :symbol, required: true, autofocus: true, size: 12 %>
     </td>
     <td>
