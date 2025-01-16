@@ -458,6 +458,9 @@ table.items svg {
   vertical-align: middle;
   width: 1.2rem;
 }
+table.items td.svg {
+  text-align: center;
+}
 table.items td.number {
   text-align: right;
 }
