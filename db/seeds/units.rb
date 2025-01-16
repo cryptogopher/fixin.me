@@ -1,5 +1,6 @@
 Unit.transaction do
-  ActiveRecord::Base.connection.truncate(Unit.table_name)
+  Unit.defaults.order(Unit.arel_table[:base_id].eq(nil)).delete_all
+
   units = {}
 
   units['1'] =

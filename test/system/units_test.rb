@@ -26,7 +26,7 @@ class UnitsTest < ApplicationSystemTestCase
     end
 
     # Cannot #destroy_all due to {dependent: :restrict*} on Unit.subunits association
-    @user.units.delete_all
+    @user.units.order(Unit.arel_table[:base_id].eq(nil)).delete_all
     visit units_path
     within 'tbody' do
       assert_selector 'tr', count: 1

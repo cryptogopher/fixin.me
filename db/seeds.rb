@@ -20,6 +20,4 @@ end
 # Formulas will be deleted as dependent on Quantities
 #[Source, Quantity, Unit].each { |model| model.defaults.delete_all }
 
-# To clear contents of the table, use #truncate instead of #delete_all. This
-# avoids foreign_key constraints errors.
 require_relative 'seeds/units.rb'
