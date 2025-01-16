@@ -68,7 +68,7 @@ class Quantity < ApplicationRecord
       numbered.project(
         numbered[Arel.star],
         numbered.cast(numbered[:child_number], 'BINARY').as('path'),
-      ).where(root ? numbered[:id].eq(root.id) : numbered[:parent_id].eq(nil)),
+      ).where(numbered[root ? :id : :parent_id].eq(root)),
       numbered.project(
         numbered[Arel.star],
         arel_table[:path].concat(numbered[:child_number]),
@@ -121,7 +121,7 @@ class Quantity < ApplicationRecord
   end
 
   def with_progenies
-    user.quantities.ordered(root: self).to_a
+    user.quantities.ordered(root: id).to_a
   end
 
   # Return: record with ID `of` with its ancestors, sorted by `depth`

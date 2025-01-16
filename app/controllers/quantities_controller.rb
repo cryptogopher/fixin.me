@@ -47,7 +47,6 @@ class QuantitiesController < ApplicationController
     render_no_content(@quantity) unless @quantity.update(permitted)
 
     @ancestors = @quantity.ancestors
-    @quantity.depth = @ancestors.length
     @self_and_progenies = @quantity.with_progenies
     @before = @self_and_progenies.last.successive
   end
