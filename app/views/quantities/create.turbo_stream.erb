@@ -3,5 +3,5 @@
 <% @ancestors.map do |ancestor| %>
   <%= turbo_stream.replace ancestor %>
 <% end %>
-<%= @before.nil? ? turbo_stream.append(:quantities, @quantity) :
-  turbo_stream.before(@before, @quantity) %>
+<%= @before ? turbo_stream.before(@before, @quantity) :
+  turbo_stream.append(:quantities, @quantity) %>

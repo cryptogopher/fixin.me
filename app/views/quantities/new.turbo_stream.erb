@@ -8,11 +8,11 @@
 
 <%= turbo_stream.append :quantity_form do %>
   <%- tabular_form_with model: @quantity, html: {id: ids[:form_tag]} do |form| %>
-    <%= form.hidden_field :parent_id unless @quantity.parent.nil? %>
+    <%= form.hidden_field :parent_id if @quantity.parent_id? %>
   <% end %>
 <% end %>
 
-<% if @quantity.parent %>
+<% if @quantity.parent_id? %>
   <%= turbo_stream.remove ids[:row] %>
   <%= turbo_stream.after @quantity.parent, partial: 'form', locals: ids %>
 <% else %>

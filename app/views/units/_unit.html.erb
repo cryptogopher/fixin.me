@@ -14,7 +14,7 @@
 
   <% if current_user.at_least(:active) %>
     <td class="actions">
-      <% if unit.base.nil? %>
+      <% unless unit.base_id? %>
         <%= image_link_to t('.new_subunit'), 'plus-outline', new_unit_path(unit),
           id: dom_id(unit, :new, :link), onclick: 'this.blur();', data: {turbo_stream: true} %>
       <% end %>

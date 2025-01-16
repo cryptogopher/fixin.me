@@ -7,8 +7,8 @@ class Quantity < ApplicationRecord
     dependent: :restrict_with_error
 
   validate if: ->{ parent.present? } do
-    errors.add(:parent, :user_mismatch) unless user == parent.user
-    errors.add(:parent, :self_reference) if self == parent
+    errors.add(:parent, :user_mismatch) unless user_id == parent.user_id
+    errors.add(:parent, :self_reference) if id == parent_id
   end
   validate if: ->{ parent.present? }, on: :update do
     errors.add(:parent, :descendant_reference) if ancestor_of?(parent)
@@ -68,7 +68,7 @@ class Quantity < ApplicationRecord
       numbered.project(
         numbered[Arel.star],
         numbered.cast(numbered[:child_number], 'BINARY').as('path'),
-      ).where(root.nil? ? numbered[:parent_id].eq(nil) : numbered[:id].eq(root.id)),
+      ).where(root ? numbered[:id].eq(root.id) : numbered[:parent_id].eq(nil)),
       numbered.project(
         numbered[Arel.star],
         arel_table[:path].concat(numbered[:child_number]),

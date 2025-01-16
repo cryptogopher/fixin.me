@@ -6,9 +6,9 @@ class Unit < ApplicationRecord
   has_many :subunits, class_name: "Unit", inverse_of: :base, dependent: :restrict_with_error
 
   validate if: ->{ base.present? } do
-    errors.add(:base, :user_mismatch) unless user == base.user
-    errors.add(:base, :self_reference) if self == base
-    errors.add(:base, :multilevel_nesting) if base.base.present?
+    errors.add(:base, :user_mismatch) unless user_id == base.user_id
+    errors.add(:base, :self_reference) if id == base_id
+    errors.add(:base, :multilevel_nesting) if base.base_id?
   end
   validates :symbol, presence: true, uniqueness: {scope: :user_id},
     length: {maximum: type_for_attribute(:symbol).limit}

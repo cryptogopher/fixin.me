@@ -5,5 +5,5 @@
   <%= turbo_stream.replace ancestor %>
 <% end %>
 <% @self_and_progenies.each do |q| %>
-  <%= @before.nil? ? turbo_stream.append(:quantities, q) : turbo_stream.before(@before, q) %>
+  <%= @before ? turbo_stream.before(@before, q) : turbo_stream.append(:quantities, q) %>
 <% end %>
