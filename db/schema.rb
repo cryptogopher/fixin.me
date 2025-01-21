@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_04_194343) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_21_230456) do
   create_table "quantities", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "name", limit: 31, null: false
@@ -22,6 +22,19 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_04_194343) do
     t.index ["parent_id"], name: "index_quantities_on_parent_id"
     t.index ["user_id", "parent_id", "name"], name: "index_quantities_on_user_id_and_parent_id_and_name", unique: true
     t.index ["user_id"], name: "index_quantities_on_user_id"
+  end
+
+  create_table "readouts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "quantity_id", null: false
+    t.bigint "unit_id"
+    t.decimal "value", precision: 30, scale: 15, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["quantity_id", "created_at"], name: "index_readouts_on_quantity_id_and_created_at", unique: true
+    t.index ["quantity_id"], name: "index_readouts_on_quantity_id"
+    t.index ["unit_id"], name: "index_readouts_on_unit_id"
+    t.index ["user_id"], name: "index_readouts_on_user_id"
   end
 
   create_table "units", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -57,6 +70,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_04_194343) do
 
   add_foreign_key "quantities", "quantities", column: "parent_id"
   add_foreign_key "quantities", "users"
+  add_foreign_key "readouts", "quantities"
+  add_foreign_key "readouts", "units"
+  add_foreign_key "readouts", "users"
   add_foreign_key "units", "units", column: "base_id"
   add_foreign_key "units", "users"
 end
