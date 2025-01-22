@@ -200,9 +200,7 @@ textarea:read-only {
 }
 
 
-.header {
-  display: flex;
-  gap: 0.8em;
+header {
   grid-area: header;
 }
 
@@ -240,6 +238,18 @@ textarea:read-only {
 }
 .rightside {
   grid-area: rightside;
+}
+
+
+.buttongrid {
+  display: grid;
+  gap: 0.4em;
+  grid-template-areas: "context empty tools";
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: max-content;
+}
+.tools {
+  grid-area: tools;
 }
 
 
@@ -502,6 +512,10 @@ table.items select:focus-visible {
 .extendedright {
   margin-right: auto;
 }
+.htoolbox {
+  display: flex;
+  gap: 0.8em;
+}
 [disabled] {
   border-color: var(--color-border-gray) !important;
   color: var(--color-border-gray) !important;
@@ -511,16 +525,4 @@ table.items select:focus-visible {
 }
 .unwrappable {
   white-space: nowrap;
-}
-
-
-.buttongrid {
-  display: grid;
-  gap: 0.4em;
-  grid-template-areas: "context empty tools";
-  grid-template-columns: auto 1fr auto;
-  grid-template-rows: max-content;
-}
-.tools {
-  grid-area: tools;
 }

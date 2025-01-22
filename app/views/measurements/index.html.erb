@@ -1,0 +1,16 @@
+<div class="main">
+  <% if current_user.at_least(:active) %>
+    <%# TODO: show hint when no quantities/units defined %>
+    <%= form_tag new_measurement_path, method: :get, class: "htoolbox",
+      data: {turbo_stream: true} do %>
+      <%= select_tag :id,
+        options_from_collection_for_select(@quantities, :id,
+                                           ->(q) { sanitize('-&nbsp;'*q.depth + q.name) }) %>
+      <%= image_button_tag t('.new_quantity'), 'plus-outline', name: :scope -%>
+      <%= image_button_tag t('.new_children'), 'plus-multiple-outline', name: :scope,
+        value: :children -%>
+      <%= image_button_tag t('.new_subtree'), 'plus-multiple-outline', name: :scope,
+        value: :subtree -%>
+    <% end %>
+  <% end %>
+</div>

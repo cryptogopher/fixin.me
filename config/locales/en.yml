@@ -62,6 +62,12 @@ en:
       revert: Revert
       sign_out: Sign out
       source_code: Get code
+  measurements:
+    navigation: Measurements
+    index:
+      new_quantity: Add selected
+      new_children: Add children
+      new_subtree: Add subtree
   quantities:
     navigation: Quantities
     no_items: There are no configured quantities. You can Add some or Import from defaults.

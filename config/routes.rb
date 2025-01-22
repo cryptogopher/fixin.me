@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :measurements
+
   resources :quantities, except: [:show], path_names: {new: '(/:id)/new'} do
     member { post :reparent }
   end

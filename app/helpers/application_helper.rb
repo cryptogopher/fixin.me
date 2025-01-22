@@ -125,6 +125,7 @@ module ApplicationHelper
 
   def navigation_menu
     menu_tabs = [
+      ['measurements', 'scale-bathroom', :restricted],
       ['quantities', 'axis-arrow', :restricted, 'right'],
       ['units', 'weight-gram', :restricted],
       ['users', 'account-multiple-outline', :admin],
@@ -142,6 +143,11 @@ module ApplicationHelper
   def image_button_to(name, image = nil, options = nil, html_options = {})
     name, html_options = link_or_button_options(:button, name, image, html_options)
     button_to name, options, html_options
+  end
+
+  def image_button_tag(name, image = nil, html_options = {})
+    name, html_options = link_or_button_options(:button, name, image, html_options)
+    button_tag name, html_options
   end
 
   def image_link_to(name, image = nil, options = nil, html_options = {})
