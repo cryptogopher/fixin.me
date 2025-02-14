@@ -1,0 +1,45 @@
+<%= tabular_form_with model: current_user, html: {id: :new_readouts_form} do |user| %>
+  <% if @readouts&.present? %>
+    <fieldset>
+      <%= tag.legend @ancestor_fullname unless @ancestor_fullname.empty? %>
+      <table class="items centered">
+        <tbody id="readouts">
+          <%= user.fields_for :readouts, @readouts do |form| %>
+            <% row = dom_id(form.object.quantity, :new, :readout) %>
+            <%- tag.tr id: row, onkeydown: 'processKey(event)' do %>
+              <td>
+                <%= form.object.quantity.fullname.delete_prefix(@ancestor_fullname) %>
+                <%= form.hidden_field :quantity_id %>
+              </td>
+              <td>
+                <%= form.number_field :value, required: true, autofocus: true,
+                  size: 10 %>
+              </td>
+              <td>
+                <%= form.select :unit_id, options_from_collection_for_select(
+                  @units, :id, ->(u){ sanitize('&emsp;'*(u.base_id ? 1 : 0) + u.symbol) }
+                ) %>
+              </td>
+
+              <td class="actions">
+                <%= image_link_to t(:delete), 'delete-outline', quantities_path,
+                  class: 'dangerous',
+                  onclick: render_turbo_stream('form_destroy_row', {row: row}) %>
+              </td>
+            <% end %>
+          <% end %>
+          <tr id="new_readouts_actions">
+            <td></td>
+            <td></td>
+            <td><div class="actions"><%= user.button %></div></td>
+            <td><div class="actions">
+              <%= image_link_to t(:cancel), "close-outline", measurements_path,
+                class: 'dangerous', name: :cancel,
+                onclick: render_turbo_stream('form_close') %>
+            </div></td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset>
+  <% end %>
+<% end %>

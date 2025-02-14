@@ -104,11 +104,12 @@ module ApplicationHelper
   end
 
   def tabular_fields_for(record_name, record_object = nil, options = {}, &block)
-    # skip_default_ids causes turbo to generate unique ID for element with [autofocus].
-    # Otherwise IDs are not unique when multiple forms are open and the first input gets focus.
+    # skip_default_ids causes turbo to generate unique ID for element with
+    # [autofocus].  Otherwise IDs are not unique when multiple forms are open
+    # and the first input gets focus.
     record_object, options = nil, record_object if record_object.is_a? Hash
     options.merge! builder: TabularFormBuilder, skip_default_ids: true
-    render_errors(record_name)
+    render_errors(record_object || record_name)
     fields_for(record_name, record_object, **options, &block)
   end
 
@@ -169,8 +170,9 @@ module ApplicationHelper
     link_to name, options, html_options
   end
 
-  def render_errors(record)
-    flash.now[:alert] = record.errors.full_messages unless record.errors.empty?
+  def render_errors(records)
+    flash[:alert] ||= []
+    Array(records).each { |record| flash[:alert] += record.errors.full_messages }
   end
 
   def render_flash_messages

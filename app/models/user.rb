@@ -11,6 +11,8 @@ class User < ApplicationRecord
     disabled: 0,    # administratively disallowed to sign in
   }, default: :active
 
+  has_many :readouts, dependent: :destroy
+  accepts_nested_attributes_for :readouts
   has_many :quantities, dependent: :destroy
   has_many :units, dependent: :destroy
 

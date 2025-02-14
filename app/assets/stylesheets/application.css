@@ -49,15 +49,18 @@
 }
 
 
+/* TODO: collapse gaps around empty rows (`topside`) once possible
+ * https://github.com/w3c/csswg-drafts/issues/5813 */
 body {
   display: grid;
   gap: 0.8em;
   grid-template-areas:
-    "header   header  header"
-    "nav      nav     nav"
-    "leftside main    rightside";
+    "header    header  header"
+    "nav       nav     nav"
+    "leftempty topside rightempty"
+    "leftside  main    rightside";
   grid-template-columns: 1fr auto 1fr;
-  grid-template-rows: repeat(3, auto);
+  grid-template-rows: repeat(4, auto);
   font-family: system-ui;
   margin: 0.4em;
 }
@@ -108,12 +111,14 @@ textarea {
 }
 .button,
 button,
+fieldset,
 input,
 select,
 textarea {
   border: solid 1px var(--color-gray);
   border-radius: 0.25em;
 }
+fieldset,
 textarea {
   margin: 0
 }
@@ -123,6 +128,12 @@ button > svg {
   height: 1.8em;
   padding-right: 0.4em;
   width: 1.8em;
+}
+fieldset {
+  padding: 0.4em;
+}
+legend {
+  color: var(--color-gray);
 }
 
 /* TODO: move normal non-button links (<a>:hover/:focus) styling here (i.e.
@@ -230,6 +241,9 @@ header {
 }
 
 
+.topside {
+  grid-area: topside;
+}
 .leftside {
   grid-area: leftside;
 }
@@ -409,8 +423,7 @@ table.items td {
   height: 2.4em;
   padding-block: 0.1em;
 }
-table.items td.actions {
-  align-items: center;
+table.items .actions {
   display: flex;
   gap: 0.4em;
   justify-content: end;
@@ -505,6 +518,17 @@ table.items select:focus-visible {
   color: black;
 }
 
+form table.items {
+  border: none;
+}
+form table.items td {
+  border: none;
+  text-align: left;
+  vertical-align: middle;
+}
+form table.items td:first-child {
+  color: inherit;
+}
 
 .centered {
   margin: 0 auto;
@@ -512,9 +536,14 @@ table.items select:focus-visible {
 .extendedright {
   margin-right: auto;
 }
-.htoolbox {
+.hflex {
   display: flex;
   gap: 0.8em;
+}
+.vflex {
+  display: flex;
+  gap: 0.8em;
+  flex-direction: column;
 }
 [disabled] {
   border-color: var(--color-border-gray) !important;

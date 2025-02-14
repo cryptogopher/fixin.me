@@ -61,17 +61,20 @@ class Quantity < ApplicationRecord
   scope :defaults, ->{ where(user: nil) }
 
   # Return: ordered [sub]hierarchy
-  scope :ordered, ->(root: nil) {
+  scope :ordered, ->(root: nil, include_root: true) {
     numbered = Arel::Table.new('numbered')
 
     self.model.with(numbered: numbered(:parent_id, :name)).with_recursive(arel_table.name => [
       numbered.project(
         numbered[Arel.star],
         numbered.cast(numbered[:child_number], 'BINARY').as('path'),
-      ).where(numbered[root ? :id : :parent_id].eq(root)),
+        numbered.cast(numbered[:name], 'CHAR(512)').as('fullname')
+      ).where(numbered[root && include_root ? :id : :parent_id].eq(root)),
       numbered.project(
         numbered[Arel.star],
         arel_table[:path].concat(numbered[:child_number]),
+        arel_table[:fullname].concat(Arel::Nodes.build_quoted(' → '))
+          .concat(numbered[:name]),
       ).join(arel_table).on(numbered[:parent_id].eq(arel_table[:id]))
     ]).order(arel_table[:path])
   }
@@ -109,6 +112,23 @@ class Quantity < ApplicationRecord
     parent_id.nil?
   end
 
+  # Common ancestors, assuming node is a descendant of itself
+  scope :common_ancestors, ->(of) {
+    selected = Arel::Table.new('selected')
+
+    # Take unique IDs, so self can be called with parent nodes of collection to
+    # get common ancestors of collection _excluding_ nodes in collection.
+    uniq_of = of.uniq
+    model.with(selected: self).with_recursive(arel_table.name => [
+      selected.project(selected[Arel.star]).where(selected[:id].in(uniq_of)),
+      selected.project(selected[Arel.star])
+        .join(arel_table).on(selected[:id].eq(arel_table[:parent_id]))
+    ]).select(arel_table[Arel.star])
+      .group(column_names)
+      .having(arel_table[:id].count.eq(uniq_of.size))
+      .order(arel_table[:depth].desc)
+  }
+
   # Return: successive record in order of appearance; used for partial view reload
   def successive
     quantities = Quantity.arel_table
@@ -122,6 +142,10 @@ class Quantity < ApplicationRecord
 
   def with_progenies
     user.quantities.ordered(root: id).to_a
+  end
+
+  def progenies
+    user.quantities.ordered(root: id, include_root: false).to_a
   end
 
   # Return: record with ID `of` with its ancestors, sorted by `depth`
@@ -142,5 +166,10 @@ class Quantity < ApplicationRecord
 
   def ancestor_of?(progeny)
     user.quantities.with_ancestors(progeny.id).exists?(id)
+  end
+
+  def fullname
+    self['fullname'] ||
+      user.quantities.with_ancestors(id).order(:depth).map(&:name).join(' → ')
   end
 end
