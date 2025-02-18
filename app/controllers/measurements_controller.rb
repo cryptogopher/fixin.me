@@ -6,9 +6,8 @@ class MeasurementsController < ApplicationController
   end
 
   def new
-    readouts_params = params.permit(user: [readouts_attributes: Readout::ATTRIBUTES])
-    build_attrs = readouts_params.dig(:user, :readouts_attributes)&.values
-    prev_readouts = build_attrs ? Array(current_user.readouts.build(build_attrs)) : []
+    prev_quantity_ids = params[:readouts]&.map { |r| r[:quantity_id] } || []
+    @prev_quantities = current_user.quantities.find(prev_quantity_ids)
 
     quantities =
       case params[:scope]
@@ -19,12 +18,15 @@ class MeasurementsController < ApplicationController
       else
         [@quantity]
       end
-    quantities -= prev_readouts.map(&:quantity)
-    new_readouts = current_user.readouts.build(quantities.map { |q| {quantity: q} })
-    @readouts = prev_readouts + new_readouts
+    quantities -= @prev_quantities
+    @readouts = current_user.readouts.build(quantities.map { |q| {quantity: q} })
 
-    @ancestor_fullname = current_user.quantities
-      .common_ancestors(@readouts.map { |r| r.quantity.parent_id }).first&.fullname || ''
+    all_quantities = @prev_qantities + quantities
+    @closest_ancestor = current_user.quantities
+      .common_ancestors(all_quantities.map(&:parent_id)).first
+    all_quantites << @closest_ancestor if @closest_ancestor
+    current_user.quantities.full_names!(all_quantities)
+
     @units = current_user.units.ordered
   end
 

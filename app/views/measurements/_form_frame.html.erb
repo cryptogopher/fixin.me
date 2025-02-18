@@ -1,0 +1,21 @@
+<%= tabular_form_with url: new_measurement_path, html: {id: :new_readouts_form} do %>
+  <% if @readouts&.present? %>
+    <fieldset>
+      <%= tag.legend @closest_ancestor.full_name if @closest_ancestor&.full_name %>
+      <table class="items centered">
+        <tbody id="readouts">
+          <tr id="new_readouts_actions">
+            <td></td>
+            <td></td>
+            <td><div class="actions"><%= button_tag %></div></td>
+            <td><div class="actions">
+              <%= image_link_to t(:cancel), "close-outline", measurements_path,
+                class: 'dangerous', name: :cancel,
+                onclick: render_turbo_stream('form_close') %>
+            </div></td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset>
+  <% end %>
+<% end %>

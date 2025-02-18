@@ -1,6 +1,6 @@
 <div class="topside vflex">
   <% if current_user.at_least(:active) %>
-    <%= render partial: 'form' %>
+    <%= render partial: 'form_frame' %>
     <%# TODO: show hint when no quantities/units defined %>
     <div class="hflex">
       <%= select_tag :id, options_from_collection_for_select(
