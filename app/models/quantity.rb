@@ -42,6 +42,40 @@ class Quantity < ApplicationRecord
       ).set(quantities[:depth] => selected[:depth]),
       "#{self.class} Update All"
     )
+    #quantities = Quantity.arel_table
+    #selected = Arel::Table.new('selected')
+    #Quantity.with_recursive(selected: [
+    #  quantities.project(quantities[:id], quantities[:depth])
+    #    .where(quantities[:id].eq(21).and(quantities[:user_id].eq(1))),
+    #  quantities.project(quantities[:id], selected[:depth] + 1)
+    #    .join(selected).on(selected[:id].eq(quantities[:parent_id]))
+    #]).joins(quantities.create_join(selected, quantities.create_on(quantities[:id].eq(selected[:id]))))
+    #  .update_all(depth: selected[:depth])
+    #quantities = Quantity.arel_table
+    #selected = Arel::Table.new('selected')
+    #Quantity.with_recursive(selected: [
+    #  quantities.project(quantities[:id].as('quantity_id'), quantities[:depth])
+    #    .where(quantities[:id].eq(21).and(quantities[:user_id].eq(1))),
+    #  quantities.project(quantities[:id], selected[:depth] + 1)
+    #    .join(selected).on(selected[:quantity_id].eq(quantities[:parent_id]))
+    #  ]).joins(:selected).update_all(depth: selected[:depth])
+  end
+
+  after_update if: -> { name_previously_changed? || parent_previously_changed? } do
+    quantities = Quantity.arel_table
+    selected = Arel::Table.new('selected')
+
+    Quantity.with_recursive(selected: [
+      user.quantities.select(
+        quantities[:id].as('quantity_id'),
+        quantities.cast(quantities[:name], 'CHAR(512)').as('full_name')
+      ).where(id: id),
+      user.quantities.select(
+        quantities[:id],
+        selected[:full_name].concat(Arel::Nodes.build_quoted(' → '))
+        .concat(quantities[:name])
+      ).join(quantities).on(selected[:quantity_id].eq(quantities[:parent_id]))
+    ]).joins(:selected).update_all(full_name: selected[:full_name])
   end
 
   def parent=(value)
@@ -67,14 +101,11 @@ class Quantity < ApplicationRecord
     self.model.with(numbered: numbered(:parent_id, :name)).with_recursive(arel_table.name => [
       numbered.project(
         numbered[Arel.star],
-        numbered.cast(numbered[:child_number], 'BINARY').as('path'),
-        numbered.cast(numbered[:name], 'CHAR(512)').as('fullname')
+        numbered.cast(numbered[:child_number], 'BINARY').as('path')
       ).where(numbered[root && include_root ? :id : :parent_id].eq(root)),
       numbered.project(
         numbered[Arel.star],
-        arel_table[:path].concat(numbered[:child_number]),
-        arel_table[:fullname].concat(Arel::Nodes.build_quoted(' → '))
-          .concat(numbered[:name]),
+        arel_table[:path].concat(numbered[:child_number])
       ).join(arel_table).on(numbered[:parent_id].eq(arel_table[:id]))
     ]).order(arel_table[:path])
   }
@@ -168,10 +199,19 @@ class Quantity < ApplicationRecord
     user.quantities.with_ancestors(progeny.id).exists?(id)
   end
 
-  def self.full_names!(of)
-    self['fullname'] ||
-      user.quantities.with_ancestors(id).order(:depth).map(&:name).join(' → ')
-  end
   scope :with_full_name, ->{
+    selected = Arel::Table.new('selected')
+
+    model.with(selected: self).with_recursive(arel_table.name => [
+      selected.project(
+        selected[Arel.star],
+        selected.cast(selected[:name], 'CHAR(512)').as('full_name')
+      ),
+      selected.project(
+        selected[Arel.star],
+        selected[:name].concat(Arel::Nodes.build_quoted(' → '))
+          .concat(arel_table[:full_name])
+      ).join(arel_table).on(selected[:parent_id].eq(arel_table[:id]))
+    ])
   }
 end

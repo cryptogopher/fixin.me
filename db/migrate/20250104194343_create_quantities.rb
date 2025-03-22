@@ -5,9 +5,12 @@ class CreateQuantities < ActiveRecord::Migration[7.2]
       t.string :name, null: false, limit: 31
       t.text :description
       t.references :parent, foreign_key: {to_table: :quantities}
-      t.integer :depth, null: false, default: 0
 
       t.timestamps null: false
+
+      # Caches; can be computed from other attributes
+      t.integer :depth, null: false, default: 0
+      t.string :path, null: false, limit: 512
     end
     add_index :quantities, [:user_id, :parent_id, :name], unique: true
   end
