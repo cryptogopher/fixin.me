@@ -1,7 +1,7 @@
 <%= tabular_form_with url: new_measurement_path, html: {id: :new_readouts_form} do %>
   <% if @readouts&.present? %>
     <fieldset>
-      <%= tag.legend @closest_ancestor.full_name if @closest_ancestor&.full_name %>
+      <%= tag.legend @closest_ancestor.pathname if @closest_ancestor&.pathname %>
       <table class="items centered">
         <tbody id="readouts">
           <tr id="new_readouts_actions">

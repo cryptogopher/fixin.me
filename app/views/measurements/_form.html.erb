@@ -3,7 +3,7 @@
     <% row = dom_id(form.object.quantity, :new, :readout) %>
     <%- tag.tr id: row, onkeydown: 'processKey(event)' do %>
       <td>
-        <%= form.object.quantity.full_name.delete_prefix(@closest_ancestor.full_name) %>
+        <%= form.object.quantity.pathname.delete_prefix(@closest_ancestor.pathname) %>
         <%= form.hidden_field :quantity_id %>
       </td>
       <td>

@@ -25,7 +25,6 @@ class MeasurementsController < ApplicationController
     @closest_ancestor = current_user.quantities
       .common_ancestors(all_quantities.map(&:parent_id)).first
     all_quantites << @closest_ancestor if @closest_ancestor
-    current_user.quantities.full_names!(all_quantities)
 
     @units = current_user.units.ordered
   end
