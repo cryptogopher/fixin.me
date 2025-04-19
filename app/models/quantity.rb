@@ -1,5 +1,6 @@
 class Quantity < ApplicationRecord
   ATTRIBUTES = [:name, :description, :parent_id]
+  attr_cached :depth, :pathname
 
   belongs_to :user, optional: true
   belongs_to :parent, optional: true, class_name: "Quantity"
@@ -68,10 +69,6 @@ class Quantity < ApplicationRecord
   def parent_id=(value)
     super
     self[:depth] = parent&.depth&.succ || 0
-  end
-
-  def depth=(value)
-    raise ActiveRecord::ReadonlyAttributeError
   end
 
   scope :defaults, ->{ where(user: nil) }
