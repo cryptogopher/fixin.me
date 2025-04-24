@@ -18,7 +18,11 @@ class Quantity < ApplicationRecord
     length: {maximum: type_for_attribute(:name).limit}
   validates :description, length: {maximum: type_for_attribute(:description).limit}
 
-  # Update `depth`s of progenies after parent change
+  # Update :depths of progenies after parent change
+  before_update if: :parent_changed? do
+    self[:depth] = parent&.depth&.succ || 0
+  end
+
   after_update if: :depth_previously_changed? do
     quantities = Quantity.arel_table
     selected = Arel::Table.new('selected')
@@ -45,30 +49,26 @@ class Quantity < ApplicationRecord
     )
   end
 
-  after_update if: -> { name_previously_changed? || parent_previously_changed? } do
+  # Update :pathnames of progenies after parent/name change
+  PATHNAME_DELIMITER = ' → '
+
+  before_update if: -> { parent_changed? || name_changed? } do
+    self[:pathname] = (parent ? parent.pathname + PATHNAME_DELIMITER : '') + self[:name]
+  end
+
+  after_update if: :pathname_previously_changed? do
     quantities = Quantity.arel_table
     selected = Arel::Table.new('selected')
 
-    # Add :name/:parent setters and update self :pathname there
     Quantity.with_recursive(selected: [
       quantities.project(quantities[:id].as('quantity_id'), quantities[:pathname])
         .where(quantities[:id].eq(id)),
       quantities.project(
         quantities[:id],
-        selected[:pathname].concat(Arel::Nodes.build_quoted(' → '))
+        selected[:pathname].concat(Arel::Nodes.build_quoted(PATHNAME_DELIMITER))
           .concat(quantities[:name])
       ).join(selected).on(selected[:quantity_id].eq(quantities[:parent_id]))
     ]).joins(:selected).update_all(pathname: selected[:pathname])
-  end
-
-  def parent=(value)
-    super
-    self[:depth] = parent&.depth&.succ || 0
-  end
-
-  def parent_id=(value)
-    super
-    self[:depth] = parent&.depth&.succ || 0
   end
 
   scope :defaults, ->{ where(user: nil) }
