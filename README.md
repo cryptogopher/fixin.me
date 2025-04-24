@@ -8,15 +8,14 @@ Software requirements
 ---------------------
 
 * Server side:
-    * Ruby version: developed on Ruby 3.x
-    * database with:
-        * recursive Common Table Expressions (CTE) support, e.g.
-          MySQL >= 8.0, MariaDB >= 10.2.2
+    * Ruby version: 3.x
+    * database with (e.g. MySQL >= 8.0, MariaDB >= 10.2.2):
+        * recursive Common Table Expressions (CTE) support, 
         * decimal type with precision of at least 30 (not sure if SQLite3
           supports this)
     * for testing: browser as specified in _Client side_ requirements
 * Client side:
-    * browser supporting below requirements (e.g. Firefox >= 121):
+    * browser supporting (e.g. Firefox >= 121):
         * [`import maps`](https://caniuse.com/import-maps)
           (required by `importmap-rails` gem >= 2.0)
         * CSS [`:has()` pseudo-class](https://caniuse.com/css-has)
@@ -26,6 +25,7 @@ Installation
 ------------
 
     git clone https://gitea.michalczyk.pro/fixin.me/fixin.me.git
+    cd fixin.me
     bundle config set --local path '.gem'
     bundle install
 
