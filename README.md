@@ -9,7 +9,7 @@ Software requirements
 
 * Server side:
     * Ruby version: 3.x
-    * database with (e.g. MySQL >= 8.0, MariaDB >= 10.2.2):
+    * database with (e.g. MySQL >= 8.0):
         * recursive Common Table Expressions (CTE) support, 
         * decimal type with precision of at least 30 (not sure if SQLite3
           supports this)
@@ -44,7 +44,7 @@ Database
 Grant database user and privileges:
 
     > mysql -p
-    mysql> create user fixinme@localhost identified by '<some password>';
+    mysql> create user fixinme@localhost identified by 'some-password';
     mysql> grant all privileges on fixinme.* to fixinme@localhost;
     mysql> flush privileges;
 
