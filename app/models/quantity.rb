@@ -19,7 +19,7 @@ class Quantity < ApplicationRecord
   validates :description, length: {maximum: type_for_attribute(:description).limit}
 
   # Update :depths of progenies after parent change
-  before_update if: :parent_changed? do
+  before_save if: :parent_changed? do
     self[:depth] = parent&.depth&.succ || 0
   end
 
@@ -27,32 +27,18 @@ class Quantity < ApplicationRecord
     quantities = Quantity.arel_table
     selected = Arel::Table.new('selected')
 
-    self.class.connection.update(
-      Arel::UpdateManager.new.table(
-        Arel::Nodes::JoinSource.new(
-          quantities,
-          [
-            quantities.create_join(
-              # TODO: user .with(quanities: user.quantities) once the '?' problem is fixed
-              Quantity.with_recursive(selected: [
-                quantities.project(quantities[:id], quantities[:depth])
-                  .where(quantities[:id].eq(id).and(quantities[:user_id].eq(user.id))),
-                quantities.project(quantities[:id], selected[:depth] + 1)
-                  .join(selected).on(selected[:id].eq(quantities[:parent_id]))
-              ]).select(selected[Arel.star]).from(selected).arel.as('selected'),
-              quantities.create_on(quantities[:id].eq(selected[:id]))
-            )
-          ]
-        )
-      ).set(quantities[:depth] => selected[:depth]),
-      "#{self.class} Update All"
-    )
+    Quantity.with_recursive(selected: [
+      quantities.project(quantities[:id].as('quantity_id'), quantities[:depth])
+        .where(quantities[:id].eq(id)),
+      quantities.project(quantities[:id], selected[:depth] + 1)
+        .join(selected).on(selected[:quantity_id].eq(quantities[:parent_id]))
+    ]).joins(:selected).update_all(depth: selected[:depth])
   end
 
   # Update :pathnames of progenies after parent/name change
   PATHNAME_DELIMITER = ' → '
 
-  before_update if: -> { parent_changed? || name_changed? } do
+  before_save if: -> { parent_changed? || name_changed? } do
     self[:pathname] = (parent ? parent.pathname + PATHNAME_DELIMITER : '') + self[:name]
   end
 
