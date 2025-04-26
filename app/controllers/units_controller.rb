@@ -9,7 +9,7 @@ class UnitsController < ApplicationController
   end
 
   def index
-    @units = current_user.units.ordered.includes(:base).includes(:subunits)
+    @units = current_user.units.ordered.includes(:base, :subunits)
   end
 
   def new

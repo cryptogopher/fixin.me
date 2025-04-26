@@ -22,7 +22,7 @@ module ApplicationHelper
     def form_for(&block)
       @template.content_tag(:table, class: "centered") { yield(self) } +
       # Display leftover error messages (there shouldn't be any)
-      @template.content_tag(:div, @object&.errors.full_messages.join(@template.tag :br))
+      @template.content_tag(:div, @object&.errors.full_messages.join(@template.tag(:br)))
     end
 
     private
@@ -38,20 +38,21 @@ module ApplicationHelper
     end
 
     def label_for(method, options = {})
-      return "" if (options[:label] == false)
+      return '' if options[:label] == false
+
       text = options.delete(:label)
       text ||= @object.class.human_attribute_name(method).capitalize
-
       classes = @template.class_names(required: options[:required],
                                       error: @object&.errors[method].present?)
+      label = label(method, "#{text}:", class: classes)
+      hint = options.delete(:hint)
 
-      label(method, text+":", class: classes) +
-        (@template.tag(:br) + @template.content_tag(:em, options.delete(:hint)) if options[:hint])
+      label + (@template.tag(:br) + @template.content_tag(:em, hint) if hint)
     end
   end
 
   def labelled_form_for(record, options = {}, &block)
-    options = options.deep_merge builder: LabelledFormBuilder, data: {turbo: false}
+    options = options.deep_merge(builder: LabelledFormBuilder, data: {turbo: false})
     form_for(record, **options) { |f| f.form_for(&block) }
   end
 
@@ -75,12 +76,14 @@ module ApplicationHelper
 
     def number_field(method, options = {})
       value = object.public_send(method)
-      if value.is_a? BigDecimal
+      if value.is_a?(BigDecimal)
         options[:value] = value.to_scientific
         type = object.class.type_for_attribute(method)
         options[:step] ||= BigDecimal(10).power(-type.scale)
-        options[:max] ||= BigDecimal(10).power(type.precision - type.scale) - options[:step]
-        options[:min] = options[:min] == :step ? options[:step] : options[:min] || -options[:max]
+        options[:max] ||= BigDecimal(10).power(type.precision - type.scale) -
+          options[:step]
+        options[:min] = options[:min] == :step ? options[:step] : options[:min]
+        options[:min] ||= -options[:max]
       end
       super
     end
@@ -107,20 +110,21 @@ module ApplicationHelper
     # skip_default_ids causes turbo to generate unique ID for element with
     # [autofocus].  Otherwise IDs are not unique when multiple forms are open
     # and the first input gets focus.
-    record_object, options = nil, record_object if record_object.is_a? Hash
-    options.merge! builder: TabularFormBuilder, skip_default_ids: true
+    record_object, options = nil, record_object if record_object.is_a?(Hash)
+    options.merge!(builder: TabularFormBuilder, skip_default_ids: true)
     render_errors(record_object || record_name)
     fields_for(record_name, record_object, **options, &block)
   end
 
   def tabular_form_with(**options, &block)
-    options = options.deep_merge builder: TabularFormBuilder, html: {autocomplete: 'off'}
+    options = options.deep_merge(builder: TabularFormBuilder,
+                                 html: {autocomplete: 'off'})
     form_with(**options, &block)
   end
 
   def svg_tag(source, options = {})
     content_tag :svg, options do
-      tag.use href: image_path(source + ".svg") + "#icon"
+      tag.use(href: "#{image_path(source + ".svg")}#icon")
     end
   end
 

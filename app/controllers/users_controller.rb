@@ -26,6 +26,7 @@ class UsersController < ApplicationController
     raise ParameterInvalid unless allow_disguise?(@user)
     session[:revert_to_id] = current_user.id
     bypass_sign_in(@user)
+    # TODO: add flash with disguised username?
     redirect_to root_url
   end
 
