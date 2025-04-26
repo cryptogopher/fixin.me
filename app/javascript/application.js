@@ -106,7 +106,7 @@ function dragLeave(event) {
   if (event.timeStamp <= lastEnterTime) return;
   event.currentTarget.closest("table").querySelectorAll(".dropzone").forEach((tr) => {
     tr.classList.remove("dropzone");
-  })
+  });
 }
 window.dragLeave = dragLeave;
 

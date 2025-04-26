@@ -4,7 +4,7 @@
     <%# TODO: show hint when no quantities/units defined %>
     <div class="hflex">
       <%= select_tag :id, options_from_collection_for_select(
-        @quantities, :id, ->(q){ sanitize('&emsp;'*q.depth + q.name) }
+        @quantities, :id, ->(q){ sanitize('&emsp;' * q.depth + q.name) }
       ), form: :new_readouts_form %>
       <% common_options = {form: :new_readouts_form, formaction: new_measurement_path,
                            formmethod: :get, formnovalidate: true,

@@ -172,6 +172,7 @@ input[type=checkbox]:checked {
 }
 /* Hide spin buttons in input number fields */
 input[type=number] {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 input::-webkit-inner-spin-button {

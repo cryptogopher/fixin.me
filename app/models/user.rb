@@ -7,9 +7,10 @@ class User < ApplicationRecord
     admin: 4,       # admin level access
     active: 3,      # read-write user level access
     restricted: 2,  # read-only user level access
-    locked: 1,      # disallowed to sign in due to failed logins; maintained by Devise :lockable
+    locked: 1,      # disallowed to sign in due to failed logins; maintained by
+                    #   Devise :lockable
     disabled: 0,    # administratively disallowed to sign in
-  }, default: :active
+  }, default: :active, validate: true
 
   has_many :readouts, dependent: :destroy
   accepts_nested_attributes_for :readouts
