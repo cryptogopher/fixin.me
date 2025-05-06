@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :measurements
+  resources :measurements, path_names: {new: '/new(/:scope)'},
+    constraints: {scope: /children|subtree/}, defaults: {scope: nil} do
+
+    get 'discard/:id', on: :new, action: :discard, as: :discard
+  end
 
   resources :quantities, except: [:show], path_names: {new: '(/:id)/new'} do
     member { post :reparent }

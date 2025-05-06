@@ -144,7 +144,7 @@ class Quantity < ApplicationRecord
     user.quantities.ordered(root: id, include_root: false).to_a
   end
 
-  # Return: record with ID `of` with its ancestors, sorted by `depth`
+  # Return: record with ID `of` with its ancestors, sorted by :depth
   scope :with_ancestors, ->(of) {
     selected = Arel::Table.new('selected')
 
@@ -162,5 +162,9 @@ class Quantity < ApplicationRecord
 
   def ancestor_of?(progeny)
     user.quantities.with_ancestors(progeny.id).exists?(id)
+  end
+
+  def relative_pathname(ancestor)
+    pathname.delete_prefix(ancestor&.pathname || '')
   end
 end

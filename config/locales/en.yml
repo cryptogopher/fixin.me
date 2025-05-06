@@ -65,9 +65,9 @@ en:
   measurements:
     navigation: Measurements
     index:
-      new_quantity: Add selected
-      new_children: Add children
-      new_subtree: Add subtree
+      new_quantity: Selected
+      new_children: Children
+      new_subtree: Subtree
   quantities:
     navigation: Quantities
     no_items: There are no configured quantities. You can Add some or Import from defaults.
