@@ -9,6 +9,7 @@
 /config/initializers/secret_token.rb
 /config/master.key
 /config/puma.rb
+/config/credentials.yml.enc
 
 # Ignore all logfiles and tempfiles.
 /log/*
