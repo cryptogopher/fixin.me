@@ -165,6 +165,6 @@ class Quantity < ApplicationRecord
   end
 
   def relative_pathname(ancestor)
-    pathname.delete_prefix(ancestor&.pathname || '')
+    pathname.delete_prefix(ancestor ? ancestor.pathname + PATHNAME_DELIMITER : '')
   end
 end

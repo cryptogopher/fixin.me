@@ -111,7 +111,6 @@ textarea {
 }
 .button,
 button,
-fieldset,
 input,
 select,
 textarea {
@@ -126,14 +125,25 @@ textarea {
 .tab > svg,
 button > svg {
   height: 1.8em;
-  padding-right: 0.4em;
   width: 1.8em;
+}
+.button > svg:not(:last-child),
+.tab > svg:not(:last-child),
+button > svg:not(:last-child) {
+  padding-right: 0.4em;
 }
 fieldset {
   padding: 0.4em;
 }
 legend {
   color: var(--color-gray);
+  display: flex;
+  gap: 0.4em;
+  width: 100%;
+}
+legend span {
+  align-content: center;
+  flex-grow: 1;
 }
 
 /* TODO: move normal non-button links (<a>:hover/:focus) styling here (i.e.
@@ -204,6 +214,7 @@ textarea:focus-visible {
   accent-color: var(--color-dark-blue);
   background-color: var(--color-focus-gray);
 }
+fieldset,
 input[type=text]:read-only,
 textarea:read-only {
   border: none;
@@ -429,6 +440,9 @@ table.items .actions {
   gap: 0.4em;
   justify-content: end;
 }
+table.items .actions.centered {
+  justify-content: center;
+}
 table.items tr.dropzone {
   position: relative;
 }
@@ -519,6 +533,11 @@ table.items select:focus-visible {
   color: black;
 }
 
+form a[name=cancel] {
+  border-color: var(--color-border-gray);
+  color: var(--color-nav-gray);
+  fill: var(--color-nav-gray);
+}
 form table.items {
   border: none;
 }

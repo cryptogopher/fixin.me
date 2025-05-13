@@ -15,7 +15,7 @@
       </td>
 
       <td class="actions">
-        <%= image_button_tag t(:delete), 'delete-outline', class: 'dangerous',
+        <%= image_button_tag '', 'delete-outline', class: 'dangerous',
           formaction: discard_new_measurement_path(readout.quantity),
           formmethod: :get, formnovalidate: true, data: {turbo_stream: true} %>
         <%= form.hidden_field :quantity_id %>

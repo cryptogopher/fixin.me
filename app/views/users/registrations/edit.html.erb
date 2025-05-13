@@ -1,5 +1,5 @@
 <% content_for :navigation, flush: true do %>
-  <%= link_to svg_tag("pictograms/arrow-left-bold-outline") + t(:back),
+  <%= link_to svg_tag("pictograms/arrow-left-bold-outline", t(:back)),
     request.referer.present? ? :back : root_path, class: 'tab' %>
 <% end %>
 

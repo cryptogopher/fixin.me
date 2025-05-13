@@ -98,7 +98,7 @@ module ApplicationHelper
 
     def submit_default_value
       svg_name = object ? (object.persisted? ? 'update' : 'plus-circle-outline') : ''
-      @template.svg_tag("pictograms/#{svg_name}") + super
+      @template.svg_tag("pictograms/#{svg_name}", super)
     end
 
     def except_pattern(value, pattern = nil)
@@ -122,10 +122,11 @@ module ApplicationHelper
     form_with(**options, &block)
   end
 
-  def svg_tag(source, options = {})
-    content_tag :svg, options do
+  def svg_tag(source, label, options = {})
+    svg_tag = content_tag :svg, options do
       tag.use(href: "#{image_path(source + ".svg")}#icon")
     end
+    label.blank? ? svg_tag : svg_tag + tag.span(label)
   end
 
   def navigation_menu
@@ -138,7 +139,7 @@ module ApplicationHelper
 
     menu_tabs.map do |name, image, status, css_class|
       if current_user.at_least(status)
-        link_to svg_tag("pictograms/#{image}") + t("#{name}.navigation"),
+        link_to svg_tag("pictograms/#{image}", t("#{name}.navigation")),
           {controller: "/#{name}", action: "index"},
           class: class_names('tab', css_class, active: name == current_tab)
       end
@@ -203,7 +204,7 @@ module ApplicationHelper
   private
 
   def link_or_button_options(type, name, image = nil, html_options)
-    name = (image ? svg_tag("pictograms/#{image}") : '') + name.to_s
+    name = svg_tag("pictograms/#{image}", name) if image
 
     html_options[:class] = class_names(
       html_options[:class],
