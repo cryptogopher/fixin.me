@@ -27,6 +27,7 @@ Installation
     git clone https://gitea.michalczyk.pro/fixin.me/fixin.me.git
     cd fixin.me
     sudo apt install build-essential #(for ubuntu)
+    sudo apt install libmysqlclient-dev #(for ubuntu)
     bundle config set --local path '.gem'
     bundle install
 
