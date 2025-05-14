@@ -29,7 +29,7 @@ default: &default
   collation: utf8mb4_0900_as_ci
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: fixinme
-  password: "some-password"
+  password: "Some-password1%"
   socket: /run/mysqld/mysqld.sock
 
 production:
