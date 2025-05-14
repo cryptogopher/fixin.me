@@ -44,7 +44,7 @@ Database
 Grant database user and privileges:
 
     > mysql -p
-    mysql> create user fixinme@localhost identified by 'some-password';
+    mysql> create user fixinme@localhost identified by 'Some-password1%';
     mysql> grant all privileges on fixinme.* to fixinme@localhost;
     mysql> flush privileges;
 
