@@ -55,6 +55,8 @@ Copy config template and update database configuration:
 
 Run database creation and migration tasks:
 
+   VISUAL="vim" bin/rails credentials:edit
+
     RAILS_ENV="production" bundle exec rake db:create db:migrate db:seed
 
 Uncomment two lines commented before in 
