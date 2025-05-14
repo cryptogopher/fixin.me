@@ -2,7 +2,7 @@
 # in your source code, provide the password or a full connection URL as an
 # environment variable when you boot the app. For example:
 #
-#   DATABASE_PASSWORD="some-password"
+#   DATABASE_PASSWORD="Some-password1%"
 #
 # or
 #
