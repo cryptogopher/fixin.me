@@ -36,15 +36,15 @@ production:
   <<: *default
   database: fixinme_production
 
-# Unless you're planning on developing the application, you can skip/remove
+# Unless you're planning on developing the application, you can skip
 # configurations for development and test databases altogether.
-development:
-  <<: *default
-  database: fixinme_dev
+#development:
+#  <<: *default
+#  database: fixinme_dev
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
-test:
-  <<: *default
-  database: fixinme_test
+#test:
+#  <<: *default
+#  database: fixinme_test
