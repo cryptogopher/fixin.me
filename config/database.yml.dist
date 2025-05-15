@@ -34,7 +34,7 @@ default: &default
 
 production:
   <<: *default
-  database: fixinme_production
+  database: fixinme
 
 # Unless you're planning on developing the application, you can skip
 # configurations for development and test databases altogether.
