@@ -57,6 +57,8 @@ Run database creation and migration tasks:
 
     RAILS_ENV="production" bundle exec rake db:create db:migrate db:seed
 
+Uncomment two lines commented before in 
+config/routes.rb
 
 Running
 -------
