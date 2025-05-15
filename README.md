@@ -55,7 +55,9 @@ Copy config template and update database configuration:
 
 Run database creation and migration tasks:
 
-   VISUAL="vim" bin/rails credentials:edit
+Comment two lines in config/routes.rb to let initialise database without some tables.
+
+    VISUAL="vim" bin/rails credentials:edit
 
     RAILS_ENV="production" bundle exec rake db:create db:migrate db:seed
 
