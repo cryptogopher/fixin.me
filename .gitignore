@@ -39,3 +39,4 @@
 /.webdrivers
 *.swp
 Session.vim
+config/credentials.yml.enc
