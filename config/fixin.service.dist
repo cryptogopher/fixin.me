@@ -1,0 +1,16 @@
+[Unit]
+Description=Fixin.me Rails Application
+After=network.target
+
+[Service]
+Type=simple
+User=USER
+WorkingDirectory=PATH_TO_
+Environment="RAILS_ENV=production"
+Environment="RAILS_SERVE_STATIC_FILES=true"
+ExecStart=/bin/bash -lc 'bundle exec rails s -e production'
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
