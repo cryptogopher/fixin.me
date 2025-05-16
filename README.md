@@ -28,7 +28,7 @@ Installation
     cd fixin.me
     sudo apt install build-essential libmysqlclient-dev libyaml-dev#(for ubuntu)
     bundle config set --local path '.gem'
-    bundle install
+    bundle install --deployment
 
 
 Configuration
