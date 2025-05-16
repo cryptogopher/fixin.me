@@ -77,10 +77,24 @@ and specify server IP/port, either with `port` or `bind`, e.g.:
 
     bind 'tcp://0.0.0.0:3000'
 
-Run server
+Option 1 Run server
 
     bundle exec rails s -e production
 
+Option 2 Run as systemd
+
+    cp onfig/fixin.service.dist onfig/fixin.service
+    
+Set in it User and WorkingDirectory
+
+    sudo cp config/fixin.service /etc/systemd/system/
+    sudo systemctl daemon-reload
+    sudo systemctl enable fixin.service
+    sudo systemctl start fixin.service
+
+Check status
+
+    sudo systemctl status fixin.service
 
 ### Apache mod_passenger
 
