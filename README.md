@@ -8,15 +8,14 @@ Software requirements
 ---------------------
 
 * Server side:
-    * Ruby version: developed on Ruby 3.x
-    * database with:
-        * recursive Common Table Expressions (CTE) support, e.g.
-          MySQL >= 8.0, MariaDB >= 10.2.2
+    * Ruby version: 3.x
+    * database with (e.g. MySQL >= 8.0):
+        * recursive Common Table Expressions (CTE) support, 
         * decimal type with precision of at least 30 (not sure if SQLite3
           supports this)
     * for testing: browser as specified in _Client side_ requirements
 * Client side:
-    * browser supporting below requirements (e.g. Firefox >= 121):
+    * browser supporting (e.g. Firefox >= 121):
         * [`import maps`](https://caniuse.com/import-maps)
           (required by `importmap-rails` gem >= 2.0)
         * CSS [`:has()` pseudo-class](https://caniuse.com/css-has)
@@ -26,8 +25,10 @@ Installation
 ------------
 
     git clone https://gitea.michalczyk.pro/fixin.me/fixin.me.git
+    cd fixin.me
+    sudo apt install build-essential libmysqlclient-dev libyaml-dev#(for ubuntu)
     bundle config set --local path '.gem'
-    bundle install
+    bundle install --deployment
 
 
 Configuration
@@ -44,7 +45,7 @@ Database
 Grant database user and privileges:
 
     > mysql -p
-    mysql> create user fixinme@localhost identified by '<some password>';
+    mysql> create user fixinme@localhost identified by 'Some-password1%';
     mysql> grant all privileges on fixinme.* to fixinme@localhost;
     mysql> flush privileges;
 
@@ -54,8 +55,14 @@ Copy config template and update database configuration:
 
 Run database creation and migration tasks:
 
+Comment two lines in config/routes.rb to let initialise database without some tables.
+
+    VISUAL="vim" bin/rails credentials:edit
+
     RAILS_ENV="production" bundle exec rake db:create db:migrate db:seed
 
+Uncomment two lines commented before in 
+config/routes.rb
 
 Running
 -------
@@ -70,10 +77,24 @@ and specify server IP/port, either with `port` or `bind`, e.g.:
 
     bind 'tcp://0.0.0.0:3000'
 
-Run server
+Option 1 Run server
 
     bundle exec rails s -e production
 
+Option 2 Run as systemd
+
+    cp onfig/fixin.service.dist onfig/fixin.service
+    
+Set in it User and WorkingDirectory
+
+    sudo cp config/fixin.service /etc/systemd/system/
+    sudo systemctl daemon-reload
+    sudo systemctl enable fixin.service
+    sudo systemctl start fixin.service
+
+Check status
+
+    sudo systemctl status fixin.service
 
 ### Apache mod_passenger
 
