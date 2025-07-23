@@ -2,7 +2,7 @@
 # in your source code, provide the password or a full connection URL as an
 # environment variable when you boot the app. For example:
 #
-#   DATABASE_PASSWORD="some-password"
+#   DATABASE_PASSWORD="Some-password1%"
 #
 # or
 #
@@ -29,22 +29,22 @@ default: &default
   collation: utf8mb4_0900_as_ci
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: fixinme
-  password:
+  password: Some-password1%
   socket: /run/mysqld/mysqld.sock
 
 production:
   <<: *default
-  database: fixinme_production
+  database: fixinme
 
-# Unless you're planning on developing the application, you can skip/remove
+# Unless you're planning on developing the application, you can skip
 # configurations for development and test databases altogether.
-development:
-  <<: *default
-  database: fixinme_dev
+#development:
+#  <<: *default
+#  database: fixinme_dev
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
-test:
-  <<: *default
-  database: fixinme_test
+#test:
+#  <<: *default
+#  database: fixinme_test

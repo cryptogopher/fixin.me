@@ -47,7 +47,7 @@ module FixinMe
 
     # List of hosts this app is available at.
     # https://guides.rubyonrails.org/configuring.html#actiondispatch-hostauthorization
-    config.hosts << 'localhost'
+    config.hosts += ['localhost', 'example.com', IPAddr.new('1.2.3.4/32')]
 
     # Email address of admin account
     config.admin = 'admin@localhost'

@@ -3,10 +3,15 @@
 /.cache
 /.gem
 
-# Ignore master key for decrypting credentials and more.
+# Ignore service startup scripts.
+/bin/fixinme.service
+
+# Ignore:
+# * master key for decrypting credentials and encrypted credentials,
+# * custom app, database and server settings (based on *.dist templates).
 /config/application.rb
+/config/credentials.yml.enc
 /config/database.yml
-/config/initializers/secret_token.rb
 /config/master.key
 /config/puma.rb
 

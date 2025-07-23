@@ -1,20 +1,28 @@
 source "https://rubygems.org"
-ruby '>= 3.3.0'
 
+# The requirement for the Ruby version comes from Rails
 gem "rails", "~> 7.2.2"
 gem "sprockets-rails"
-gem "mysql2", "~> 0.5"
 gem "puma", "~> 6.0"
 gem "sassc-rails"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 
+# TODO: select db gems automatically based on config/database.yml:adapter
+group :mysql, optional: true do
+  gem "mysql2", "~> 0.5"
+end
+group :postgresql, optional: true do
+  gem "pg", "~> 1.5"
+end
+group :sqlite, optional: true do
+  gem "sqlite3", "~> 2.7"
+end
+
 gem "devise"
 
-gem 'importmap-rails'
-# turborails >= 2.0.0 required with npm v8.0.0 with support for [autofocus]
-# attribute in turbo-streams
-gem 'turbo-rails', '> 1.5.0'
+gem "importmap-rails"
+gem "turbo-rails", "~> 2.0"
 
 group :development, :test do
   gem "byebug"
