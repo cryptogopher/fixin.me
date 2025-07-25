@@ -11,20 +11,21 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.2].define(version: 2025_01_21_230456) do
-  create_table "quantities", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "quantities", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "name", limit: 31, null: false
     t.text "description"
     t.bigint "parent_id"
-    t.integer "depth", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "depth", default: 0, null: false
+    t.string "pathname", limit: 511, null: false
     t.index ["parent_id"], name: "index_quantities_on_parent_id"
     t.index ["user_id", "parent_id", "name"], name: "index_quantities_on_user_id_and_parent_id_and_name", unique: true
     t.index ["user_id"], name: "index_quantities_on_user_id"
   end
 
-  create_table "readouts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "readouts", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "quantity_id", null: false
     t.bigint "unit_id"
@@ -37,7 +38,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_21_230456) do
     t.index ["user_id"], name: "index_readouts_on_user_id"
   end
 
-  create_table "units", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "units", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "symbol", limit: 15, null: false
     t.text "description"
@@ -50,7 +51,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_21_230456) do
     t.index ["user_id"], name: "index_units_on_user_id"
   end
 
-  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
     t.string "email", limit: 64, null: false
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
