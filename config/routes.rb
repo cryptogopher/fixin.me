@@ -20,8 +20,14 @@ Rails.application.routes.draw do
     end
   end
 
-  devise_for :users, path: '', path_names: {registration: 'profile'},
-    controllers: {registrations: :registrations}
+  # Devise does not handle properly models that require database access during loading.
+  # https://github.com/heartcombo/devise/issues/5786
+  connection = ActiveRecord::Base.connection
+  if connection.schema_version && connection.table_exists?(:users)
+    devise_for :users, path: '', path_names: {registration: 'profile'},
+      controllers: {registrations: :registrations}
+  end
+
   resources :users, only: [:index, :show, :update] do
     member { get :disguise }
     collection { get :revert }

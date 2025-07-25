@@ -19,7 +19,8 @@ class User < ApplicationRecord
 
   validates :email, presence: true, uniqueness: true,
     length: {maximum: type_for_attribute(:email).limit}
-  validates :unconfirmed_email, length: {maximum: type_for_attribute(:unconfirmed_email).limit}
+  validates :unconfirmed_email,
+    length: {maximum: type_for_attribute(:unconfirmed_email).limit}
 
   def to_s
     email
