@@ -8,7 +8,9 @@ gem "sassc-rails"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 
-# TODO: select db gems automatically based on config/database.yml:adapter
+# TODO: select db gems automatically
+#   database_config = ERB.new(File.read("config/database.yml")).result
+#   YAML.load(database_config, aliases: true).values.map { |env| env["adapter"] }.uniq
 group :mysql, optional: true do
   gem "mysql2", "~> 0.5"
 end
