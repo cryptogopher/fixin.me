@@ -62,6 +62,10 @@ editor:
 
     bundle exec rails credentials:edit
 
+Precompile assets:
+
+    RAILS_ENV=production bundle exec rails assets:precompile
+
 ### Database
 
 Grant database user and privileges:
@@ -77,7 +81,7 @@ Copy config template and update database configuration:
 
 Run database creation and migration tasks:
 
-    RAILS_ENV="production" bundle exec rake db:create db:migrate db:seed
+    RAILS_ENV=production bundle exec rails db:create db:migrate db:seed
 
 
 Running
