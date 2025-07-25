@@ -121,6 +121,21 @@ TODO: add sample configuration
 Contributing
 ------------
 
+### Gems
+
+Apart from database adapter, install development and testing gems:
+
+    bundle config --local with mysql development test
+
+### Configuration
+
+If you have previously precomiled assets for production environment, you should
+clean them for development. Otherwise, if precompiled assets are available,
+they will be served - even if they no longer match the original (uncompiled)
+assets.
+
+    bundle exec rails assets:clean
+
 ### Database
 
 Grant database user privileges for development and test environments,
@@ -131,7 +146,6 @@ possibly with different Ruby versions:
     mysql> grant all privileges on `fixinme-%`.* to `fixinme-dev`@localhost;
     mysql> flush privileges;
 
-
 ### Development environment
 
 Starting application server in development environment:
@@ -140,8 +154,7 @@ Starting application server in development environment:
 
 For running rake tasks, prepend command with environment:
 
-    RAILS_ENV="development" bundle exec rake ...
-
+    RAILS_ENV=development bundle exec rails ...
 
 ### Running tests
 
@@ -159,11 +172,9 @@ Tests need to be run from within toplevel application directory:
 
         bundle exec rails test test/system/users_test.rb --seed 1234
 
-
 ### Icons
 
 Pictogrammers Material Design Icons: https://pictogrammers.com/library/mdi/
-
 
 ### Rake tasks
 
