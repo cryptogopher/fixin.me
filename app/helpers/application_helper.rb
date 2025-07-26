@@ -122,7 +122,7 @@ module ApplicationHelper
     form_with(**options, &block)
   end
 
-  def svg_tag(source, label, options = {})
+  def svg_tag(source, label = nil, options = {})
     svg_tag = content_tag :svg, options do
       tag.use(href: "#{image_path(source + ".svg")}#icon")
     end
