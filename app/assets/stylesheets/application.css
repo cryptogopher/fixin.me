@@ -86,9 +86,10 @@ input[type=submit] {
   text-decoration: none;
   white-space: nowrap;
 }
+/* [hidden] submit controls cannot have `display` set as it makes them visible */
 .button,
-button,
-input[type=submit],
+button:not([hidden]),
+input[type=submit]:not([hidden]),
 .tab {
   align-items: center;
   color: var(--color-gray);

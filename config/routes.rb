@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
-  resources :measurements, path_names: {new: '/new(/:scope)'},
-    constraints: {scope: /children|subtree/}, defaults: {scope: nil} do
+  resources :measurements
 
-    get 'discard/:id', on: :new, action: :discard, as: :discard
+  resources :readouts, only: [:new], path_names: {new: '/new(/:id/:scope)'},
+    constraints: {scope: /children|subtree|leaves/} do
+
+    collection {get 'new/:id/discard', action: :discard, as: :discard}
   end
 
   resources :quantities, except: [:show], path_names: {new: '(/:id)/new'} do

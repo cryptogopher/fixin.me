@@ -1,25 +1,29 @@
-<% @readouts.each do |readout| %>
-  <%= tabular_fields_for 'readouts[]', readout do |form| %>
-    <%- tag.tr id: dom_id(readout.quantity, :new, :readout),
-               onkeydown: 'processKey(event)' do %>
-      <%= tag.td id: dom_id(readout.quantity, nil, :pathname) do %>
-        <%= readout.quantity.relative_pathname(@common_ancestor) %>
-      <%end%>
-      <td>
-        <%= form.number_field :value, required: true, autofocus: true, size: 10 %>
-      </td>
-      <td>
-        <%= form.select :unit_id, options_from_collection_for_select(
-          @units, :id, ->(u){ sanitize('&emsp;'*(u.base_id ? 1 : 0) + u.symbol) }
-        ) %>
-      </td>
-
-      <td class="actions">
-        <%= image_button_tag '', 'delete-outline', class: 'dangerous',
-          formaction: discard_new_measurement_path(readout.quantity),
-          formmethod: :get, formnovalidate: true, data: {turbo_stream: true} %>
-        <%= form.hidden_field :quantity_id %>
-      </td>
-    <% end %>
-  <% end %>
+<%= tabular_form_with model: Measurement.new do |form| %>
+  <fieldset>
+    <legend>
+      <%= tag.span id: :measurement_form_legend %>
+      <%= image_link_to '', "close-outline", measurements_path, name: :cancel,
+        class: 'dangerous', onclick: render_turbo_stream('form_close') %>
+    </legend>
+    <table class="items">
+      <tbody id="readouts">
+        <tr id="readouts_form">
+          <td>
+            <%= select_tag :id, quantity_options(@quantities), onchange:
+              "this.form.requestSubmit(document.getElementById('readout_submit'));",
+              class: 'quantity' %>
+            <%= form.submit id: :readout_submit, name: nil, value: nil,
+              formaction: new_readout_path, formmethod: :get, formnovalidate: true,
+              hidden: true, data: {turbo_stream: true} %>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr id="measurement_form_actions">
+          <td colspan="4"><div class="actions centered"><%= form.button %></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </fieldset>
 <% end %>

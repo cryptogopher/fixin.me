@@ -1,0 +1,8 @@
+<%#= render partial: 'form_repath' %>
+
+<% @readouts.each do |r| %>
+  <%= turbo_stream.disable_all "select.quantity option[value='#{r.quantity_id}']" %>
+<% end %>
+<%= turbo_stream.before :readouts_form do %>
+  <%= render partial: 'form', collection: @readouts, as: :readout %>
+<% end %>

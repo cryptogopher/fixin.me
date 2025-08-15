@@ -64,8 +64,12 @@ en:
       source_code: Get code
   measurements:
     navigation: Measurements
+    form:
+      select_quantity: select quantity...
     index:
-      new_quantity: Selected
+      new_measurement: Add measurement
+  readouts:
+    form:
       new_children: Children
       new_subtree: Subtree
   quantities:

@@ -1,7 +1,8 @@
 <div class="rightside buttongrid">
   <% if current_user.at_least(:active) %>
     <%= image_link_to t('.new_quantity'), 'plus-outline', new_quantity_path,
-      id: dom_id(Quantity, :new, :link), onclick: 'this.blur();', data: {turbo_stream: true} %>
+      id: dom_id(Quantity, :new, :link), onclick: 'this.blur();',
+      data: {turbo_stream: true} %>
   <% end %>
   <%#= image_link_to t('.import_quantities'), 'download-outline', default_quantities_path,
     class: 'tools' %>

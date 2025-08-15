@@ -1,3 +1,4 @@
+require 'core_ext/array_delete_bang'
 require 'core_ext/big_decimal_scientific_notation'
 
 ActiveSupport.on_load :action_dispatch_system_test_case do
