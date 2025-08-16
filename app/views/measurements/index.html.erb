@@ -7,4 +7,10 @@
   <% end %>
 </div>
 
-<%= tag.div class: 'main', id: :measurement_form %>
+<%= tag.div class: 'topside', id: :measurement_form %>
+
+<table class="main">
+  <tbody id="measurements">
+    <%= render(@measurements) || render_no_items %>
+  </tbody>
+</table>

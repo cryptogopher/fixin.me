@@ -1,7 +1,10 @@
-<%#= render partial: 'form_repath' %>
-
+<%= render partial: 'form_repath' %>
+<%= turbo_stream.enable_all 'button[name="discard"]' if @prev_quantities.one? %>
+<%# TODO: disable Add actions accordingly (e.g. disable Children if childless or all
+  children already added), then disable option once all actions unavailable %>
 <% @readouts.each do |r| %>
-  <%= turbo_stream.disable_all "select.quantity option[value='#{r.quantity_id}']" %>
+  <%= turbo_stream.update_all "#id option[value=\"#{r.quantity_id}\"]",
+     quantity_option_text(r.quantity, true) %>
 <% end %>
 <%= turbo_stream.before :readouts_form do %>
   <%= render partial: 'form', collection: @readouts, as: :readout %>

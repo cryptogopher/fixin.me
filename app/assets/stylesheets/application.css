@@ -56,7 +56,7 @@ body {
   grid-template-areas:
     "header    header  header"
     "nav       nav     nav"
-    "leftempty topside rightempty"
+    "leftside  topside rightside"
     "leftside  main    rightside";
   grid-template-columns: 1fr auto 1fr;
   grid-template-rows: repeat(4, auto);
@@ -418,10 +418,10 @@ table.items td.link a::after {
 table.items td:first-child {
   padding-inline-start: calc(1em + var(--depth) * 0.8em);
 }
-table.items td:has(input, textarea) {
+table.items td:has(input, select, textarea) {
   padding-inline-start: calc(0.6em - 0.9px);
 }
-table.items td:first-child:has(input, textarea) {
+table.items td:first-child:has(input, select, textarea) {
   padding-inline-start: calc(0.6em + var(--depth) * 0.8em - 0.9px);
 }
 table.items th:last-child {
@@ -559,6 +559,9 @@ form table.items td:first-child {
 .hflex {
   display: flex;
   gap: 0.8em;
+}
+.hflex.centered {
+  justify-content: center;
 }
 .vflex {
   display: flex;

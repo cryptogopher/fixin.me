@@ -64,14 +64,18 @@ en:
       source_code: Get code
   measurements:
     navigation: Measurements
+    no_items: There are no measurements taken. You can Add some now.
     form:
+      new_readout: Add
+      new_children: Children
+      new_subtree: Subtree
+      new_leaves: Leaves
+      no_items: Select and add desired quantities...
       select_quantity: select quantity...
     index:
       new_measurement: Add measurement
   readouts:
     form:
-      new_children: Children
-      new_subtree: Subtree
   quantities:
     navigation: Quantities
     no_items: There are no configured quantities. You can Add some or Import from defaults.

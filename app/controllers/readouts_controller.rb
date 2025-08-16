@@ -4,7 +4,7 @@ class ReadoutsController < ApplicationController
 
   def new
     new_quantities =
-      case params[:scope]
+      case params[:button]
       when 'children'
         @quantity.subquantities
       when 'subtree'
@@ -15,18 +15,17 @@ class ReadoutsController < ApplicationController
     new_quantities -= @prev_quantities
     @readouts = current_user.readouts.build(new_quantities.map { |q| {quantity: q} })
 
-    @user_quantities = current_user.quantities.ordered
     @user_units = current_user.units.ordered
 
-    @quantities = @prev_quantities + new_quantities
-#    @common_ancestor = current_user.quantities
-#      .common_ancestors(all_quantities.map(&:parent_id)).first
+    quantities = @prev_quantities + new_quantities
+    @superquantity = current_user.quantities
+      .common_ancestors(quantities.map(&:parent_id)).first
   end
 
   def discard
     @prev_quantities -= [@quantity]
 
-    @common_ancestor = current_user.quantities
+    @superquantity = current_user.quantities
       .common_ancestors(@prev_quantities.map(&:parent_id)).first
   end
 

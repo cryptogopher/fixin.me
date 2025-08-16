@@ -1,28 +1,20 @@
+<%# TODO: add readout reordering by dragging %>
 <%= tabular_fields_for 'readouts[]', readout do |form| %>
   <%- tag.tr id: dom_id(readout.quantity, :new, :readout),
              onkeydown: 'processKey(event)' do %>
     <td>
-      <%#= readout.quantity.relative_pathname(@common_ancestor) %>
-      <%= form.collection_select :quantity_id, @user_quantities,
-        :id, ->(q){ sanitize('&emsp;' * q.depth + q.name) },
-        {disabled: @quantities.map(&:id).delete!(form.object.quantity.id)},
-        {class: 'quantity'} %>
+      <%= readout.quantity.relative_pathname(@superquantity) %>
     </td>
     <td>
       <%= form.number_field :value, required: true, autofocus: true, size: 10 %>
     </td>
     <td>
+      <%= form.hidden_field :quantity_id %>
       <%= form.collection_select :unit_id, @user_units, :id,
         ->(u){ sanitize('&emsp;' * (u.base_id ? 1 : 0) + u.symbol) } %>
     </td>
-
     <td class="actions">
-      <%= image_button_tag t('.new_children'), 'plus-multiple-outline',
-        formaction: new_measurement_path(readout.quantity, :children),
-        formmethod: :get, formnovalidate: true, data: {turbo_stream: true} %>
-      <%#= image_button_tag t('.new_subtree'), 'plus-multiple-outline',
-        formaction: new_measurement_path(:subtree), **common_options -%>
-      <%= image_button_tag '', 'delete-outline', class: 'dangerous',
+      <%= image_button_tag '', 'delete-outline', class: 'dangerous', name: :discard,
         formaction: discard_readouts_path(readout.quantity),
         formmethod: :get, formnovalidate: true, data: {turbo_stream: true} %>
     </td>

@@ -1,29 +1,40 @@
 <%= tabular_form_with model: Measurement.new do |form| %>
   <fieldset>
     <legend>
-      <%= tag.span id: :measurement_form_legend %>
-      <%= image_link_to '', "close-outline", measurements_path, name: :cancel,
-        class: 'dangerous', onclick: render_turbo_stream('form_close') %>
+      <%= tag.span t('.no_items'), id: :measurement_form_legend %>
+      <%= image_link_to '', "pencil-outline", measurements_path,
+        data: {turbo_stream: true} %>
     </legend>
     <table class="items">
       <tbody id="readouts">
         <tr id="readouts_form">
           <td>
-            <%= select_tag :id, quantity_options(@quantities), onchange:
-              "this.form.requestSubmit(document.getElementById('readout_submit'));",
-              class: 'quantity' %>
-            <%= form.submit id: :readout_submit, name: nil, value: nil,
-              formaction: new_readout_path, formmethod: :get, formnovalidate: true,
-              hidden: true, data: {turbo_stream: true} %>
+            <%= select_tag :id,
+              options_from_collection_for_select(
+                @quantities, :id, ->(q){ quantity_option_text(q, false) }
+              ), class: 'quantity' %>
           </td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr id="measurement_form_actions">
-          <td colspan="4"><div class="actions centered"><%= form.button %></div></td>
+          <td colspan="3">
+            <div class="actions">
+              <% opts = {formaction: new_readout_path, formmethod: :get,
+                         formnovalidate: true, data: {turbo_stream: true}} %>
+              <%= image_button_tag t('.new_readout'), 'plus-outline', id: :new_readout,
+                value: nil, **opts -%>
+              <%= image_button_tag t('.new_children'), 'plus-multiple-outline',
+                value: :children, **opts -%>
+              <%#= image_button_tag t('.new_subtree'), 'plus-multiple-outline',
+                value: :subtree, **opts -%>
+              <%= image_button_tag t('.new_leaves'), 'plus-multiple-outline',
+                value: :leaves, **opts -%>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
   </fieldset>
+  <div class="hflex centered">
+    <%= form.button -%>
+    <%= image_link_to t(:cancel), "close-outline", measurements_path, name: :cancel,
+      class: 'dangerous', onclick: render_turbo_stream('form_close') %>
+  </div>
 <% end %>
