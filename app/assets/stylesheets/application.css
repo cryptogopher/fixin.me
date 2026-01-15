@@ -563,6 +563,9 @@ form table.items td:first-child {
 .hflex.centered {
   justify-content: center;
 }
+.vexpand {
+  width: 100%;
+}
 .vflex {
   display: flex;
   gap: 0.8em;

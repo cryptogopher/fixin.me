@@ -100,6 +100,11 @@ class Quantity < ApplicationRecord
     name
   end
 
+  def to_s_with_depth
+    # em space, U+2003
+    ' ' * depth + name
+  end
+
   def destroyable?
     subquantities.empty?
   end

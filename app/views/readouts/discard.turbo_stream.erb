@@ -1,5 +1,4 @@
 <%= turbo_stream.remove dom_id(@quantity, :new, :readout) %>
 <%= turbo_stream.disable_all 'button[name="discard"]' if @prev_quantities.one? %>
-<%= turbo_stream.update_all "#id option[value=\"#{@quantity.id}\"]",
-  quantity_option_text(@quantity, false) %>
+<%= turbo_stream.enable_all "select.quantity option[value='#{@quantity.id}']" %>
 <%= render partial: 'form_repath' %>
