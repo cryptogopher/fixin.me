@@ -1,0 +1,7 @@
+<%= turbo_stream.update(:measurement_form_legend) { @superquantity&.pathname } %>
+
+<% @prev_quantities.each do |pq| %>
+  <%= turbo_stream.update dom_id(pq, nil, :pathname) do %>
+    <%= pq.relative_pathname(@superquantity) %>
+  <% end %>
+<% end %>

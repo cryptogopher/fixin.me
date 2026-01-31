@@ -1,9 +1,5 @@
-<%= turbo_stream.update :new_readouts_form do %>
-  <%= render partial: 'form_frame' %>
-<% end if @prev_quantities.empty? %>
-
-<%= render partial: 'form_repath' %>
-
-<%= turbo_stream.before :new_readouts_actions do %>
+<%= turbo_stream.disable :new_measurement_link -%>
+<%= turbo_stream.hide :no_items -%>
+<%= turbo_stream.append_all 'body' do %>
   <%= render partial: 'form' %>
 <% end %>

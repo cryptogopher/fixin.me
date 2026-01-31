@@ -1,7 +1,0 @@
-<%= turbo_stream.update(:new_readouts_form_legend) { @common_ancestor&.pathname } %>
-
-<% @prev_quantities.each do |pq| %>
-  <%= turbo_stream.update dom_id(pq, nil, :pathname) do %>
-    <%= pq.relative_pathname(@common_ancestor) %>
-  <% end %>
-<% end %>

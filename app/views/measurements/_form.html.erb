@@ -1,25 +1,37 @@
-<% @readouts.each do |readout| %>
-  <%= tabular_fields_for 'readouts[]', readout do |form| %>
-    <%- tag.tr id: dom_id(readout.quantity, :new, :readout),
-               onkeydown: 'processKey(event)' do %>
-      <%= tag.td id: dom_id(readout.quantity, nil, :pathname) do %>
-        <%= readout.quantity.relative_pathname(@common_ancestor) %>
-      <%end%>
-      <td>
-        <%= form.number_field :value, required: true, autofocus: true, size: 10 %>
-      </td>
-      <td>
-        <%= form.select :unit_id, options_from_collection_for_select(
-          @units, :id, ->(u){ sanitize('&emsp;'*(u.base_id ? 1 : 0) + u.symbol) }
-        ) %>
-      </td>
+<%= tabular_form_with model: Measurement.new, id: :measurement_form,
+  class: 'topside vflex', html: {onkeydown: 'formProcessKey(event)'} do |form| %>
+  <fieldset>
+    <table class="items centered">
+      <tbody id="readouts"></tbody>
+    </table>
+  </fieldset>
 
-      <td class="actions">
-        <%= image_button_tag '', 'delete-outline', class: 'dangerous',
-          formaction: discard_new_measurement_path(readout.quantity),
-          formmethod: :get, formnovalidate: true, data: {turbo_stream: true} %>
-        <%= form.hidden_field :quantity_id %>
-      </td>
-    <% end %>
-  <% end %>
+  <div class="hflex">
+    <details id="quantity_select" class="hexpand" open
+             onkeydown="detailsProcessKey(event)">
+      <summary autofocus>
+        <!-- TODO: Set content with CSS when span empty to avoid duplication -->
+        <span data-prompt="<%= t('.select_quantity') %>">
+          <%= t('.select_quantity') %>
+        </span>
+        <%= image_button_tag t(:apply), "update", name: nil, disabled: true,
+          formaction: new_readout_path, formmethod: :get, formnovalidate: true,
+          data: {turbo_stream: true} %>
+      </summary>
+      <ul><%= quantities_check_boxes %></ul>
+    </details>
+    <%= form.button id: :create_measurement_button, disabled: true -%>
+  </div>
+
+  <div class="hflex reverse">
+    <%= image_link_to t(:cancel), "close-outline", measurements_path, name: :cancel,
+      class: 'dangerous', onclick: render_turbo_stream('form_close') %>
+  </div>
 <% end %>
+
+<script>
+  quantity_select.addEventListener('focusout', detailsClose)
+  quantity_select.addEventListener('change', detailsChange)
+  detailsObserver.observe(quantity_select.querySelector('ul'),
+    {subtree: true, attributeFilter: ['disabled']})
+</script>

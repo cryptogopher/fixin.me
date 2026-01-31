@@ -64,10 +64,14 @@ en:
       source_code: Get code
   measurements:
     navigation: Measurements
+    no_items: There are no measurements taken. You can Add some now.
+    form:
+      select_quantity: select the measured quantities...
     index:
-      new_quantity: Selected
-      new_children: Children
-      new_subtree: Subtree
+      new_measurement: Add measurement
+  readouts:
+    form:
+      select_unit: ...
   quantities:
     navigation: Quantities
     no_items: There are no configured quantities. You can Add some or Import from defaults.
@@ -149,6 +153,7 @@ en:
       other: (%{count} characters minimum)
   actions: Actions
   add: Add
+  apply: Apply
   back: Back
   cancel: Cancel
   delete: Delete

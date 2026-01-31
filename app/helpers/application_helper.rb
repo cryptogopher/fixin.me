@@ -75,12 +75,11 @@ module ApplicationHelper
     end
 
     def number_field(method, options = {})
-      value = object.public_send(method)
-      if value.is_a?(BigDecimal)
-        options[:value] = value.to_scientific
-        type = object.class.type_for_attribute(method)
-        options[:step] ||= BigDecimal(10).power(-type.scale)
-        options[:max] ||= BigDecimal(10).power(type.precision - type.scale) -
+      attr_type = object.type_for_attribute(method)
+      if attr_type.type == :decimal
+        options[:value] = object.public_send(method)&.to_scientific
+        options[:step] ||= BigDecimal(10).power(-attr_type.scale)
+        options[:max] ||= BigDecimal(10).power(attr_type.precision - attr_type.scale) -
           options[:step]
         options[:min] = options[:min] == :step ? options[:step] : options[:min]
         options[:min] ||= -options[:max]

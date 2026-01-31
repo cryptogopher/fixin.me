@@ -19,7 +19,19 @@ ActiveSupport.on_load :turbo_streams_tag_builder do
     action :hide, target, allow_inferred_rendering: false
   end
 
+  def show(target)
+    action :show, target, allow_inferred_rendering: false
+  end
+
+  #def collapse(target)
+  #  action :collapse, target, allow_inferred_rendering: false
+  #end
+
   def close_form(target)
     action :close_form, target, allow_inferred_rendering: false
+  end
+
+  def unselect(target)
+    action :unselect, target, allow_inferred_rendering: false
   end
 end

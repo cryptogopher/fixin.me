@@ -49,6 +49,7 @@
 
 
 /* TODO: collapse gaps around empty rows (`topside`) once possible
+ * with grid-collapse property and remove alternative grid-template
  * https://github.com/w3c/csswg-drafts/issues/5813 */
 body {
   display: grid;
@@ -56,20 +57,27 @@ body {
   grid-template-areas:
     "header    header  header"
     "nav       nav     nav"
-    "leftempty topside rightempty"
+    "leftside  topside rightside"
     "leftside  main    rightside";
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-rows: repeat(4, auto);
+  grid-template-columns: 1fr minmax(max-content, 2fr) 1fr;
   font-family: system-ui;
   margin: 0.4em;
 }
+body:not(:has(.topside)) {
+  grid-template-areas:
+    "header    header  header"
+    "nav       nav     nav"
+    "leftside  main    rightside";
+}
 button,
+details,
 input,
 select,
 textarea {
   background-color: inherit;
   font: inherit;
 }
+details,
 input,
 select {
   text-align: inherit;
@@ -86,9 +94,10 @@ input[type=submit] {
   text-decoration: none;
   white-space: nowrap;
 }
+/* [hidden] submit controls cannot have `display` set as it makes them visible */
 .button,
-button,
-input[type=submit],
+button:not([hidden]),
+input[type=submit]:not([hidden]),
 .tab {
   align-items: center;
   color: var(--color-gray);
@@ -105,11 +114,13 @@ input[type=submit] {
 }
 input:not([type=submit]):not([type=checkbox]),
 select,
+summary,
 textarea {
   padding: 0.2em 0.4em;
 }
 .button,
 button,
+details,
 input,
 select,
 textarea {
@@ -133,6 +144,9 @@ button > svg:not(:last-child) {
 }
 fieldset {
   padding: 0.4em;
+}
+fieldset:not(:has(input, select, textarea)) {
+  display: none;
 }
 legend {
   color: var(--color-gray);
@@ -191,6 +205,7 @@ input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+details:hover,
 input:hover,
 select:hover,
 textarea:hover {
@@ -203,9 +218,11 @@ textarea:invalid {
   border-color: var(--color-red);
   outline: solid 1px var(--color-red);
 }
+details:hover,
 select:hover {
   cursor: pointer;
 }
+details:focus-visible,
 input:focus-visible,
 select:focus-within,
 select:focus-visible,
@@ -417,10 +434,10 @@ table.items td.link a::after {
 table.items td:first-child {
   padding-inline-start: calc(1em + var(--depth) * 0.8em);
 }
-table.items td:has(input, textarea) {
+table.items td:has(input, select, textarea) {
   padding-inline-start: calc(0.6em - 0.9px);
 }
-table.items td:first-child:has(input, textarea) {
+table.items td:first-child:has(input, select, textarea) {
   padding-inline-start: calc(0.6em + var(--depth) * 0.8em - 0.9px);
 }
 table.items th:last-child {
@@ -483,12 +500,6 @@ table.items td:not(:first-child),
 .grayed {
   color: var(--color-table-gray);
   fill: var(--color-table-gray);
-}
-table.items td.hint {
-  color: var(--color-table-gray);
-  font-style: italic;
-  font-size: 0.8rem;
-  padding: 1em;
 }
 table.items svg {
   height: 1.2rem;
@@ -555,9 +566,24 @@ form table.items td:first-child {
 .extendedright {
   margin-right: auto;
 }
+.hexpand {
+  width: 100%;
+}
 .hflex {
   display: flex;
   gap: 0.8em;
+}
+.hflex.reverse {
+  flex-direction: row-reverse;
+}
+.hflex.centered {
+  justify-content: center;
+}
+.hint {
+  color: var(--color-table-gray);
+  font-style: italic;
+  font-size: 0.9rem;
+  text-align: center;
 }
 .vflex {
   display: flex;
@@ -565,6 +591,9 @@ form table.items td:first-child {
   flex-direction: column;
 }
 [disabled] {
+/* label:has(input[disabled]) {
+ * TODO: disabled checkbox blue square focus removal; disabled label styling
+ * */
   border-color: var(--color-border-gray) !important;
   color: var(--color-border-gray) !important;
   cursor: not-allowed;
@@ -573,4 +602,72 @@ form table.items td:first-child {
 }
 .unwrappable {
   white-space: nowrap;
+}
+
+
+details {
+  align-content: center;
+  position: relative;
+}
+summary {
+  align-items: center;
+  color: var(--color-gray);
+  display: flex;
+  gap: 0.2em;
+  height: 100%;
+  white-space: nowrap;
+}
+summary::before {
+  background-color: #000;
+  content: "";
+  height: 1em;
+  mask-image: url('pictograms/chevron-down.svg');
+  mask-size: cover;
+  width: 1em;
+}
+summary:has(.button) {
+  padding-block: 0;
+  padding-inline-end: 0;
+}
+summary .button {
+  border: 1px var(--color-border-gray);
+  border-radius: 0;
+  border-style: none none none solid;
+  height: 100%;
+}
+summary span {
+  width: 100%;
+}
+details[open] summary::before {
+  transform: rotate(180deg);
+}
+summary::marker {
+  padding-left: 0.25em;
+}
+/* TODO: use ::details-content ? */
+details[open] ul {
+  background: white;
+  border: solid 1px var(--color-border-gray);
+  border-radius: 0.25em;
+  box-sizing: content-box;
+  box-shadow: 1px 1px 3px var(--color-border-gray);
+  margin: 0;
+  margin-left: -0.9px;
+  padding-left: 0;
+  position: absolute;
+  width: 100%;
+}
+li:hover {
+  background-color: var(--color-focus-gray);
+}
+li label {
+  align-items: center;
+  display: flex;
+  line-height: 1.4em;
+}
+li input[type=checkbox] {
+  margin: 0 0.25em;
+}
+li::marker {
+  content: '';
 }

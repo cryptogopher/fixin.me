@@ -1,0 +1,8 @@
+<% @readouts.each do |r| %>
+  <%= turbo_stream.disable dom_id(r.quantity) %>
+<% end %>
+<%= render partial: 'form_repath' %>
+<%= turbo_stream.append :readouts do %>
+  <%= render partial: 'form', collection: @readouts, as: :readout %>
+<% end %>
+<%= turbo_stream.enable :create_measurement_button if @prev_quantities.empty? %>

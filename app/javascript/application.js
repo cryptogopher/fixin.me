@@ -9,30 +9,69 @@ function showPage(event) {
 }
 document.addEventListener('turbo:load', showPage)
 
+function detailsChange(event) {
+  var target = event.currentTarget
+  var count = target.querySelectorAll('input:checked:not([disabled])').length
+  var span = target.querySelector('summary > span')
+  var button = target.querySelector('button')
+  if (count > 0) {
+    span.textContent = count + ' selected';
+    Turbo.StreamElement.prototype.enableElement(button)
+  } else {
+    span.textContent = span.getAttribute('data-prompt')
+    Turbo.StreamElement.prototype.disableElement(button)
+  }
+}
+window.detailsChange = detailsChange
+
+/* Close open <details> when focus lost */
+function detailsClose(event) {
+  if (!event.relatedTarget ||
+      event.relatedTarget.closest("details") != event.currentTarget) {
+    event.currentTarget.removeAttribute("open")
+  }
+}
+window.detailsClose = detailsClose
+
+window.detailsObserver = new MutationObserver((mutations) => {
+  mutations[0].target.dispatchEvent(new Event('change', {bubbles: true}))
+});
+
 
 /* Turbo stream actions */
+Turbo.StreamElement.prototype.disableElement = function(element) {
+    element.setAttribute("disabled", "disabled")
+    element.setAttribute("aria-disabled", "true")
+    element.setAttribute("tabindex", "-1")
+}
+Turbo.StreamActions.disable = function() {
+  this.targetElements.forEach((e) => { this.disableElement(e) })
+}
+
 Turbo.StreamElement.prototype.enableElement = function(element) {
     element.removeAttribute("disabled")
     element.removeAttribute("aria-disabled")
-    // 'tabindex' is not used explicitly, so removing it is safe
+    // Assume 'tabindex' is not used explicitly, so removing it is safe
     element.removeAttribute("tabindex")
 }
-
-Turbo.StreamActions.disable = function() {
-  this.targetElements.forEach((e) => {
-    e.setAttribute("disabled", "disabled")
-    e.setAttribute("aria-disabled", "true")
-    e.setAttribute("tabindex", "-1")
-  })
-}
-
 Turbo.StreamActions.enable = function() {
   this.targetElements.forEach((e) => { this.enableElement(e) })
 }
 
+/* TODO: change to visibility = collapse to avoid width change? */
 Turbo.StreamActions.hide = function() {
   this.targetElements.forEach((e) => { e.style.display = "none" })
 }
+
+Turbo.StreamActions.show = function() {
+  this.targetElements.forEach((e) => { e.style.removeProperty("display") })
+}
+
+/*
+Turbo.StreamActions.collapse = function() {
+  this.targetElements.forEach((e) => { e.style.visibility = "collapse" })
+}
+*/
 
 Turbo.StreamActions.close_form = function() {
   this.targetElements.forEach((e) => {
@@ -54,28 +93,62 @@ Turbo.StreamActions.close_form = function() {
   })
 }
 
+Turbo.StreamActions.unselect = function() {
+  this.targetElements.forEach((e) => {
+    e.checked = false
+    this.enableElement(e)
+  })
+}
 
-/* Items table drag and drop support */
-function processKey(event) {
-  if (event.key == "Escape") {
-    event.currentTarget.querySelector("a[name=cancel]").click();
+function formProcessKey(event) {
+  switch (event.key) {
+    case "Escape":
+      event.currentTarget.querySelector("a[name=cancel]").click()
+      break
+    case "Enter":
+      event.currentTarget.querySelector("button[name=button]").click()
+      event.preventDefault()
+      break
   }
 }
-window.processKey = processKey;
+window.formProcessKey = formProcessKey
 
-var lastEnterTime;
-function dragStart(event) {
-  lastEnterTime = event.timeStamp;
-  var row = event.currentTarget;
-  row.closest("table").querySelectorAll("thead tr").forEach((tr) => {
-    tr.toggleAttribute("hidden");
-  });
-  event.dataTransfer.setData("text/plain", row.getAttribute("data-drag-path"));
-  var rowRectangle = row.getBoundingClientRect();
-  event.dataTransfer.setDragImage(row, event.x - rowRectangle.left, event.y - rowRectangle.top);
-  event.dataTransfer.dropEffect = "move";
+function detailsProcessKey(event) {
+  switch (event.key) {
+    case "Escape":
+      if (event.currentTarget.hasAttribute("open")) {
+        event.currentTarget.removeAttribute("open")
+        event.stopPropagation()
+      }
+      break
+    case "Enter":
+      var button = event.currentTarget.querySelector("button:not([disabled])")
+      if (button) {
+        button.click()
+        // Autofocus won't be respected unless target is blurred
+        event.target.blur()
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      break
+  }
 }
-window.dragStart = dragStart;
+window.detailsProcessKey = detailsProcessKey;
+
+/* Items table drag and drop support */
+var lastEnterTime
+function dragStart(event) {
+  lastEnterTime = event.timeStamp
+  var row = event.currentTarget
+  row.closest("table").querySelectorAll("thead tr").forEach((tr) => {
+    tr.toggleAttribute("hidden")
+  })
+  event.dataTransfer.setData("text/plain", row.getAttribute("data-drag-path"))
+  var rowRectangle = row.getBoundingClientRect()
+  event.dataTransfer.setDragImage(row, event.x - rowRectangle.left, event.y - rowRectangle.top)
+  event.dataTransfer.dropEffect = "move"
+}
+window.dragStart = dragStart
 
 /*
 * Drag tracking assumptions (based on FF 122.0 experience):
@@ -87,44 +160,44 @@ window.dragStart = dragStart;
 * and outside. This should probably be fixed in browser, than patched here.
 */
 function dragEnter(event) {
-  //console.log(event.timeStamp + " " + event.type + ": " + event.currentTarget.id);
-  dragLeave(event);
-  lastEnterTime = event.timeStamp;
-  const id = event.currentTarget.getAttribute("data-drop-id");
-  document.getElementById(id).classList.add("dropzone");
+  //console.log(event.timeStamp + " " + event.type + ": " + event.currentTarget.id)
+  dragLeave(event)
+  lastEnterTime = event.timeStamp
+  const id = event.currentTarget.getAttribute("data-drop-id")
+  document.getElementById(id).classList.add("dropzone")
 }
-window.dragEnter = dragEnter;
+window.dragEnter = dragEnter
 
 function dragOver(event) {
-  event.preventDefault();
+  event.preventDefault()
 }
-window.dragOver = dragOver;
+window.dragOver = dragOver
 
 function dragLeave(event) {
-  //console.log(event.timeStamp + " " + event.type + ": " + event.currentTarget.id);
+  //console.log(event.timeStamp + " " + event.type + ": " + event.currentTarget.id)
   // Leave has been accounted for by Enter at the same timestamp, processed earlier
-  if (event.timeStamp <= lastEnterTime) return;
+  if (event.timeStamp <= lastEnterTime) return
   event.currentTarget.closest("table").querySelectorAll(".dropzone").forEach((tr) => {
-    tr.classList.remove("dropzone");
-  });
+    tr.classList.remove("dropzone")
+  })
 }
-window.dragLeave = dragLeave;
+window.dragLeave = dragLeave
 
 function dragEnd(event) {
-  dragLeave(event);
+  dragLeave(event)
   event.currentTarget.closest("table").querySelectorAll("thead tr").forEach((tr) => {
-    tr.toggleAttribute("hidden");
-  });
+    tr.toggleAttribute("hidden")
+  })
 }
-window.dragEnd = dragEnd;
+window.dragEnd = dragEnd
 
 function drop(event) {
-  event.preventDefault();
+  event.preventDefault()
 
-  var params = new URLSearchParams();
-  var id_param = event.currentTarget.getAttribute("data-drop-id-param");
-  var id = event.currentTarget.getAttribute("data-drop-id").split("_").pop();
-  params.append(id_param, id);
+  var params = new URLSearchParams()
+  var id_param = event.currentTarget.getAttribute("data-drop-id-param")
+  var id = event.currentTarget.getAttribute("data-drop-id").split("_").pop()
+  params.append(id_param, id)
 
   fetch(event.dataTransfer.getData("text/plain"), {
     body: params,
@@ -138,4 +211,4 @@ function drop(event) {
   .then(response => response.text())
   .then(html => Turbo.renderStreamMessage(html))
 }
-window.drop = drop;
+window.drop = drop
