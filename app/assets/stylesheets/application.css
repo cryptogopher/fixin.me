@@ -15,6 +15,7 @@
  *= require_self
  */
 
+/* Strive for simplicity. Style elements only, if possible. */
 :root {
   --color-focus-gray: #f3f3f3;
   --color-border-gray: #dddddd;
@@ -48,27 +49,11 @@
 }
 
 
-/* TODO: collapse gaps around empty rows (`topside`) once possible
- * with grid-collapse property and remove alternative grid-template
- * https://github.com/w3c/csswg-drafts/issues/5813 */
-body {
-  display: grid;
-  gap: 0.8em;
-  grid-template-areas:
-    "header    header  header"
-    "nav       nav     nav"
-    "leftside  topside rightside"
-    "leftside  main    rightside";
-  grid-template-columns: 1fr minmax(max-content, 2fr) 1fr;
-  font-family: system-ui;
-  margin: 0.4em;
-}
-body:not(:has(.topside)) {
-  grid-template-areas:
-    "header    header  header"
-    "nav       nav     nav"
-    "leftside  main    rightside";
-}
+/* Color coding of input controls' background:
+ *  blue - target for interaction with pointer
+ *  gray - target for interaction with keyboard
+ *  red - destructive, non-undoable action
+ */
 button,
 details,
 input,
@@ -82,11 +67,6 @@ input,
 select {
   text-align: inherit;
 }
-
-
-/* blue - target for interaction with pointer */
-/* gray - target for interaction with keyboard */
-/* TODO: remove non-font-size rems from buttons/inputs below */
 a,
 button,
 input[type=submit] {
@@ -109,7 +89,7 @@ input[type=submit]:not([hidden]),
 button,
 input[type=submit] {
   font-size: 0.8rem;
-  padding: 0.4em;
+  padding: 0.6em 0.5em;
   width: fit-content;
 }
 input:not([type=submit]):not([type=checkbox]),
@@ -120,74 +100,25 @@ textarea {
 }
 .button,
 button,
-details,
 input,
 select,
+summary,
 textarea {
   border: solid 1px var(--color-gray);
   border-radius: 0.25em;
 }
-fieldset,
+input[type=checkbox],
+svg,
 textarea {
   margin: 0
 }
-.button > svg,
-.tab > svg,
-button > svg {
-  height: 1.8em;
-  width: 1.8em;
-}
-.button > svg:not(:last-child),
-.tab > svg:not(:last-child),
-button > svg:not(:last-child) {
-  padding-right: 0.4em;
-}
-fieldset {
-  padding: 0.4em;
-}
-fieldset:not(:has(input, select, textarea)) {
-  display: none;
-}
-legend {
-  color: var(--color-gray);
-  display: flex;
-  gap: 0.4em;
-  width: 100%;
-}
-legend span {
-  align-content: center;
-  flex-grow: 1;
-}
-
-/* TODO: move normal non-button links (<a>:hover/:focus) styling here (i.e.
- * page-wide, top-level) and remove from table.items - as the style should be
- * same everywhere */
-.button:focus-visible,
-button:focus-visible,
-input[type=submit]:focus-visible {
-  background-color: var(--color-focus-gray);
-}
-.button:hover,
-button:hover,
-input[type=submit]:hover {
-  background-color: var(--color-blue);
-  border-color: var(--color-blue);
-  color: white;
-  fill: white;
-}
-.dangerous:hover {
-  background-color: var(--color-red);
-  border-color: var(--color-red);
-}
-
 input[type=checkbox] {
   accent-color: var(--color-blue);
   appearance: none;
   -webkit-appearance: none;
   display: flex;
-  height: 1.1rem;
-  margin: 0;
-  width: 1.1rem;
+  height: 1.1em;
+  width: 1.1em;
 }
 input[type=checkbox]:checked {
   appearance: checkbox;
@@ -205,12 +136,56 @@ input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-details:hover,
+.button > svg,
+.tab > svg,
+button > svg {
+  height: 1.4em;
+  width: 1.4em;
+}
+.button > svg:not(:last-child),
+.tab > svg:not(:last-child),
+button > svg:not(:last-child) {
+  margin-right: 0.2em;
+}
+/* TODO: move normal non-button links (<a>:hover/:focus) styling here (i.e.
+ * page-wide, top-level) and remove from table.items - as the style should be
+ * same everywhere */
+.button:focus-visible,
+button:focus-visible,
+input[type=submit]:focus-visible {
+  background-color: var(--color-focus-gray);
+}
+input:focus-visible,
+select:focus-visible,
+select:focus-within,
+/* TODO: how to achieve summary:focus-within for ::details-content? */
+summary:focus-visible,
+textarea:focus-visible {
+  accent-color: var(--color-dark-blue);
+  background-color: var(--color-focus-gray);
+}
+.button:hover,
+button:hover,
+input[type=submit]:hover {
+  background-color: var(--color-blue);
+  border-color: var(--color-blue);
+  color: white;
+  fill: white;
+}
+.dangerous:hover {
+  background-color: var(--color-red);
+  border-color: var(--color-red);
+}
 input:hover,
 select:hover,
+summary:hover,
 textarea:hover {
   border-color: var(--color-blue);
   outline: solid 1px var(--color-blue);
+}
+select:hover,
+summary:hover {
+  cursor: pointer;
 }
 input:invalid,
 select:invalid,
@@ -218,31 +193,38 @@ textarea:invalid {
   border-color: var(--color-red);
   outline: solid 1px var(--color-red);
 }
-details:hover,
-select:hover {
-  cursor: pointer;
-}
-details:focus-visible,
-input:focus-visible,
-select:focus-within,
-select:focus-visible,
-textarea:focus-visible {
-  accent-color: var(--color-dark-blue);
-  background-color: var(--color-focus-gray);
-}
-fieldset,
 input[type=text]:read-only,
 textarea:read-only {
   border: none;
-  padding-left: 0;
-  padding-right: 0;
+  padding-inline: 0;
 }
 
+
+/* NOTE: collapse gaps around empty rows (`topside`) once possible
+ * with grid-collapse property and remove alternative grid-template
+ * https://github.com/w3c/csswg-drafts/issues/5813 */
+body {
+  display: grid;
+  gap: 0.8em;
+  grid-template-areas:
+    "header    header  header"
+    "nav       nav     nav"
+    "leftside  topside rightside"
+    "leftside  main    rightside";
+  grid-template-columns: 1fr minmax(max-content, 2fr) 1fr;
+  font-family: system-ui;
+  margin: 0.4em;
+}
+body:not(:has(.topside)) {
+  grid-template-areas:
+    "header    header  header"
+    "nav       nav     nav"
+    "leftside  main    rightside";
+}
 
 header {
   grid-area: header;
 }
-
 
 .navigation {
   display: flex;
@@ -256,7 +238,7 @@ header {
   flex: 1;
   font-size: 1rem;
   justify-content: center;
-  padding-block: 0.3em;
+  padding-block: 0.4em;
 }
 .navigation > .tab:hover,
 .navigation > .tab:focus-visible {
@@ -267,7 +249,6 @@ header {
   color: var(--color-blue);
   fill: var(--color-blue);
 }
-
 
 .topside {
   grid-area: topside;
@@ -281,7 +262,6 @@ header {
 .rightside {
   grid-area: rightside;
 }
-
 
 .buttongrid {
   display: grid;
@@ -355,7 +335,7 @@ header {
 }
 
 
-/* TODO: Update styling, including rem removal. */
+/* TODO: Update form styling: simplify selectors, deduplicate, remove non-font rem. */
 form table {
   border-spacing: 0.8rem;
 }
@@ -385,22 +365,24 @@ form td.error::after {
 form em {
   color: var(--color-text-gray);
   font-size: 0.75rem;
-  font-weight: normal;
 }
 form input[type=submit] {
-  float: none;
   font-size: 1rem;
   margin: 1.5rem auto 0 auto;
   padding: 0.75rem;
 }
 
 
+/* TODO: remove .items class and make 'form table' work properly */
 table.items {
   border-spacing: 0;
   border: solid 1px var(--color-border-gray);
   border-radius: 0.25em;
   font-size: 0.85rem;
   text-align: left;
+}
+table:not(:has(tr)) {
+  display: none;
 }
 table.items thead {
   font-size: 0.8rem;
@@ -478,7 +460,7 @@ table.items tr.form td {
 }
 
 /* TODO: replace :hover:focus-visible combos with proper LOVE stye order */
-/* TODO: Update styling, including rem removal. */
+/* TODO: Update table styling: simplify selectors, deduplicate, remove non-font rem. */
 table.items td.link a:hover,
 table.items td.link a:focus-visible,
 table.items td.link a:hover:focus-visible {
@@ -502,8 +484,12 @@ table.items td:not(:first-child),
   fill: var(--color-table-gray);
 }
 table.items svg {
-  height: 1.2rem;
+  height: 1rem;
   vertical-align: middle;
+  width: 1rem;
+}
+table.items svg:last-child {
+  height: 1.2rem;
   width: 1.2rem;
 }
 table.items td.svg {
@@ -516,7 +502,8 @@ table.items .button,
 table.items button,
 table.items input[type=submit] {
   font-weight: normal;
-  padding: 0.3em;
+  height: 100%;
+  padding: 0.4em;
 }
 table.items input:not([type=submit]):not([type=checkbox]),
 table.items select,
@@ -542,7 +529,6 @@ table.items select:focus-within,
 table.items select:focus-visible {
   color: black;
 }
-
 form a[name=cancel] {
   border-color: var(--color-border-gray);
   color: var(--color-nav-gray);
@@ -559,6 +545,7 @@ form table.items td {
 form table.items td:first-child {
   color: inherit;
 }
+
 
 .centered {
   margin: 0 auto;
@@ -592,7 +579,8 @@ form table.items td:first-child {
 }
 [disabled] {
 /* label:has(input[disabled]) {
- * TODO: disabled checkbox blue square focus removal; disabled label styling
+ * TODO: disabled checkbox blue square focus removal; disabled label styling;
+ * focused label styling (currently only checkbox has focus)
  * */
   border-color: var(--color-border-gray) !important;
   color: var(--color-border-gray) !important;
@@ -630,8 +618,10 @@ summary:has(.button) {
   padding-inline-end: 0;
 }
 summary .button {
-  border: 1px var(--color-border-gray);
-  border-radius: 0;
+  border: solid 1px var(--color-border-gray);
+  border-radius: inherit;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
   border-style: none none none solid;
   height: 100%;
 }
@@ -644,15 +634,13 @@ details[open] summary::before {
 summary::marker {
   padding-left: 0.25em;
 }
-/* TODO: use ::details-content ? */
+/* NOTE: use details[open]::details-content once widely available */
 details[open] ul {
   background: white;
   border: solid 1px var(--color-border-gray);
   border-radius: 0.25em;
-  box-sizing: content-box;
   box-shadow: 1px 1px 3px var(--color-border-gray);
-  margin: 0;
-  margin-left: -0.9px;
+  margin: -1px 0 0 0;
   padding-left: 0;
   position: absolute;
   width: 100%;

@@ -114,6 +114,7 @@ function formProcessKey(event) {
 window.formProcessKey = formProcessKey
 
 function detailsProcessKey(event) {
+  // TODO: up/down arrows to move focus to prev/next line
   switch (event.key) {
     case "Escape":
       if (event.currentTarget.hasAttribute("open")) {

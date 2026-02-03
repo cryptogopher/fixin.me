@@ -1,12 +1,11 @@
 <%= tabular_form_with model: Measurement.new, id: :measurement_form,
   class: 'topside vflex', html: {onkeydown: 'formProcessKey(event)'} do |form| %>
-  <fieldset>
-    <table class="items centered">
-      <tbody id="readouts"></tbody>
-    </table>
-  </fieldset>
+  <table class="items centered">
+    <tbody id="readouts"></tbody>
+  </table>
 
   <div class="hflex">
+    <%# TODO: right-click selection %>
     <details id="quantity_select" class="hexpand" open
              onkeydown="detailsProcessKey(event)">
       <summary autofocus>
