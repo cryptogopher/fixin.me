@@ -1,12 +1,10 @@
-<table class="main items" id="users">
+<table class="main-area items" id="users">
   <thead>
     <tr>
-      <th><%= User.human_attribute_name(:email).capitalize %></th>
-      <th><%= User.human_attribute_name(:status).capitalize %></th>
-      <th><%= User.human_attribute_name(:confirmed_at).capitalize %></th>
-      <th>
-        <%= User.human_attribute_name(:created_at).capitalize %>&nbsp;<sup>UTC</sup>
-      </th>
+      <th><%= User.human_attribute_name(:email) %></th>
+      <th><%= User.human_attribute_name(:status) %></th>
+      <th><%= User.human_attribute_name(:confirmed_at) %></th>
+      <th><%= User.human_attribute_name(:created_at) %>&nbsp;<sup>(UTC)</sup></th>
       <th><%= t :actions %></th>
     </tr>
   </thead>
@@ -19,18 +17,18 @@
             <%= user.status %>
           <% else %>
             <%= form_for user do |u| %>
-              <%= u.select :status, User.statuses.keys, {}, autocomplete: "off",
-                onchange: "this.form.requestSubmit();" %>
+              <%= u.select :status, User.statuses.keys, {}, autocomplete: 'off',
+                onchange: 'this.form.requestSubmit();' %>
             <% end %>
           <% end %>
         </td>
         <td class="svg">
-          <%= svg_tag "pictograms/checkbox-marked-outline" if user.confirmed_at.present? %>
+          <%= svg_tag 'pictograms/checkbox-marked-outline' if user.confirmed_at.present? %>
         </td>
-        <td><%= user.created_at.to_fs(:db_without_sec) %></td>
+        <td><%= l user.created_at, format: :without_tz %></td>
         <td class="actions">
           <% if allow_disguise?(user) %>
-            <%= image_link_to t(".disguise"), "incognito", disguise_user_path(user) %>
+            <%= image_link_to t('.disguise'), 'incognito', disguise_user_path(user) %>
           <% end %>
         </td>
       </tr>

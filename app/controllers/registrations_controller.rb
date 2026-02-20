@@ -1,6 +1,11 @@
 class RegistrationsController < Devise::RegistrationsController
   before_action :authenticate_user!, only: [:edit, :update, :destroy]
 
+  def destroy
+    # TODO: Disallow/disable deletion for last admin account; update :edit view
+    super
+  end
+
   protected
 
   def update_resource(resource, params)

@@ -1,16 +1,16 @@
-<div class="main">
-  <%= labelled_form_for resource, url: user_registration_path do |f| %>
-    <%= f.email_field :email, required: true, size: 30, autofocus: true, autocomplete: "email" %>
+<div class="main-area">
+  <%= labeled_form_for resource, url: user_registration_path do |f| %>
+    <%= f.email_field :email, required: true, size: 30, autofocus: true,
+      autocomplete: 'email' %>
     <%= f.password_field :password, required: true, size: 30,
-      minlength: @minimum_password_length, autocomplete: "new-password",
-      hint: t("users.minimum_password_length", count: @minimum_password_length) %>
-    <%= f.password_field :password_confirmation, label: t(".password_confirmation"),
-      required: true, size: 30, minlength: @minimum_password_length, autocomplete: "off" %>
+      minlength: @minimum_password_length, autocomplete: 'new-password' %>
+    <%= f.password_field :password_confirmation, required: true, size: 30,
+      minlength: @minimum_password_length, autocomplete: 'off' %>
 
     <%= f.submit t(:register) %>
   <% end %>
 
-  <%= content_tag :p, t(:or), style: "text-align: center;" %>
-  <%= image_link_to t(:resend_confirmation), "email-sync-outline", new_user_confirmation_path,
-    class: "centered" %>
+  <%= content_tag :p, t(:or), style: 'text-align: center;' %>
+  <%= image_link_to t(:resend_confirmation), 'email-sync-outline',
+    new_user_confirmation_path, class: 'centered' %>
 </div>

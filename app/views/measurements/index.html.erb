@@ -1,5 +1,5 @@
 <%# TODO: show hint when no quantities/units defined %>
-<div class="rightside buttongrid">
+<div class="rightside-area buttongrid">
   <% if current_user.at_least(:active) %>
     <%= image_link_to t('.new_measurement'), 'plus-outline', new_measurement_path,
       id: :new_measurement_link, onclick: 'this.blur();',
@@ -7,7 +7,7 @@
   <% end %>
 </div>
 
-<table class="main">
+<table class="main-area">
   <tbody id="measurements">
     <%= render(@measurements) || render_no_items %>
   </tbody>

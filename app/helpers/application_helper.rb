@@ -1,59 +1,84 @@
 module ApplicationHelper
-  # TODO: replace legacy content_tag with tag.tagname
-  class LabelledFormBuilder < ActionView::Helpers::FormBuilder
-    (field_helpers - [:label]).each do |selector|
+  class LabeledFormBuilder < ActionView::Helpers::FormBuilder
+    (field_helpers - [:label, :hidden_field]).each do |selector|
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def #{selector}(method, options = {})
-          labelled_row_for(method, options) { super }
+          labeled_field_for(method, options) { super }
         end
       RUBY_EVAL
     end
 
     def select(method, choices = nil, options = {}, html_options = {})
-      labelled_row_for(method, options) { super }
-    end
-
-    def submit(value, options = {})
-      @template.content_tag :tr do
-        @template.content_tag :td, super, colspan: 2
-      end
-    end
-
-    def form_for(&block)
-      @template.content_tag(:table, class: "centered") { yield(self) } +
-      # Display leftover error messages (there shouldn't be any)
-      @template.content_tag(:div, @object&.errors.full_messages.join(@template.tag(:br)))
+      labeled_field_for(method, options) { super }
     end
 
     private
 
-    def labelled_row_for(method, options)
-      @template.content_tag :tr do
-        @template.content_tag(:td, label_for(method, options), class: "unwrappable") +
-        @template.content_tag(:td, options.delete(:readonly) ? @object.public_send(method) : yield,
-          @object&.errors[method].present? ?
-            {class: "error", data: {content: @object&.errors.delete(method).join(" and ")}} :
-            {})
-      end
+    def labeled_field_for(method, options)
+      field = if options.delete(:readonly) then
+                value = object.public_send(method)
+                value = @template.l(value) if value.respond_to?(:strftime)
+                value ||= options[:placeholder]
+              else
+                yield
+              end
+      label_for(method, options) + field
     end
 
     def label_for(method, options = {})
-      return '' if options[:label] == false
-
-      text = options.delete(:label)
-      text ||= @object.class.human_attribute_name(method).capitalize
       classes = @template.class_names(required: options[:required],
-                                      error: @object&.errors[method].present?)
-      label = label(method, "#{text}:", class: classes)
-      hint = options.delete(:hint)
+                                      error: object.errors[method].present?)
 
-      label + (@template.tag(:br) + @template.content_tag(:em, hint) if hint)
+      handler = {missing_interpolation_argument_handler: method(:interpolation_missing)}
+      # Label translation search order:
+      #   controller.action.* => helpers.label.model.* => activerecord.attributes.model.*
+      # First 2 levels are translated recursively.
+      label(method, class: classes) do |builder|
+        translation = I18n.config.with(**handler) { deep_translate(method, **options) }
+        translation.presence || "#{builder.translation}:"
+      end
+    end
+
+    def interpolation_missing(key, values, string)
+      @template.instance_values[key.to_s] || deep_translate(key, **values)
+    end
+
+    # Extension to label text translation:
+    # * recursive translation,
+    # * interpolation of (_relative_) translation key names and instance variables,
+    # * pluralization based on any interpolable value
+    # TODO: add unit tests for the above
+    def deep_translate(key, **options)
+      options[:default] = [
+        :".#{key}",
+        :"helpers.label.#{@object_name}.#{key}_html",
+        :"helpers.label.#{@object_name}.#{key}",
+        ""
+      ]
+
+      # At least 1 interpolation key is required for #translate to act on
+      # missing interpolation arguments (i.e. call custom handler).
+      # Also setting `key` to nil avoids recurrent translation.
+      options[key] = nil
+
+      @template.t(".#{key}_html", **options) do |translation, resolved_key|
+        if translation.is_a?(Array) && (count = translation.to_h[:count])
+          @template.t(resolved_key, count: I18n.interpolate(count, **options), **options)
+        else
+          translation
+        end
+      end
     end
   end
 
-  def labelled_form_for(record, options = {}, &block)
-    options = options.deep_merge(builder: LabelledFormBuilder, data: {turbo: false})
-    form_for(record, **options) { |f| f.form_for(&block) }
+  def labeled_form_for(record, options = {}, &block)
+    extra_options = {builder: LabeledFormBuilder,
+                     data: {turbo: false},
+                     html: {class: 'labeled-form'}}
+    options = options.deep_merge(extra_options) do |key, left, right|
+      key == :class ? class_names(left, right) : right
+    end
+    form_for(record, **options, &block)
   end
 
   class TabularFormBuilder < ActionView::Helpers::FormBuilder
@@ -111,6 +136,7 @@ module ApplicationHelper
     # and the first input gets focus.
     record_object, options = nil, record_object if record_object.is_a?(Hash)
     options.merge!(builder: TabularFormBuilder, skip_default_ids: true)
+    # TODO: set error message with setCustomValidity instead of rendering to flash?
     render_errors(record_object || record_name)
     fields_for(record_name, record_object, **options, &block)
   end
@@ -122,7 +148,7 @@ module ApplicationHelper
   end
 
   def svg_tag(source, label = nil, options = {})
-    svg_tag = content_tag :svg, options do
+    svg_tag = tag.svg(options) do
       tag.use(href: "#{image_path(source + ".svg")}#icon")
     end
     label.blank? ? svg_tag : svg_tag + tag.span(label)
@@ -170,17 +196,23 @@ module ApplicationHelper
 
   def image_link_to_unless_current(name, image = nil, options = nil, html_options = {})
     name, html_options = link_or_button_options(:link, name, image, html_options)
-    html_options = html_options.deep_merge DISABLED_ATTRIBUTES if current_page?(options)
+    # NOTE: Starting from Rails 8.1.0, below condition can be replaced with:
+    #   current_page?(options, method: [:get, :post])
+    if request.path == url_for(options)
+      html_options = html_options.deep_merge DISABLED_ATTRIBUTES
+    end
     link_to name, options, html_options
   end
 
   def render_errors(records)
-    flash[:alert] ||= []
+    # Conversion of flash to Array only required because of Devise
+    flash[:alert] = Array(flash[:alert])
     Array(records).each { |record| flash[:alert] += record.errors.full_messages }
   end
 
   def render_flash_messages
     flash.map do |entry, messages|
+      # Conversion of flash to Array only required because of Devise
       Array(messages).map do |message|
         tag.div class: "flash #{entry}" do
           tag.div(sanitize(message)) + tag.button(sanitize("&times;"), tabindex: -1,
@@ -203,8 +235,6 @@ module ApplicationHelper
   private
 
   def link_or_button_options(type, name, image = nil, html_options)
-    name = svg_tag("pictograms/#{image}", name) if image
-
     html_options[:class] = class_names(
       html_options[:class],
       'button',
@@ -215,9 +245,10 @@ module ApplicationHelper
       html_options[:onclick] = "return confirm('\#{html_options[:onclick][:confirm]}');"
     end
 
-    if type == :link && !(html_options[:onclick] || html_options.dig(:data, :turbo_stream))
-      name += '...'
-    end
+    link_is_local = html_options[:onclick] || html_options.dig(:data, :turbo_stream)
+    name = name.to_s
+    name += '...' if type == :link && !link_is_local
+    name = svg_tag("pictograms/#{image}", name) if image
 
     [name, html_options]
   end

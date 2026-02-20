@@ -15,7 +15,13 @@
  *= require_self
  */
 
-/* Strive for simplicity. Style elements only, if possible. */
+/* Strive for simplicity:
+ * * style elements/tags only - if possible,
+ * * replace element/tag name with class name - if element has to be styled
+ * differently depending on context (e.g. form)
+ *
+ * NOTE: Style in a modular way, similar to how CSS @scope would be used,
+ * to make transition easier once @scope is widely available */
 :root {
   --color-focus-gray: #f3f3f3;
   --color-border-gray: #dddddd;
@@ -215,7 +221,7 @@ body {
   font-family: system-ui;
   margin: 0.4em;
 }
-body:not(:has(.topside)) {
+body:not(:has(.topside-area)) {
   grid-template-areas:
     "header    header  header"
     "nav       nav     nav"
@@ -250,16 +256,16 @@ header {
   fill: var(--color-blue);
 }
 
-.topside {
+.topside-area {
   grid-area: topside;
 }
-.leftside {
+.leftside-area {
   grid-area: leftside;
 }
-.main {
+.main-area {
   grid-area: main;
 }
-.rightside {
+.rightside-area {
   grid-area: rightside;
 }
 
@@ -270,7 +276,7 @@ header {
   grid-template-columns: auto 1fr auto;
   grid-template-rows: max-content;
 }
-.tools {
+.tools-area {
   grid-area: tools;
 }
 
@@ -334,46 +340,43 @@ header {
   opacity: 1;
 }
 
-
-/* TODO: Update form styling: simplify selectors, deduplicate, remove non-font rem. */
-form table {
-  border-spacing: 0.8rem;
+/* TODO: Hover over invalid should work like in measurements (thin vs thick border) */
+.labeled-form {
+  align-items: center;
+  display: grid;
+  gap: 0.9em 1.1em;
+  grid-template-columns: 1fr minmax(max-content, 0.5fr) 1fr;
 }
-form tr td:first-child {
+.labeled-form label {
   color: var(--color-gray);
   font-size: 0.9rem;
-  padding-right: 0.25rem;
+  grid-column: 1;
   text-align: right;
+  white-space: nowrap;
 }
-form label.required {
+.labeled-form label.required {
   font-weight: bold;
 }
-form label.error,
-form td.error::after {
+/* Don't style `label.error + input` if case already covered by input:invalid */
+.labeled-form label.error {
   color: var(--color-red);
 }
-form td.error {
-  display: -webkit-box;
-}
-form td.error::after {
-  content: attr(data-content);
-  font-size: 0.9rem;
-  margin-left: 1rem;
-  padding: 0.25rem 0;
-  position: absolute;
-}
-form em {
+.labeled-form em {
   color: var(--color-text-gray);
   font-size: 0.75rem;
+  font-weight: normal;
 }
-form input[type=submit] {
+.labeled-form input {
+  grid-column: 2;
+}
+.labeled-form input[type=submit] {
   font-size: 1rem;
-  margin: 1.5rem auto 0 auto;
-  padding: 0.75rem;
+  margin: 1.5em auto 0 auto;
+  padding: 0.75em;
 }
 
 
-/* TODO: remove .items class and make 'form table' work properly */
+/* TODO: remove .items class (?) and make 'form table' work properly */
 table.items {
   border-spacing: 0;
   border: solid 1px var(--color-border-gray);
@@ -587,9 +590,6 @@ form table.items td:first-child {
   cursor: not-allowed;
   fill: var(--color-border-gray) !important;
   pointer-events: none;
-}
-.unwrappable {
-  white-space: nowrap;
 }
 
 

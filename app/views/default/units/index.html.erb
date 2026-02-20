@@ -1,16 +1,17 @@
-<div class="rightside buttongrid">
+<div class="rightside-area buttongrid">
   <% if current_user.at_least(:active) %>
     <%# TODO: implement Import all %>
     <%#= image_button_to t('.import_all'), 'download-multiple-outline',
       import_all_default_units_path, data: {turbo_stream: true} %>
   <% end %>
-  <%= image_link_to t('.back'), 'arrow-left-bold-outline', units_path, class: 'tools' %>
+  <%= image_link_to t('.back'), 'arrow-left-bold-outline', units_path,
+    class: 'tools-area' %>
 </div>
 
-<table class="main items">
+<table class="main-area items">
   <thead>
     <tr>
-      <th><%= User.human_attribute_name(:symbol).capitalize %></th>
+      <th><%= Unit.human_attribute_name(:symbol) %></th>
       <% if current_user.at_least(:active) %>
         <th><%= t '.actions' %></th>
       <% end %>

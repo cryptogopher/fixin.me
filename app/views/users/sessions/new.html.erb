@@ -1,17 +1,18 @@
-<div class="main">
-  <%= labelled_form_for resource, url: user_session_path do |f| %>
-    <%= f.email_field :email, required: true, size: 30, autofocus: true, autocomplete: "email" %>
-    <%= f.password_field :password, required: true, size: 30, minlength: @minimum_password_length,
-      autocomplete: "current-password" %>
+<div class="main-area">
+  <%= labeled_form_for resource, url: user_session_path do |f| %>
+    <%= f.email_field :email, required: true, size: 30, autofocus: true,
+      autocomplete: 'email' %>
+    <%= f.password_field :password, required: true, size: 30,
+      minlength: @minimum_password_length, autocomplete: 'current-password' %>
 
     <% if devise_mapping.rememberable? %>
-      <%= f.check_box :remember_me, label: t(".remember_me") %>
+      <%= f.check_box :remember_me %>
     <% end %>
 
     <%= f.submit t(:sign_in) %>
   <% end %>
 
-  <%= content_tag :p, t(:or), style: "text-align: center;" %>
+  <%= content_tag :p, t(:or), style: 'text-align: center;' %>
   <%= image_link_to t(:recover_password), 'lock-reset', new_user_password_path,
     class: 'centered' %>
 </div>

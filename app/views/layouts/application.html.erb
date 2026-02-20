@@ -47,7 +47,7 @@
       <%= render_flash_messages %>
     </div>
 
-    <%# Allow overwriting/clearing navigation menu for some views %>
+    <%# Allows overwriting/clearing navigation menu for some views %>
     <nav class="navigation">
       <%= content_for(:navigation) || (navigation_menu if user_signed_in?) %>
     </nav>

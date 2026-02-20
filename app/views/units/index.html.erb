@@ -1,19 +1,20 @@
-<div class="rightside buttongrid">
+<div class="rightside-area buttongrid">
   <% if current_user.at_least(:active) %>
     <%= image_link_to t('.new_unit'), 'plus-outline', new_unit_path,
       id: dom_id(Unit, :new, :link), onclick: 'this.blur();', data: {turbo_stream: true} %>
   <% end %>
-  <%= image_link_to t('.import_units'), 'download-outline', default_units_path, class: 'tools' %>
+  <%= image_link_to t('.import_units'), 'download-outline', default_units_path,
+    class: 'tools-area' %>
 </div>
 
 <%= tag.div id: :unit_form %>
 
-<table class="main items">
+<table class="main-area items">
   <thead>
     <tr>
-      <th><%= User.human_attribute_name(:symbol).capitalize %></th>
-      <th><%= User.human_attribute_name(:description).capitalize %></th>
-      <th><%= User.human_attribute_name(:multiplier).capitalize %></th>
+      <th><%= Unit.human_attribute_name(:symbol) %></th>
+      <th><%= Unit.human_attribute_name(:description) %></th>
+      <th><%= Unit.human_attribute_name(:multiplier) %></th>
       <% if current_user.at_least(:active) %>
         <th><%= t :actions %></th>
         <th></th>

@@ -1,22 +1,28 @@
 en:
+  time:
+    formats:
+      # Format contains non-breaking space: 160.chr(Encoding::UTF_8)
+      default: "%Y-%m-%d %H:%M %Z"
+      without_tz: "%Y-%m-%d %H:%M"
   errors:
     messages:
       precision_exceeded: must not exceed %{value} significant digits
       scale_exceeded: must not exceed %{value} decimal digits
   activerecord:
     attributes:
-      unit:
-        symbol: Symbol
+      quantity:
+        description: Description
         name: Name
-        multiplier: Multiplier
+      unit:
         base: Base unit
+        description: Description
+        multiplier: Multiplier
+        symbol: Symbol
       user:
-        email: e-mail
-        status: status
-        password: password
-        created_at: registered
-        confirmed_at: confirmed
-        unconfirmed_email: Awaiting confirmation for
+        confirmed_at: Confirmed
+        created_at: Registered
+        email: E-mail
+        status: Status
     errors:
       models:
         unit:
@@ -53,9 +59,22 @@ en:
           The request is semantically incorrect and was rejected (422 Unprocessable Entity).
           This should not happen, please notify site administrator.
   helpers:
+    label:
+      user:
+        password_confirmation: 'Retype new password:'
+        password_length_hint_html:
+          count: '%{minimum_password_length}'
+          zero:
+          one: <br><em>(%{count} character minimum)</em>
+          other: <br><em>(%{count} characters minimum)</em>
+        remember_me: 'Remember me:'
+        unconfirmed_email_html: >
+          Awaiting confirmation for:<br><em>(since %{confirmation_sent_at})</em>
     submit:
       create: Create
       update: Update
+      user:
+        update: Update profile
   layouts:
     application:
       issue_tracker: Report issue
@@ -129,34 +148,27 @@ en:
       disguise: View as
     passwords:
       edit:
-        new_password: New password
-        password_confirmation: Retype new password
+        password_html: 'New password:%{password_length_hint_html}'
         update_password: Update password
     registrations:
       new:
-        password_confirmation: Retype password
+        password_html: 'Password:%{password_length_hint_html}'
+        password_confirmation: 'Retype password:'
       edit:
         confirm_delete: Are you sure you want to delete profile?
           All data will be irretrievably lost.
         delete: Delete profile
-        unconfirmed_email_hint: (since %{timestamp})
-        new_password: New password
-        password_confirmation: Retype new password
-        blank_password_hint_html: leave blank to keep unchanged<br>%{subhint}
-        update: Update profile
-    sessions:
-      new:
-        remember_me: Remember me
-    minimum_password_length:
-      zero:
-      one: (%{count} character minimum)
-      other: (%{count} characters minimum)
+        password_html: >
+          New password:
+          <br><em>leave blank to keep unchanged</em>
+          %{password_length_hint_html}
   actions: Actions
   add: Add
   apply: Apply
   back: Back
   cancel: Cancel
   delete: Delete
+  :no: 'no'
   or: or
   register: Register
   sign_in: Sign in

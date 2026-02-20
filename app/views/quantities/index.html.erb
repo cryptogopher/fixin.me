@@ -1,20 +1,20 @@
-<div class="rightside buttongrid">
+<div class="rightside-area buttongrid">
   <% if current_user.at_least(:active) %>
     <%= image_link_to t('.new_quantity'), 'plus-outline', new_quantity_path,
       id: dom_id(Quantity, :new, :link), onclick: 'this.blur();',
       data: {turbo_stream: true} %>
   <% end %>
   <%#= image_link_to t('.import_quantities'), 'download-outline', default_quantities_path,
-    class: 'tools' %>
+    class: 'tools-area' %>
 </div>
 
-<%= tag.div class: 'main', id: :quantity_form %>
+<%= tag.div class: 'main-area', id: :quantity_form %>
 
-<table class="main items">
+<table class="main-area items">
   <thead>
     <tr>
-      <th><%= Quantity.human_attribute_name(:name).capitalize %></th>
-      <th><%= Quantity.human_attribute_name(:description).capitalize %></th>
+      <th><%= Quantity.human_attribute_name(:name) %></th>
+      <th><%= Quantity.human_attribute_name(:description) %></th>
       <% if current_user.at_least(:active) %>
         <th><%= t :actions %></th>
         <th></th>
