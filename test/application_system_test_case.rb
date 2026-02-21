@@ -1,7 +1,6 @@
 require "test_helper"
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-  extend ActionView::Helpers::TranslationHelper
   include ActionView::Helpers::UrlHelper
 
   # NOTE: geckodriver installed with Firefox, ignore incompatibility warning
@@ -19,8 +18,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   def sign_in(user: users.select(&:confirmed?).sample, password: randomize_user_password!(user))
     visit new_user_session_url
-    fill_in User.human_attribute_name(:email).capitalize, with: user.email
-    fill_in User.human_attribute_name(:password).capitalize, with: password
+    fill_in User.human_attribute_name(:email), with: user.email
+    fill_in User.human_attribute_name(:password), with: password
     click_on t(:sign_in)
     user
   end
@@ -29,6 +28,13 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     button = button_to *button_options
     evaluate_script("arguments[0].insertAdjacentHTML('beforeend', '#{button.html_safe}');", after)
   end
+
+  # Allow skipping interpolations when translating for testing purposes
+  INTERPOLATION_PATTERNS = Regexp.union(I18n.config.interpolation_patterns)
+  def translate(key, **options)
+    options.empty? ? super.split(INTERPOLATION_PATTERNS, 2).first : super
+  end
+  alias :t :translate
 
   #def assert_stale(element)
   #  assert_raises(Selenium::WebDriver::Error::StaleElementReferenceError) { element.tag_name }

@@ -6,15 +6,21 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test "sign in" do
+    visit new_user_session_path
+    assert find_link(href: new_user_session_path)[:disabled]
+
     sign_in
     assert_no_current_path new_user_session_path
-    assert_text t("devise.sessions.signed_in")
+    assert_text t('devise.sessions.signed_in')
   end
 
-  test "sign in fails with invalid password" do
+  test 'sign in fails with invalid password' do
     sign_in password: random_password
     assert_current_path new_user_session_path
-    assert_text t("devise.failure.invalid", authentication_keys: User.human_attribute_name(:email))
+    assert_text t('devise.failure.not_found_in_database',
+                  authentication_keys: User.human_attribute_name(:email))
+    assert find_link(href: new_user_session_path)[:disabled]
+    assert_not_empty find_field(User.human_attribute_name(:email)).value
   end
 
   test "sign out" do
@@ -29,7 +35,7 @@ class UsersTest < ApplicationSystemTestCase
     visit new_user_session_url
     click_on t(:recover_password)
 
-    fill_in User.human_attribute_name(:email).capitalize,
+    fill_in User.human_attribute_name(:email),
       with: users.select(&:confirmed?).sample.email
     assert_emails 1 do
       click_on t(:recover_password)
@@ -42,8 +48,8 @@ class UsersTest < ApplicationSystemTestCase
       visit Capybara.string(mail.body.to_s).find_link("Change my password")[:href]
     end
     new_password = random_password
-    fill_in t("users.passwords.edit.new_password"), with: new_password
-    fill_in t("users.passwords.edit.password_confirmation"), with: new_password
+    fill_in t("users.passwords.edit.password_html"), with: new_password
+    fill_in t("helpers.label.user.password_confirmation"), with: new_password
     assert_emails 1 do
       click_on t("users.passwords.edit.update_password")
       # Wait until redirected to make sure async request has been processed
@@ -56,9 +62,9 @@ class UsersTest < ApplicationSystemTestCase
     visit new_user_session_url
     click_on t(:register)
 
-    fill_in User.human_attribute_name(:email).capitalize, with: random_email
+    fill_in User.human_attribute_name(:email), with: random_email
     password = random_password
-    fill_in User.human_attribute_name(:password).capitalize, with: password
+    fill_in User.human_attribute_name(:password), with: password
     fill_in t("users.registrations.new.password_confirmation"), with: password
     assert_difference ->{User.count}, 1 do
       assert_emails 1 do
@@ -82,7 +88,7 @@ class UsersTest < ApplicationSystemTestCase
     click_on t(:register)
     click_on t(:resend_confirmation)
 
-    fill_in User.human_attribute_name(:email).capitalize,
+    fill_in User.human_attribute_name(:email),
       with: users.reject(&:confirmed?).sample.email
     assert_emails 1 do
       click_on t(:resend_confirmation)
