@@ -3,7 +3,8 @@ class Unit < ApplicationRecord
 
   belongs_to :user, optional: true
   belongs_to :base, optional: true, class_name: "Unit"
-  has_many :subunits, class_name: "Unit", inverse_of: :base, dependent: :restrict_with_error
+  has_many :subunits, class_name: "Unit", inverse_of: :base,
+    dependent: :restrict_with_error
 
   validate if: ->{ base.present? } do
     errors.add(:base, :user_mismatch) unless user_id == base.user_id

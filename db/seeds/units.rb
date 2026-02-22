@@ -1,5 +1,5 @@
 Unit.transaction do
-  Unit.defaults.order(Unit.arel_table[:base_id].eq(nil)).delete_all
+  Unit.defaults.delete_all
 
   units = {}
 

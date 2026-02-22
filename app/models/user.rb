@@ -12,10 +12,10 @@ class User < ApplicationRecord
     disabled: 0,    # administratively disallowed to sign in
   }, default: :active, validate: true
 
-  has_many :readouts, dependent: :destroy
+  has_many :readouts, dependent: :delete_all
   accepts_nested_attributes_for :readouts
-  has_many :quantities, dependent: :destroy
-  has_many :units, dependent: :destroy
+  has_many :quantities, dependent: :delete_all
+  has_many :units, dependent: :delete_all
 
   validates :email, presence: true, uniqueness: true,
     length: {maximum: type_for_attribute(:email).limit}

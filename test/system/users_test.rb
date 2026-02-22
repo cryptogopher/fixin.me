@@ -157,8 +157,9 @@ class UsersTest < ApplicationSystemTestCase
     end
     assert_difference ->{ User.count }, -1 do
       accept_confirm { click_on t("users.registrations.edit.delete") }
+      assert_current_path new_user_session_path
     end
-    assert_current_path new_user_session_path
+    assert_text t("devise.registrations.destroyed")
   end
 
   test "index forbidden for non admin" do

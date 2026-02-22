@@ -6,14 +6,14 @@ require "application_system_test_case"
 #  * user with no units
 
 class UnitsTest < ApplicationSystemTestCase
-  LINK_LABELS = {
-    new_unit: t('units.index.new_unit'),
-    new_subunit: t('units.unit.new_subunit'),
-    edit: nil
-  }
+  LINK_LABELS = {}
 
   setup do
     @user = sign_in
+
+    LINK_LABELS.clear
+    LINK_LABELS[:new_unit] = t('units.index.new_unit')
+    LINK_LABELS[:new_subunit] = t('units.unit.new_subunit')
     LINK_LABELS[:edit] = Regexp.union(@user.units.map(&:symbol))
 
     visit units_path
@@ -26,7 +26,7 @@ class UnitsTest < ApplicationSystemTestCase
     end
 
     # Cannot #destroy_all due to {dependent: :restrict*} on Unit.subunits association
-    @user.units.order(Unit.arel_table[:base_id].eq(nil)).delete_all
+    @user.units.delete_all
     visit units_path
     within 'tbody' do
       assert_selector 'tr', count: 1

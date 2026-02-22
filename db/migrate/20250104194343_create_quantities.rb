@@ -4,7 +4,7 @@ class CreateQuantities < ActiveRecord::Migration[7.2]
       t.references :user, foreign_key: true
       t.string :name, null: false, limit: 31
       t.text :description
-      t.references :parent, foreign_key: {to_table: :quantities}
+      t.references :parent, foreign_key: {to_table: :quantities, on_delete: :cascade}
 
       t.timestamps null: false
 

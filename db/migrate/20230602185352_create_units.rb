@@ -5,7 +5,7 @@ class CreateUnits < ActiveRecord::Migration[7.0]
       t.string :symbol, null: false, limit: 15
       t.text :description
       t.decimal :multiplier, null: false, precision: 30, scale: 15, default: 1.0
-      t.references :base, foreign_key: {to_table: :units}
+      t.references :base, foreign_key: {to_table: :units, on_delete: :cascade}
 
       t.timestamps null: false
     end
