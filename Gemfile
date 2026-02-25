@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # The requirement for the Ruby version comes from Rails
-gem "rails", "~> 7.2.2"
+gem "rails", "~> 7.2.3"
 gem "sprockets-rails"
 gem "puma", "~> 6.0"
 gem "sassc-rails"
@@ -42,4 +42,11 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Remove minitest version restriction after error fixed:
+  #   railties-7.2.3/lib/rails/test_unit/line_filtering.rb:7:in `run':
+  #     wrong number of arguments (given 3, expected 1..2) (ArgumentError)
+  #   from /var/www/.gem/ruby/3.3.0/gems/minitest-6.0.2/lib/minitest.rb:473:in
+  #     `block (2 levels) in run_suite'
+  gem "minitest", "< 6"
 end
