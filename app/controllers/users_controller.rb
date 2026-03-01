@@ -37,7 +37,7 @@ class UsersController < ApplicationController
   end
 
   # NOTE: limited actions availabe to :admin by design. Users are meant to
-  # manage their accounts by themselves through registrations. :admin
+  # manage their accounts by themselves through profiles. :admin
   # is allowed to sign-in (disguise) as user and make changes from there.
 
   protected

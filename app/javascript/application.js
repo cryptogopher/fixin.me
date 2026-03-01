@@ -37,6 +37,18 @@ window.detailsObserver = new MutationObserver((mutations) => {
   mutations[0].target.dispatchEvent(new Event('change', {bubbles: true}))
 });
 
+function formValidate(event) {
+  var id = event.submitter.getAttribute("data-validate")
+  if (!id) return;
+
+  var input = document.getElementById(id)
+  if (!input.checkValidity()) {
+    input.reportValidity()
+    event.preventDefault()
+  }
+}
+window.formValidate = formValidate
+
 
 /* Turbo stream actions */
 Turbo.StreamElement.prototype.disableElement = function(element) {

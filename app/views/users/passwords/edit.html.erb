@@ -1,5 +1,5 @@
 <%= labeled_form_for resource, url: user_password_path,
-  html: {method: :put, class: 'main-area'} do |f| %>
+  html: {method: :put, class: 'main-area', data: {turbo: false}} do |f| %>
 
   <%= f.hidden_field :reset_password_token %>
 

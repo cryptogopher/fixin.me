@@ -150,7 +150,7 @@ en:
       edit:
         password_html: 'New password:%{password_length_hint_html}'
         update_password: Update password
-    registrations:
+    profiles:
       new:
         password_html: 'Password:%{password_length_hint_html}'
         password_confirmation: 'Retype password:'
@@ -169,7 +169,6 @@ en:
   cancel: Cancel
   delete: Delete
   :no: 'no'
-  or: or
   register: Register
   sign_in: Sign in
   recover_password: Recover password

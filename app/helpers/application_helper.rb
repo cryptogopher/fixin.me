@@ -72,13 +72,8 @@ module ApplicationHelper
   end
 
   def labeled_form_for(record, options = {}, &block)
-    extra_options = {builder: LabeledFormBuilder,
-                     data: {turbo: false},
-                     html: {class: 'labeled-form'}}
-    options = options.deep_merge(extra_options) do |key, left, right|
-      key == :class ? class_names(left, right) : right
-    end
-    form_for(record, **options, &block)
+    extra_options = {builder: LabeledFormBuilder, html: {class: 'labeled-form'}}
+    form_for(record, **merge_attributes(options, extra_options), &block)
   end
 
   class TabularFormBuilder < ActionView::Helpers::FormBuilder
@@ -135,16 +130,16 @@ module ApplicationHelper
     # [autofocus].  Otherwise IDs are not unique when multiple forms are open
     # and the first input gets focus.
     record_object, options = nil, record_object if record_object.is_a?(Hash)
-    options.merge!(builder: TabularFormBuilder, skip_default_ids: true)
+    extra_options = {builder: TabularFormBuilder, skip_default_ids: true}
+    options = merge_attributes(options, extra_options)
     # TODO: set error message with setCustomValidity instead of rendering to flash?
     render_errors(record_object || record_name)
     fields_for(record_name, record_object, **options, &block)
   end
 
   def tabular_form_with(**options, &block)
-    options = options.deep_merge(builder: TabularFormBuilder,
-                                 html: {autocomplete: 'off'})
-    form_with(**options, &block)
+    extra_options = {builder: TabularFormBuilder, html: {autocomplete: 'off'}}
+    form_with(**merge_attributes(options, extra_options), &block)
   end
 
   def svg_tag(source, label = nil, options = {})
@@ -159,6 +154,7 @@ module ApplicationHelper
       ['measurements', 'scale-bathroom', :restricted],
       ['quantities', 'axis-arrow', :restricted, 'right'],
       ['units', 'weight-gram', :restricted],
+      # TODO: display users tab only if >1 user present; sole_user?/sole_admin?
       ['users', 'account-multiple-outline', :admin],
     ]
 
@@ -206,6 +202,7 @@ module ApplicationHelper
 
   def render_errors(records)
     # Conversion of flash to Array only required because of Devise
+    # TODO: override Devise message setting to Array()?
     flash[:alert] = Array(flash[:alert])
     Array(records).each { |record| flash[:alert] += record.errors.full_messages }
   end
@@ -215,6 +212,7 @@ module ApplicationHelper
       # Conversion of flash to Array only required because of Devise
       Array(messages).map do |message|
         tag.div class: "flash #{entry}" do
+          # TODO: change button text to svg to make it aligned vertically
           tag.div(sanitize(message)) + tag.button(sanitize("&times;"), tabindex: -1,
                                                   onclick: "this.parentElement.remove();")
         end
@@ -251,5 +249,12 @@ module ApplicationHelper
     name = svg_tag("pictograms/#{image}", name) if image
 
     [name, html_options]
+  end
+
+  # Like Hash#deep_merge, but aware of HTML attributes.
+  def merge_attributes(left, right)
+    left.deep_merge(right) do |key, lvalue, rvalue|
+      key == :class ? class_names(lvalue, rvalue) : rvalue
+    end
   end
 end

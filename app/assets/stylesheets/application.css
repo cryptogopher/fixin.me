@@ -113,6 +113,12 @@ textarea {
   border: solid 1px var(--color-gray);
   border-radius: 0.25em;
 }
+[name=cancel],
+.auxiliary {
+  border-color: var(--color-border-gray);
+  color: var(--color-nav-gray);
+  fill: var(--color-nav-gray);
+}
 input[type=checkbox],
 svg,
 textarea {
@@ -131,6 +137,7 @@ input[type=checkbox]:checked {
   -webkit-appearance: checkbox;
 }
 /* Hide spin buttons in input number fields */
+/* TODO: add spin buttons inside input[number]: before (-) and after (+) input */
 input[type=number] {
   appearance: textfield;
   -moz-appearance: textfield;
@@ -340,6 +347,7 @@ header {
   opacity: 1;
 }
 
+
 /* TODO: Hover over invalid should work like in measurements (thin vs thick border) */
 .labeled-form {
   align-items: center;
@@ -371,8 +379,16 @@ header {
 }
 .labeled-form input[type=submit] {
   font-size: 1rem;
-  margin: 1.5em auto 0 auto;
+  margin: 1em auto 0 auto;
   padding: 0.75em;
+}
+.labeled-form .auxiliary {
+  grid-column: 3;
+  /* If more buttons are needed, `grid-row` can be replaced with
+   * `reading-flow: grid-columns` to ensure proper tabindex order */
+  grid-row: 1;
+  height: 100%;
+  padding-block: 0;
 }
 
 
@@ -531,11 +547,6 @@ table.items select:not(:hover) {
 table.items select:focus-within,
 table.items select:focus-visible {
   color: black;
-}
-form a[name=cancel] {
-  border-color: var(--color-border-gray);
-  color: var(--color-nav-gray);
-  fill: var(--color-nav-gray);
 }
 form table.items {
   border: none;

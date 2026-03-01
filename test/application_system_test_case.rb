@@ -1,6 +1,7 @@
 require "test_helper"
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  include ActionView::Helpers::SanitizeHelper
   include ActionView::Helpers::UrlHelper
 
   # NOTE: geckodriver installed with Firefox, ignore incompatibility warning
@@ -32,7 +33,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # Allow skipping interpolations when translating for testing purposes
   INTERPOLATION_PATTERNS = Regexp.union(I18n.config.interpolation_patterns)
   def translate(key, **options)
-    options.empty? ? super.split(INTERPOLATION_PATTERNS, 2).first : super
+    translation = options.empty? ? super.split(INTERPOLATION_PATTERNS, 2).first : super
+    sanitize(translation, tags: [])
   end
   alias :t :translate
 

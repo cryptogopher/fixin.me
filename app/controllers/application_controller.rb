@@ -25,6 +25,18 @@ class ApplicationController < ActionController::Base
   #   Turbo will reload 2nd time with HTML format and flashes will be lost.
   rescue_from *ActionDispatch::ExceptionWrapper.rescue_responses.keys, with: :rescue_turbo
 
+  # Required by #respond_with (gem `responders`) used by Devise controllers.
+  respond_to :html, :turbo_stream
+
+  def after_sign_in_path_for(resource)
+    # TODO: allow setting path per-user or save last path in session and restore
+    units_path
+  end
+
+  def after_sign_out_path_for(resource)
+    new_user_session_path
+  end
+
   protected
 
   def current_user_disguised?

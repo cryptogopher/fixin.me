@@ -5,8 +5,8 @@ class UsersTest < ApplicationSystemTestCase
     @admin = users(:admin)
   end
 
-  test "sign in" do
-    visit new_user_session_path
+  test 'sign in' do
+    visit root_url
     assert find_link(href: new_user_session_path)[:disabled]
 
     sign_in
@@ -14,16 +14,23 @@ class UsersTest < ApplicationSystemTestCase
     assert_text t('devise.sessions.signed_in')
   end
 
-  test 'sign in fails with invalid password' do
-    sign_in password: random_password
+  test 'sign in fails with invalid credentials' do
+    label = User.human_attribute_name(:email)
+    # Both: valid and invalid emails should give the same (paranoid) error message.
+    email = [users.sample.email, random_email].sample
+
+    visit root_url
+    fill_in label, with: email
+    fill_in User.human_attribute_name(:password), with: random_password
+    click_on t(:sign_in)
+
     assert_current_path new_user_session_path
-    assert_text t('devise.failure.not_found_in_database',
-                  authentication_keys: User.human_attribute_name(:email))
+    assert_text t('devise.failure.invalid', authentication_keys: label.downcase_first)
     assert find_link(href: new_user_session_path)[:disabled]
-    assert_not_empty find_field(User.human_attribute_name(:email)).value
+    assert has_field?(label, with: email)
   end
 
-  test "sign out" do
+  test 'sign out' do
     sign_in
     visit root_url
     click_on t("layouts.application.sign_out")
@@ -31,79 +38,106 @@ class UsersTest < ApplicationSystemTestCase
     assert_text t("devise.sessions.signed_out")
   end
 
-  test "recover password" do
-    visit new_user_session_url
-    click_on t(:recover_password)
+  test 'recover password' do
+    label = User.human_attribute_name(:email)
+    email = users.select(&:confirmed?).sample.email
 
-    fill_in User.human_attribute_name(:email),
-      with: users.select(&:confirmed?).sample.email
+    visit root_url
+    fill_in label, with: email
+    # Form validations should allow empty password.
+    assert has_field?(User.human_attribute_name(:password), with: nil)
+
     assert_emails 1 do
       click_on t(:recover_password)
-      # Wait until redirected to make sure async request has been processed
       assert_current_path new_user_session_path
+      # Wait for flash message to make sure async request has been processed.
+      assert_text t("devise.passwords.send_paranoid_instructions")
     end
-    assert_text t("devise.passwords.send_instructions")
+    assert has_field?(label, with: email)
 
     with_last_email do |mail|
       visit Capybara.string(mail.body.to_s).find_link("Change my password")[:href]
+      assert_current_path edit_user_password_path, ignore_query: true
+      # Make sure flash message is not displayed twice.
+      assert_no_text t("devise.passwords.send_paranoid_instructions")
     end
     new_password = random_password
     fill_in t("users.passwords.edit.password_html"), with: new_password
     fill_in t("helpers.label.user.password_confirmation"), with: new_password
     assert_emails 1 do
       click_on t("users.passwords.edit.update_password")
-      # Wait until redirected to make sure async request has been processed
       assert_current_path units_path
+      assert_text t("devise.passwords.updated")
     end
-    assert_text t("devise.passwords.updated")
   end
 
-  test "register" do
-    visit new_user_session_url
+  test 'recover password for nonexistent user' do
+    label = User.human_attribute_name(:email)
+    email = random_email
+
+    visit root_url
+    fill_in label, with: email
+
+    assert_no_emails do
+      click_on t(:recover_password)
+      assert_current_path new_user_session_path
+      assert_text t("devise.passwords.send_paranoid_instructions")
+    end
+  end
+
+  test 'register' do
+    visit root_url
     click_on t(:register)
+    assert find_link(href: new_user_registration_path)[:disabled]
 
     fill_in User.human_attribute_name(:email), with: random_email
     password = random_password
     fill_in User.human_attribute_name(:password), with: password
-    fill_in t("users.registrations.new.password_confirmation"), with: password
-    assert_difference ->{User.count}, 1 do
+    fill_in t("users.profiles.new.password_confirmation"), with: password
+    assert_difference ->{ User.count }, 1 do
       assert_emails 1 do
         click_on t(:register)
-        # Wait until redirected to make sure async request has been processed
         assert_current_path new_user_session_path
+        assert_text t("devise.registrations.signed_up_but_unconfirmed")
       end
     end
-    assert_text t("devise.registrations.signed_up_but_unconfirmed")
 
-    with_last_email do |mail|
-      visit Capybara.string(mail.body.to_s).find_link("Confirm my account")[:href]
+    assert_changes ->{ User.last.confirmed? }, from: false, to: true do
+      with_last_email do |mail|
+        visit Capybara.string(mail.body.to_s).find_link("Confirm my account")[:href]
+        assert_current_path new_user_session_path
+        assert_text t("devise.confirmations.confirmed")
+      end
     end
-    assert_current_path new_user_session_path
-    assert_text t("devise.confirmations.confirmed")
-    assert User.last.confirmed?
   end
 
-  test "resend confirmation" do
-    visit new_user_session_url
-    click_on t(:register)
-    click_on t(:resend_confirmation)
+  test 'resend confirmation' do
+    label = User.human_attribute_name(:email)
+    user = users.reject(&:confirmed?).sample
 
-    fill_in User.human_attribute_name(:email),
-      with: users.reject(&:confirmed?).sample.email
+    visit root_url
+    click_on t(:register)
+    fill_in label, with: user.email
+    assert has_field?(User.human_attribute_name(:password), with: nil)
+
     assert_emails 1 do
       click_on t(:resend_confirmation)
-      # Wait until redirected to make sure async request has been processed
-      assert_current_path new_user_session_path
+      assert_current_path new_user_registration_path
+      assert_text t("devise.confirmations.send_paranoid_instructions")
     end
-    assert_current_path new_user_session_path
-    assert_text t("devise.confirmations.send_instructions")
+    assert has_field?(label, with: user.email)
 
-    with_last_email do |mail|
-      visit Capybara.string(mail.body.to_s).find_link("Confirm my account")[:href]
+    assert_changes ->{ user.reload.confirmed? }, from: false, to: true do
+      with_last_email do |mail|
+        visit Capybara.string(mail.body.to_s).find_link("Confirm my account")[:href]
+        assert_current_path new_user_session_path
+        assert_no_text t("devise.confirmations.send_paranoid_instructions")
+        assert_text t("devise.confirmations.confirmed")
+      end
     end
   end
 
-  test "show profile" do
+  test 'show profile' do
     sign_in user: users.select(&:admin?).select(&:confirmed?).sample
     click_on t("users.navigation")
     within all('tr').drop(1).sample do |tr|
@@ -113,7 +147,7 @@ class UsersTest < ApplicationSystemTestCase
     end
   end
 
-  test "disguise" do
+  test 'disguise' do
     user = users.select(&:admin?).select(&:confirmed?).sample
     sign_in user: user
 
@@ -129,7 +163,7 @@ class UsersTest < ApplicationSystemTestCase
     assert_link user.email
   end
 
-  test "disguise fails for admin when disallowed" do
+  test 'disguise fails for admin when disallowed' do
     user = users.select(&:admin?).select(&:confirmed?).sample
     sign_in user: user
 
@@ -142,13 +176,13 @@ class UsersTest < ApplicationSystemTestCase
     assert_title 'The change you wanted was rejected (422)'
   end
 
-  test "disguise forbidden for non admin" do
+  test 'disguise forbidden for non admin' do
     sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
     visit disguise_user_path(User.all.sample)
     assert_title 'Access is forbidden to this page (403)'
   end
 
-  test "delete profile" do
+  test 'delete profile' do
     user = sign_in
     # TODO: remove condition after root_url changed to different path than
     # profile in routes.rb
@@ -156,23 +190,23 @@ class UsersTest < ApplicationSystemTestCase
       first(:link_or_button, user.email).click
     end
     assert_difference ->{ User.count }, -1 do
-      accept_confirm { click_on t("users.registrations.edit.delete") }
+      accept_confirm { click_on t("users.profiles.edit.delete") }
       assert_current_path new_user_session_path
     end
     assert_text t("devise.registrations.destroyed")
   end
 
-  test "index forbidden for non admin" do
+  test 'index forbidden for non admin' do
     sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
     visit users_path
     assert_title "Access is forbidden to this page (403)"
   end
 
-  test "update profile" do
+  test 'update profile' do
     # TODO
   end
 
-  test "update status" do
+  test 'update status' do
     sign_in user: users.select(&:admin?).select(&:confirmed?).sample
     visit users_path
 
@@ -187,7 +221,7 @@ class UsersTest < ApplicationSystemTestCase
     assert_current_path users_path
   end
 
-  test "update status fails for admin when disallowed" do
+  test 'update status fails for admin when disallowed' do
     sign_in user: users.select(&:admin?).select(&:confirmed?).sample
     visit users_path
 
@@ -200,7 +234,7 @@ class UsersTest < ApplicationSystemTestCase
     assert_title 'The change you wanted was rejected (422)'
   end
 
-  test "update status forbidden for non admin" do
+  test 'update status forbidden for non admin' do
     sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
     visit units_path
     inject_button_to find('body'), "update status", user_path(User.all.sample), method: :patch,

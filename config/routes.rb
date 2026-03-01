@@ -24,8 +24,9 @@ Rails.application.routes.draw do
   # https://github.com/heartcombo/devise/issues/5786
   connection = ActiveRecord::Base.connection
   if connection.schema_version && connection.table_exists?(:users)
+    # NOTE: change helper prefix from *_registration to *_profile once possible
     devise_for :users, path: '', path_names: {registration: 'profile'},
-      controllers: {registrations: :registrations}
+      controllers: {registrations: 'user/profiles'}
   end
 
   resources :users, only: [:index, :show, :update] do
@@ -34,9 +35,7 @@ Rails.application.routes.draw do
   end
 
   unauthenticated do
-    as :user do
-      root to: redirect('/sign_in')
-    end
+    root to: redirect('/sign_in')
   end
   root to: redirect('/units'), as: :user_root
 
