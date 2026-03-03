@@ -53,6 +53,20 @@
 :focus-visible {
   outline: none;
 }
+/* NOTE: move to higher priority layer instead of using !important? */
+[disabled] {
+  border-color: var(--color-border-gray) !important;
+  color: var(--color-border-gray) !important;
+  /* NOTE: cannot set cursor with `pointer-events: none`; can be fixed by setting
+   * cursor on wrapping element.
+  cursor: not-allowed; */
+  fill: var(--color-border-gray) !important;
+  pointer-events: none !important;
+}
+/* [hidden] submit elements cannot have `display` set as it makes them visible. */
+[hidden] {
+  display: none !important;
+}
 
 
 /* Color coding of input controls' background:
@@ -80,10 +94,9 @@ input[type=submit] {
   text-decoration: none;
   white-space: nowrap;
 }
-/* [hidden] submit controls cannot have `display` set as it makes them visible */
 .button,
-button:not([hidden]),
-input[type=submit]:not([hidden]),
+button,
+input[type=submit],
 .tab {
   align-items: center;
   color: var(--color-gray);
@@ -590,17 +603,6 @@ form table.items td:first-child {
   display: flex;
   gap: 0.8em;
   flex-direction: column;
-}
-[disabled] {
-/* label:has(input[disabled]) {
- * TODO: disabled checkbox blue square focus removal; disabled label styling;
- * focused label styling (currently only checkbox has focus)
- * */
-  border-color: var(--color-border-gray) !important;
-  color: var(--color-border-gray) !important;
-  cursor: not-allowed;
-  fill: var(--color-border-gray) !important;
-  pointer-events: none;
 }
 
 
