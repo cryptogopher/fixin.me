@@ -12,6 +12,12 @@ module ApplicationHelper
       labeled_field_for(method, options) { super }
     end
 
+    def submit(value = nil, options = {})
+      value, options = nil, value if value.is_a?(Hash)
+      options[:class] = @template.class_names('button', options[:class])
+      super
+    end
+
     private
 
     def labeled_field_for(method, options)
@@ -108,8 +114,12 @@ module ApplicationHelper
     end
 
     def button(value = nil, options = {}, &block)
-      # button does not use #objectify_options
-      options.merge!(@options.slice(:form))
+      # #button does not use #objectify_options/@default_options
+      value, options = nil, value if value.is_a?(Hash)
+      options = options.merge(
+        @default_options.slice(:form),
+        class: @template.class_names('button', options[:class])
+      )
       super
     end
 
@@ -143,7 +153,8 @@ module ApplicationHelper
   end
 
   def svg_tag(source, label = nil, options = {})
-    svg_tag = tag.svg(options) do
+    label, options = nil, label if label.is_a? Hash
+    svg_tag = tag.svg(**options) do
       tag.use(href: "#{image_path(source + ".svg")}#icon")
     end
     label.blank? ? svg_tag : svg_tag + tag.span(label)
@@ -212,9 +223,8 @@ module ApplicationHelper
       # Conversion of flash to Array only required because of Devise
       Array(messages).map do |message|
         tag.div class: "flash #{entry}" do
-          # TODO: change button text to svg to make it aligned vertically
-          tag.div(sanitize(message)) + tag.button(sanitize("&times;"), tabindex: -1,
-                                                  onclick: "this.parentElement.remove();")
+          tag.span(sanitize(message)) +
+            svg_tag('pictograms/close-outline', {onclick: "this.parentElement.remove()"})
         end
       end
     end.join.html_safe

@@ -10,7 +10,6 @@
 
   <%= f.submit t(:register), data: {turbo: false} %>
 
-  <%# TODO: fix button text color after change link -> button %>
   <%= image_button_tag t(:resend_confirmation), 'email-sync-outline',
     class: 'auxiliary', formaction: user_confirmation_path, formnovalidate: true,
     data: {validate: f.field_id(:email)} %>

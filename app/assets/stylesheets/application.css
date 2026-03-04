@@ -91,55 +91,17 @@ input,
 select {
   text-align: inherit;
 }
-a,
-button,
-input[type=submit] {
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.button,
-button,
-input[type=submit],
-.tab {
-  align-items: center;
-  color: var(--color-gray);
-  display: flex;
-  fill: var(--color-gray);
-  font-weight: bold;
-}
-.button,
-button,
-input[type=submit] {
-  font-size: 0.8rem;
-  padding: 0.6em 0.5em;
-  width: fit-content;
-}
-input:not([type=submit]):not([type=checkbox]),
-select,
-summary,
-textarea {
-  padding: 0.2em 0.4em;
-}
-.button,
-button,
 input,
 select,
 summary,
 textarea {
   border: solid 1px var(--color-gray);
   border-radius: 0.25em;
+  padding: 0.2em 0.4em;
 }
-[name=cancel],
-.auxiliary {
-  border-color: var(--color-border-gray);
-  color: var(--color-nav-gray);
-  fill: var(--color-nav-gray);
-}
-input[type=checkbox],
 svg,
 textarea {
-  margin: 0
+  margin: 0;
 }
 input[type=checkbox] {
   accent-color: var(--color-blue);
@@ -147,6 +109,8 @@ input[type=checkbox] {
   -webkit-appearance: none;
   display: flex;
   height: 1.1em;
+  margin: 0;
+  padding: 0;
   width: 1.1em;
 }
 input[type=checkbox]:checked {
@@ -166,37 +130,54 @@ input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* `.button`: button-styled <a>, <button>, <input type=submit>.
+ * `.link`: any other <a>.
+ * `.tab`: tab-styled <a>.
+ */
+.button,
+.link,
+.tab {
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.button,
+.tab {
+  align-items: center;
+  color: var(--color-gray);
+  display: flex;
+  fill: var(--color-gray);
+  font-weight: bold;
+}
+.button {
+  border: solid 1px var(--color-gray);
+  border-radius: 0.25em;
+  font-size: 0.8rem;
+  padding: 0.6em 0.5em;
+  width: fit-content;
+}
+[name=cancel],
+.auxiliary {
+  border-color: var(--color-border-gray);
+  color: var(--color-nav-gray);
+  fill: var(--color-nav-gray);
+}
 .button > svg,
-.tab > svg,
-button > svg {
+.tab > svg {
   height: 1.4em;
   width: 1.4em;
 }
 .button > svg:not(:last-child),
-.tab > svg:not(:last-child),
-button > svg:not(:last-child) {
+.tab > svg:not(:last-child) {
   margin-right: 0.2em;
 }
-/* TODO: move normal, non-button links (<a>:hover/:focus) styling here (i.e.
- * page-wide, top-level) and remove from `table.items` - as the style should be
- * same everywhere. */
 .button:focus-visible,
-button:focus-visible,
-input[type=submit]:focus-visible {
+.tab:focus-visible,
+.tab:hover {
   background-color: var(--color-focus-gray);
 }
-input:focus-visible,
-select:focus-visible,
-select:focus-within,
-/* TODO: how to achieve `summary:focus-within` for `::details-content`? */
-summary:focus-visible,
-textarea:focus-visible {
-  accent-color: var(--color-dark-blue);
-  background-color: var(--color-focus-gray);
-}
-.button:hover,
-button:hover,
-input[type=submit]:hover {
+.button:hover {
   background-color: var(--color-blue);
   border-color: var(--color-blue);
   color: white;
@@ -205,6 +186,18 @@ input[type=submit]:hover {
 .dangerous:hover {
   background-color: var(--color-red);
   border-color: var(--color-red);
+}
+/* TODO: move normal, non-button links (<a>:hover/:focus) styling here (i.e.
+ * page-wide, top-level) and remove from `table.items` - as the style should be
+ * same everywhere. */
+input:focus-visible,
+select:focus-visible,
+select:focus-within,
+/* TODO: how to achieve `summary:focus-within` for `::details-content`? */
+summary:focus-visible,
+textarea:focus-visible {
+  accent-color: var(--color-dark-blue);
+  background-color: var(--color-focus-gray);
 }
 input:hover,
 select:hover,
@@ -270,10 +263,6 @@ header {
   justify-content: center;
   padding-block: 0.4em;
 }
-.navigation > .tab:hover,
-.navigation > .tab:focus-visible {
-  background-color: var(--color-focus-gray);
-}
 .navigation > .tab.active {
   border-bottom: solid 4px var(--color-blue);
   color: var(--color-blue);
@@ -307,7 +296,7 @@ header {
 
 #flashes {
   display: grid;
-  gap: 0.2em;
+  row-gap: 0.4em;
   grid-template-columns: 1fr auto auto auto 1fr;
   left: 0;
   pointer-events: none;
@@ -323,13 +312,17 @@ header {
   display: grid;
   grid-column: 2/5;
   grid-template-columns: subgrid;
+  line-height: 2.2em;
   pointer-events: auto;
 }
-.flash.alert:before {
-  content: url('pictograms/alert-outline.svg');
+.flash:before {
+  filter: invert();
   height: 1.4em;
   margin: 0 0.5em;
   width: 1.4em;
+}
+.flash.alert:before {
+  content: url('pictograms/alert-outline.svg');
 }
 .flash.alert {
   border-color: var(--color-red);
@@ -337,30 +330,20 @@ header {
 }
 .flash.notice:before {
   content: url('pictograms/check-circle-outline.svg');
-  height: 1.4em;
-  margin: 0 0.5em;
-  width: 1.4em;
 }
 .flash.notice {
   border-color: var(--color-blue);
   background-color: var(--color-blue);
 }
-.flash > div {
-  grid-column: 2;
-}
-/* NOTE: currently flash <button> inherits some unnecessary styles from generic
- * <button>. */
-.flash > button {
-  border: none;
-  color: inherit;
+.flash svg {
   cursor: pointer;
-  font-size: 1.4em;
-  font-weight: bold;
-  grid-column: 3;
+  fill: white;
+  height: 2.2em;
   opacity: 0.6;
-  padding: 0.2em 0.4em;
+  padding: 0.4em 0.5em;
+  width: 2.4em;
 }
-.flash > button:hover {
+.flash svg:hover {
   opacity: 1;
 }
 
@@ -535,9 +518,7 @@ table.items td.svg {
 table.items td.number {
   text-align: right;
 }
-table.items .button,
-table.items button,
-table.items input[type=submit] {
+table.items .button {
   font-weight: normal;
   height: 100%;
   padding: 0.4em;
@@ -550,15 +531,12 @@ table.items textarea {
 /* TODO: find a way (layers?) to style <input>s differently while making sure
  * hover works properly without using `:not(:hover)` selectors here. */
 table.items .button:not(:hover),
-table.items button:not(:hover),
 table.items input:not(:hover),
 table.items select:not(:hover),
 table.items textarea:not(:hover) {
   border-color: var(--color-border-gray);
 }
 table.items .button:not(:hover),
-table.items button:not(:hover),
-table.items input[type=submit]:not(:hover),
 table.items select:not(:hover) {
   color: var(--color-table-gray);
 }
