@@ -95,7 +95,7 @@ input,
 select,
 summary,
 textarea {
-  border: solid 1px var(--color-gray);
+  border: 1px solid var(--color-gray);
   border-radius: 0.25em;
   padding: 0.2em 0.4em;
 }
@@ -129,6 +129,32 @@ input::-webkit-inner-spin-button {
 input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+input:focus-visible,
+select:focus-visible,
+select:focus-within,
+/* TODO: how to achieve `summary:focus-within` for `::details-content`? */
+summary:focus-visible,
+textarea:focus-visible {
+  accent-color: var(--color-dark-blue);
+  background-color: var(--color-focus-gray);
+}
+input:hover,
+select:hover,
+summary:hover,
+textarea:hover {
+  border-color: var(--color-blue);
+  outline: 1px solid var(--color-blue);
+}
+select:hover,
+summary:hover {
+  cursor: pointer;
+}
+input:invalid,
+select:invalid,
+textarea:invalid {
+  border-color: var(--color-red);
+  outline-color: var(--color-red);
 }
 
 /* `.button`: button-styled <a>, <button>, <input type=submit>.
@@ -190,32 +216,6 @@ input::-webkit-outer-spin-button {
 /* TODO: move normal, non-button links (<a>:hover/:focus) styling here (i.e.
  * page-wide, top-level) and remove from `table.items` - as the style should be
  * same everywhere. */
-input:focus-visible,
-select:focus-visible,
-select:focus-within,
-/* TODO: how to achieve `summary:focus-within` for `::details-content`? */
-summary:focus-visible,
-textarea:focus-visible {
-  accent-color: var(--color-dark-blue);
-  background-color: var(--color-focus-gray);
-}
-input:hover,
-select:hover,
-summary:hover,
-textarea:hover {
-  border-color: var(--color-blue);
-  outline: solid 1px var(--color-blue);
-}
-select:hover,
-summary:hover {
-  cursor: pointer;
-}
-input:invalid,
-select:invalid,
-textarea:invalid {
-  border-color: var(--color-red);
-  outline: solid 1px var(--color-red);
-}
 input[type=text]:read-only,
 textarea:read-only {
   border: none;
@@ -348,8 +348,6 @@ header {
 }
 
 
-/* TODO: hover over `:invalid` should work like in measurements
- * (thin vs thick border). */
 .labeled-form {
   align-items: center;
   display: grid;
@@ -528,22 +526,26 @@ table.items select,
 table.items textarea {
   padding-block: 0.375em;
 }
-/* TODO: find a way (layers?) to style <input>s differently while making sure
- * hover works properly without using `:not(:hover)` selectors here. */
-table.items .button:not(:hover),
-table.items input:not(:hover),
-table.items select:not(:hover),
-table.items textarea:not(:hover) {
+
+table input,
+table select,
+table summary,
+table textarea {
   border-color: var(--color-border-gray);
 }
-table.items .button:not(:hover),
-table.items select:not(:hover) {
+table select {
   color: var(--color-table-gray);
 }
-table.items select:focus-within,
-table.items select:focus-visible {
+table select:hover,
+table select:focus-within,
+table select:focus-visible {
   color: black;
 }
+table .button {
+  border-color: var(--color-border-gray);
+  color: var(--color-table-gray);
+}
+
 form table.items {
   border: none;
 }
@@ -554,6 +556,9 @@ form table.items td {
 }
 form table.items td:first-child {
   color: inherit;
+}
+form table select {
+  color: black;
 }
 
 
