@@ -58,16 +58,18 @@
   outline: none;
 }
 /* NOTE: move to higher priority layer instead of using !important? */
+/* TODO: add CSS @layer requirements in README */
 [disabled] {
   border-color: var(--color-border-gray) !important;
   color: var(--color-border-gray) !important;
-  /* NOTE: cannot set cursor with `pointer-events: none`; can be fixed by setting
+  /* NOTE: cannot set cursor when `pointer-events: none`; can be fixed by setting
    * `cursor` on wrapping element.
   cursor: not-allowed; */
   fill: var(--color-border-gray) !important;
   pointer-events: none !important;
 }
-/* [hidden] submit elements cannot have `display` set as it makes them visible. */
+/* Styles set `display` without distinguishing between [hidden] elements, making
+ * them visible. */
 [hidden] {
   display: none !important;
 }
@@ -122,6 +124,7 @@ input[type=checkbox]:checked {
 input[type=number] {
   appearance: textfield;
   -moz-appearance: textfield;
+  text-align: end;
 }
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -129,6 +132,26 @@ input::-webkit-inner-spin-button {
 input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+/* Text color of table form controls:
+ *  - black for row/table forms,
+ *  - inherited for internal (column specific) buttons/forms. */
+table input,
+table select,
+table summary,
+table textarea {
+  border-color: var(--color-border-gray);
+}
+table input,
+table select,
+table textarea {
+  padding-block: 0.375em;
+}
+table form input,
+table form select,
+table form summary,
+table form textarea {
+  color: inherit;
 }
 input:focus-visible,
 select:focus-visible,
@@ -138,6 +161,7 @@ summary:focus-visible,
 textarea:focus-visible {
   accent-color: var(--color-dark-blue);
   background-color: var(--color-focus-gray);
+  color: black;
 }
 input:hover,
 select:hover,
@@ -148,8 +172,15 @@ textarea:hover {
 }
 select:hover,
 summary:hover {
+  color: black;
   cursor: pointer;
 }
+/* TODO: style <details>/<summary> focus to match <select> as much as possible.
+summary:focus-visible::before,
+summary:hover::before {
+  background-color: black;
+}
+ */
 input:invalid,
 select:invalid,
 textarea:invalid {
@@ -213,9 +244,17 @@ textarea:invalid {
   background-color: var(--color-red);
   border-color: var(--color-red);
 }
+table .button {
+  border-color: var(--color-border-gray);
+  color: var(--color-table-gray);
+  font-weight: normal;
+  height: 100%;
+  padding: 0.4em;
+}
 /* TODO: move normal, non-button links (<a>:hover/:focus) styling here (i.e.
  * page-wide, top-level) and remove from `table.items` - as the style should be
  * same everywhere. */
+/* TODO: apply link class to non-button/-tab links. Add light underscore for links? */
 input[type=text]:read-only,
 textarea:read-only {
   border: none;
@@ -390,79 +429,87 @@ header {
   padding-block: 0;
 }
 
+.tabular-form table {
+  border: none;
+}
+.tabular-form table td {
+  border: none;
+  text-align: left;
+  vertical-align: middle;
+}
+.tabular-form table td:first-child {
+  color: inherit;
+}
 
-/* TODO: remove `.items` class (?) and make `form table` work properly. */
-table.items {
+
+.items-table {
   border-spacing: 0;
   border: 1px solid var(--color-border-gray);
   border-radius: 0.25em;
   font-size: 0.85rem;
   text-align: left;
 }
-table:not(:has(tr)) {
-  display: none;
-}
-table.items thead {
+.items-table thead {
   font-size: 0.8rem;
 }
-table.items thead,
-table.items tbody tr:hover {
+.items-table thead,
+.items-table tbody tr:hover {
   background-color: var(--color-focus-gray);
 }
-table.items th {
+.items-table th {
   padding-block: 0.75em;
   text-align: center;
 }
-table.items th,
-table.items td {
+.items-table th,
+.items-table td {
   padding-inline: 1em 0;
 }
 /* For <a> to fill <td> completely, we use an `::after` pseudoelement. */
-table.items td.link {
+.items-table td.link {
   padding: 0;
   position: relative;
 }
-table.items td.link a {
+.items-table td.link a {
   color: inherit;
   font: inherit;
 }
-table.items td.link a::after {
+.items-table td.link a::after {
   content: '';
   inset: 0;
   position: absolute;
 }
-table.items td:first-child {
+.items-table td:first-child {
   padding-inline-start: calc(1em + var(--depth) * 0.8em);
 }
-table.items td:has(input, select, textarea) {
+.items-table td:has(input, select, textarea) {
   padding-inline-start: calc(0.6em - 0.9px);
 }
-table.items td:first-child:has(input, select, textarea) {
+.items-table td:first-child:has(input, select, textarea) {
   padding-inline-start: calc(0.6em + var(--depth) * 0.8em - 0.9px);
 }
-table.items th:last-child {
+.items-table th:last-child {
   padding-inline-end: 0.4em;
 }
-table.items td:last-child {
+.items-table td:last-child {
   padding-inline-end: 0.1em;
 }
-table.items td {
+.items-table td {
   border-top: 1px solid var(--color-border-gray);
   height: 2.4em;
   padding-block: 0.1em;
 }
-table.items .actions {
+.items-table .actions {
   display: flex;
   gap: 0.4em;
   justify-content: end;
 }
-table.items .actions.centered {
+.items-table .actions.centered {
   justify-content: center;
 }
-table.items tr.dropzone {
+.items-table tr.dropzone {
   position: relative;
 }
-table.items tr.dropzone::after {
+.items-table tr.dropzone::after {
   content: '';
   inset: 1px 0 0 0;
   position: absolute;
@@ -470,95 +517,51 @@ table.items tr.dropzone::after {
   outline-offset: -1px;
   z-index: var(--z-index-table-row-outline);
 }
-table.items td.handle {
+.items-table td.handle {
   cursor: move;
 }
-table.items tr.form td {
+.items-table tr.form td {
   vertical-align: top;
 }
 
 /* TODO: replace `:hover:focus-visible` combos with proper LOVE style order. */
 /* TODO: update table styling: simplify selectors, deduplicate, remove non-font rem. */
-table.items td.link a:hover,
-table.items td.link a:focus-visible,
-table.items td.link a:hover:focus-visible {
+.items-table td.link a:hover,
+.items-table td.link a:focus-visible,
+.items-table td.link a:hover:focus-visible {
   text-decoration: underline;
   text-decoration-thickness: 0.05rem;
   text-underline-offset: 0.2rem;
 }
-table.items td.link a:hover {
+.items-table td.link a:hover {
   color: var(--color-blue);
 }
-table.items td.link a:focus-visible {
+.items-table td.link a:focus-visible {
   text-decoration-color: var(--color-gray);
 }
-table.items td.link a:hover:focus-visible {
+.items-table td.link a:hover:focus-visible {
   color: var(--color-dark-blue);
 }
 
-table.items td:not(:first-child),
+.items-table td:not(:first-child),
 .grayed {
   color: var(--color-table-gray);
   fill: var(--color-table-gray);
 }
-table.items svg {
+.items-table svg {
   height: 1rem;
   vertical-align: middle;
   width: 1rem;
 }
-table.items svg:last-child {
+.items-table svg:last-child {
   height: 1.2rem;
   width: 1.2rem;
 }
-table.items td.svg {
+.items-table td.svg {
   text-align: center;
 }
-table.items td.number {
+.items-table td.number {
   text-align: right;
-}
-table.items .button {
-  font-weight: normal;
-  height: 100%;
-  padding: 0.4em;
-}
-table.items input:not([type=submit]):not([type=checkbox]),
-table.items select,
-table.items textarea {
-  padding-block: 0.375em;
-}
-
-table input,
-table select,
-table summary,
-table textarea {
-  border-color: var(--color-border-gray);
-}
-table select {
-  color: var(--color-table-gray);
-}
-table select:hover,
-table select:focus-within,
-table select:focus-visible {
-  color: black;
-}
-table .button {
-  border-color: var(--color-border-gray);
-  color: var(--color-table-gray);
-}
-
-form table.items {
-  border: none;
-}
-form table.items td {
-  border: none;
-  text-align: left;
-  vertical-align: middle;
-}
-form table.items td:first-child {
-  color: inherit;
-}
-form table select {
-  color: black;
 }
 
 
@@ -587,6 +590,13 @@ form table select {
   font-size: 0.9rem;
   text-align: center;
 }
+.hmin50 {
+  min-width: 50%;
+}
+.italic {
+  color: var(--color-gray);
+  font-style: italic;
+}
 .vflex {
   display: flex;
   gap: 0.8em;
@@ -602,12 +612,12 @@ summary {
   align-items: center;
   color: var(--color-gray);
   display: flex;
-  gap: 0.2em;
+  gap: 0.4em;
   height: 100%;
   white-space: nowrap;
 }
 summary::before {
-  background-color: #000;
+  background-color: currentColor;
   content: "";
   height: 1em;
   mask-image: url('pictograms/chevron-down.svg');
@@ -630,7 +640,7 @@ summary span {
   width: 100%;
 }
 details[open] summary::before {
-  transform: rotate(180deg);
+  transform: scaleY(-1);
 }
 summary::marker {
   padding-left: 0.25em;
@@ -659,6 +669,11 @@ li input[type=checkbox] {
 }
 li::marker {
   content: '';
+}
+
+#measurement_form {
+  min-width: 66%;
+  width: max-content;
 }
 /*
  * TODO:

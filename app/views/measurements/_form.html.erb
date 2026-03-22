@@ -1,28 +1,37 @@
 <%= tabular_form_with model: Measurement.new, id: :measurement_form,
-  class: 'topside-area vflex', html: {onkeydown: 'formProcessKey(event)'} do |form| %>
-  <table class="items centered">
-    <tbody id="readouts"></tbody>
+  class: 'topside-area vflex centered',
+  html: {onkeydown: 'formProcessKey(event)'} do |form| %>
+
+  <table class="items-table centered">
+    <tbody id="readouts">
+      <%= tabular_fields_for @measurement do |form| %>
+        <tr class="italic">
+          <td class="hexpand hmin50"><%= t '.taken_at_html' %></td>
+          <td colspan="3" class="number">
+            <%= form.datetime_field :taken_at, required: true %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
   </table>
 
-  <div class="hflex">
-    <%# TODO: right-click selection %>
-    <details id="quantity_select" class="hexpand" open
-             onkeydown="detailsProcessKey(event)">
-      <summary autofocus>
-        <!-- TODO: Set content with CSS when span empty to avoid duplication -->
-        <span data-prompt="<%= t('.select_quantity') %>">
-          <%= t('.select_quantity') %>
-        </span>
-        <%= image_button_tag t(:apply), "update", name: nil, disabled: true,
-          formaction: new_readout_path, formmethod: :get, formnovalidate: true,
-          data: {turbo_stream: true} %>
-      </summary>
-      <ul><%= quantities_check_boxes %></ul>
-    </details>
-    <%= form.button id: :create_measurement_button, disabled: true -%>
-  </div>
+  <%# TODO: right-click selection; unnecessary with hierarchical tags? %>
+  <details id="quantity_select" class="centered hexpand" open
+           onkeydown="detailsProcessKey(event)">
+    <summary autofocus>
+      <!-- TODO: Set content with CSS when span empty to avoid duplication -->
+      <span data-prompt="<%= t('.select_quantity') %>">
+        <%= t('.select_quantity') %>
+      </span>
+      <%= image_button_tag t(:apply), "update", name: nil, disabled: true,
+        formaction: new_readout_path, formmethod: :get, formnovalidate: true,
+        data: {turbo_stream: true} %>
+    </summary>
+    <ul><%= quantities_check_boxes(@quantities) %></ul>
+  </details>
 
   <div class="hflex reverse">
+    <%= form.button id: :create_measurement_button, disabled: true -%>
     <%= image_link_to t(:cancel), "close-outline", measurements_path, name: :cancel,
       class: 'dangerous', onclick: render_turbo_stream('form_close') %>
   </div>

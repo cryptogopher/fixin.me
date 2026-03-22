@@ -148,7 +148,8 @@ module ApplicationHelper
   end
 
   def tabular_form_with(**options, &block)
-    extra_options = {builder: TabularFormBuilder, html: {autocomplete: 'off'}}
+    extra_options = {builder: TabularFormBuilder, class: 'tabular-form',
+                     html: {autocomplete: 'off'}}
     form_with(**merge_attributes(options, extra_options), &block)
   end
 

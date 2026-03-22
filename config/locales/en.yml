@@ -85,12 +85,10 @@ en:
     navigation: Measurements
     no_items: There are no measurements taken. You can Add some now.
     form:
-      select_quantity: select the measured quantities...
+      select_quantity: select quantities...
+      taken_at_html: Measurement taken at&emsp;
     index:
       new_measurement: Add measurement
-  readouts:
-    form:
-      select_unit: ...
   quantities:
     navigation: Quantities
     no_items: There are no configured quantities. You can Add some or Import from defaults.

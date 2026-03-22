@@ -1,13 +1,8 @@
 <%# TODO: add readout reordering by dragging %>
 <%= tabular_fields_for 'readouts[]', readout do |form| %>
   <%- tag.tr id: dom_id(readout.quantity, :new, :readout) do %>
-    <td class="actions">
-      <%# TODO: change to _link_ after giving up displaying relative paths %>
-      <%= image_button_tag '', 'delete-outline', class: 'dangerous', name: nil,
-        formaction: discard_readouts_path(readout.quantity),
-        formmethod: :get, formnovalidate: true, data: {turbo_stream: true} %>
-    </td>
     <td>
+      <%# TODO: add grayed readout index (in separate column?) %>
       <%= readout.quantity.relative_pathname(@superquantity) %>
     </td>
     <td>
@@ -19,7 +14,13 @@
       <%= form.hidden_field :quantity_id %>
       <%= form.collection_select :unit_id, @user_units, :id,
         ->(u){ sanitize('&emsp;' * (u.base_id ? 1 : 0) + u.symbol) },
-        {prompt: t('.select_unit'), disabled: '', selected: ''}, required: true %>
+        {prompt: '', disabled: '', selected: ''}, required: true %>
+    </td>
+    <td class="actions">
+      <%# TODO: change to _link_ after giving up displaying relative paths %>
+      <%= image_button_tag '', 'delete-outline', class: 'dangerous', name: nil,
+        formaction: discard_readouts_path(readout.quantity),
+        formmethod: :get, formnovalidate: true, data: {turbo_stream: true} %>
     </td>
   <% end %>
 <% end %>

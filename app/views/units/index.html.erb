@@ -7,9 +7,10 @@
     class: 'tools-area' %>
 </div>
 
+<%# TODO: remove? form can be inserted directly, e.g. at the end of index %>
 <%= tag.div id: :unit_form %>
 
-<table class="main-area items">
+<table class="main-area items-table">
   <thead>
     <tr>
       <th><%= Unit.human_attribute_name(:symbol) %></th>
