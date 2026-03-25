@@ -11,7 +11,7 @@
   <tbody>
     <% @users.each do |user| %>
       <tr>
-        <td class="link"><%= link_to user, user_path(user) %></td>
+        <td><%= link_to user, user_path(user), class: 'link' %></td>
         <td>
           <% if user == current_user %>
             <%= user.status %>
@@ -22,11 +22,11 @@
             <% end %>
           <% end %>
         </td>
-        <td class="svg">
+        <td>
           <%= svg_tag 'pictograms/checkbox-marked-outline' if user.confirmed_at.present? %>
         </td>
         <td><%= l user.created_at, format: :without_tz %></td>
-        <td class="actions">
+        <td class="flex">
           <% if allow_disguise?(user) %>
             <%= image_link_to t('.disguise'), 'incognito', disguise_user_path(user) %>
           <% end %>

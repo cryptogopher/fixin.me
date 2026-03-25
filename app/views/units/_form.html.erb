@@ -8,11 +8,11 @@
     <td>
       <%= form.text_area :description, cols: 30, rows: 1, escape: false %>
     </td>
-    <td class="number">
+    <td>
       <%= form.number_field :multiplier, required: true, size: 10, min: :step if @unit.base_id? %>
     </td>
 
-    <td class="actions">
+    <td class="flex">
       <%= form.button %>
       <%= image_link_to t(:cancel), "close-outline", units_path, class: 'dangerous',
         name: :cancel, onclick: render_turbo_stream('form_close', {row: row}) %>

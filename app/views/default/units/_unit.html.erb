@@ -5,7 +5,7 @@
   </td>
 
   <% if current_user.at_least(:active) %>
-    <td class="actions">
+    <td class="flex">
       <% unless unit.portable.nil? %>
         <% if unit.default? %>
           <%= image_button_to_if unit.portable?, t('.import'), 'download-outline',

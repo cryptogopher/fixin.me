@@ -14,7 +14,7 @@
   <thead>
     <tr>
       <th><%= Unit.human_attribute_name(:symbol) %></th>
-      <th><%= Unit.human_attribute_name(:description) %></th>
+      <th class="hexpand"><%= Unit.human_attribute_name(:description) %></th>
       <th><%= Unit.human_attribute_name(:multiplier) %></th>
       <% if current_user.at_least(:active) %>
         <th><%= t :actions %></th>

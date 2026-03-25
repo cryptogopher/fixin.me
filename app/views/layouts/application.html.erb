@@ -23,10 +23,10 @@
   </head>
 
   <body>
-    <header class="hflex">
+    <header class="flex">
       <%= image_link_to t(".source_code"), "code-braces", source_code_url %>
       <%= image_link_to t(".issue_tracker"), "bug-outline", issue_tracker_url,
-            class: "extendedright" %>
+        class: "rextend" %>
       <% if user_signed_in? %>
         <%= image_link_to_unless_current(current_user, "account-wrench-outline",
           edit_user_registration_path) %>

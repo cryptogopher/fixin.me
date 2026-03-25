@@ -18,14 +18,12 @@
 /* Strive for simplicity:
  * * style elements/tags only - if possible,
  * * replace element/tag name with class name - if element has to be styled
- * differently depending on context (e.g. <form>; <a> as link/button),
+ * differently depending on context (e.g. <form>, <table>, <a> as link/button),
  * * styles with multiple selectors should have all selectors with same
  * specificity, to allow proper rule specificity vs order management.
  *
  * NOTE: style in a modular way, similar to how CSS @scope would be used,
  * to make transition easier once @scope is widely available. */
-/* TODO: review styles with multiple selectors and try to convert them to the same
- * specificity. */
 :root {
   --color-focus-gray: #f3f3f3;
   --color-border-gray: #dddddd;
@@ -57,8 +55,8 @@
 :focus-visible {
   outline: none;
 }
-/* NOTE: move to higher priority layer instead of using !important? */
-/* TODO: add CSS @layer requirements in README */
+/* NOTE: move to higher priority layer instead of using !important?; add CSS
+ * @layer requirements in README */
 [disabled] {
   border-color: var(--color-border-gray) !important;
   color: var(--color-border-gray) !important;
@@ -80,10 +78,13 @@
  *  gray - target for interaction with keyboard,
  *  red - destructive, non-undoable action.
  */
+/* TODO: merge selectors using :is() */
+a,
 button,
 details,
 input,
 select,
+summary,
 textarea {
   background-color: inherit;
   font: inherit;
@@ -101,7 +102,14 @@ textarea {
   border-radius: 0.25em;
   padding: 0.2em 0.4em;
 }
-svg,
+svg {
+  height: 1.4em;
+  margin: 0 0.2em 0 0;
+  width: 1.4em;
+}
+svg:last-child {
+  margin-right: 0;
+}
 textarea {
   margin: 0;
 }
@@ -152,6 +160,10 @@ table form select,
 table form summary,
 table form textarea {
   color: inherit;
+}
+table svg:not(:only-child) {
+  height: 1.25em;
+  width: 1.25em;
 }
 input:focus-visible,
 select:focus-visible,
@@ -214,20 +226,21 @@ textarea:invalid {
   padding: 0.6em 0.5em;
   width: fit-content;
 }
-[name=cancel],
+.link {
+  color: inherit;
+  text-decoration: underline 1px var(--color-border-gray);
+  text-underline-offset: 0.25em;
+}
 .auxiliary {
-  border-color: var(--color-border-gray);
+  border-color: var(--color-nav-gray);
   color: var(--color-nav-gray);
   fill: var(--color-nav-gray);
 }
-.button > svg,
-.tab > svg {
-  height: 1.4em;
-  width: 1.4em;
-}
-.button > svg:not(:last-child),
-.tab > svg:not(:last-child) {
-  margin-right: 0.2em;
+table .button {
+  border-color: var(--color-border-gray);
+  font-weight: normal;
+  height: 100%;
+  padding: 0.4em;
 }
 .button:focus-visible,
 .tab:focus-visible,
@@ -244,21 +257,12 @@ textarea:invalid {
   background-color: var(--color-red);
   border-color: var(--color-red);
 }
-table .button {
-  border-color: var(--color-border-gray);
-  color: var(--color-table-gray);
-  font-weight: normal;
-  height: 100%;
-  padding: 0.4em;
+.link:focus-visible {
+  text-decoration-color: var(--color-gray);
 }
-/* TODO: move normal, non-button links (<a>:hover/:focus) styling here (i.e.
- * page-wide, top-level) and remove from `table.items` - as the style should be
- * same everywhere. */
-/* TODO: apply link class to non-button/-tab links. Add light underscore for links? */
-input[type=text]:read-only,
-textarea:read-only {
-  border: none;
-  padding-inline: 0;
+.link:hover {
+  color: var(--color-blue);
+  text-decoration-color: var(--color-blue);
 }
 
 
@@ -271,16 +275,16 @@ body {
   grid-template-areas:
     "header    header  header"
     "nav       nav     nav"
-    "leftside  topside rightside"
     "leftside  main    rightside";
   grid-template-columns: 1fr minmax(max-content, 2fr) 1fr;
   font-family: system-ui;
   margin: 0.4em;
 }
-body:not(:has(.topside-area)) {
+body:has(> .topside-area) {
   grid-template-areas:
     "header    header  header"
     "nav       nav     nav"
+    "leftside  topside rightside"
     "leftside  main    rightside";
 }
 
@@ -354,20 +358,20 @@ header {
   line-height: 2.2em;
   pointer-events: auto;
 }
-.flash:before {
-  filter: invert();
+.flash::before {
+  filter: invert(1);
   height: 1.4em;
   margin: 0 0.5em;
   width: 1.4em;
 }
-.flash.alert:before {
+.flash.alert::before {
   content: url('pictograms/alert-outline.svg');
 }
 .flash.alert {
   border-color: var(--color-red);
   background-color: var(--color-red);
 }
-.flash.notice:before {
+.flash.notice::before {
   content: url('pictograms/check-circle-outline.svg');
 }
 .flash.notice {
@@ -431,14 +435,21 @@ header {
 
 .tabular-form table {
   border: none;
+  border-spacing: 0;
 }
 .tabular-form table td {
   border: none;
-  text-align: left;
+  padding-inline-start: 0.4em;
   vertical-align: middle;
 }
 .tabular-form table td:first-child {
-  color: inherit;
+  padding-inline-start: 0;
+}
+.tabular-form table td:last-child {
+  padding-inline-end: 0;
+}
+.tabular-form table :is(form, input, select, textarea):only-child {
+  margin-inline-start: 0;
 }
 
 
@@ -457,59 +468,41 @@ header {
   background-color: var(--color-focus-gray);
 }
 .items-table th {
-  padding-block: 0.75em;
+  padding: 0.75em 0 0.75em 1em;
   text-align: center;
-}
-.items-table th,
-.items-table td {
-  padding-inline: 1em 0;
-}
-/* For <a> to fill <td> completely, we use an `::after` pseudoelement. */
-.items-table td.link {
-  padding: 0;
-  position: relative;
-}
-.items-table td.link a {
-  color: inherit;
-  font: inherit;
-}
-.items-table td.link a::after {
-  content: '';
-  inset: 0;
-  position: absolute;
-}
-.items-table td:first-child {
-  padding-inline-start: calc(1em + var(--depth) * 0.8em);
-}
-.items-table td:has(input, select, textarea) {
-  padding-inline-start: calc(0.6em - 0.9px);
-}
-.items-table td:first-child:has(input, select, textarea) {
-  padding-inline-start: calc(0.6em + var(--depth) * 0.8em - 0.9px);
 }
 .items-table th:last-child {
   padding-inline-end: 0.4em;
 }
-.items-table td:last-child {
-  padding-inline-end: 0.1em;
-}
 .items-table td {
   border-top: 1px solid var(--color-border-gray);
   height: 2.4em;
-  padding-block: 0.1em;
+  padding: 0.1em 0 0.1em calc(1em + var(--depth) * 0.8em);
 }
-.items-table .actions {
-  display: flex;
+.items-table td:last-child {
+  padding-inline-end: 0.1em;
+}
+.items-table :is(form, input, select, textarea):only-child {
+  margin-inline-start: calc(-0.4em - 0.9px);
+}
+/* For <a> to fill table cell completely, we use an `::after` pseudoelement. */
+/* TODO: expand to whole row? will require adjusting z-index on inputs/buttons */
+.items-table td:has(> .link) {
+  position: relative;
+}
+.items-table .link::after {
+  content: '';
+  inset: -1px 0 0 0;
+  position: absolute;
+}
+.items-table .flex {
   gap: 0.4em;
   justify-content: end;
 }
-.items-table .actions.centered {
-  justify-content: center;
-}
-.items-table tr.dropzone {
+.items-table .dropzone {
   position: relative;
 }
-.items-table tr.dropzone::after {
+.items-table .dropzone::after {
   content: '';
   inset: 1px 0 0 0;
   position: absolute;
@@ -517,72 +510,37 @@ header {
   outline-offset: -1px;
   z-index: var(--z-index-table-row-outline);
 }
-.items-table td.handle {
-  cursor: move;
+.items-table .handle {
+  cursor: grab;
 }
-.items-table tr.form td {
+.items-table .form td {
   vertical-align: top;
 }
-
-/* TODO: replace `:hover:focus-visible` combos with proper LOVE style order. */
-/* TODO: update table styling: simplify selectors, deduplicate, remove non-font rem. */
-.items-table td.link a:hover,
-.items-table td.link a:focus-visible,
-.items-table td.link a:hover:focus-visible {
-  text-decoration: underline;
-  text-decoration-thickness: 0.05rem;
-  text-underline-offset: 0.2rem;
-}
-.items-table td.link a:hover {
-  color: var(--color-blue);
-}
-.items-table td.link a:focus-visible {
-  text-decoration-color: var(--color-gray);
-}
-.items-table td.link a:hover:focus-visible {
-  color: var(--color-dark-blue);
-}
-
 .items-table td:not(:first-child),
 .grayed {
   color: var(--color-table-gray);
-  fill: var(--color-table-gray);
+  fill: var(--color-gray);
 }
-.items-table svg {
-  height: 1rem;
-  vertical-align: middle;
-  width: 1rem;
-}
-.items-table svg:last-child {
-  height: 1.2rem;
-  width: 1.2rem;
-}
-.items-table td.svg {
+.items-table td:has(> svg:only-child) {
   text-align: center;
 }
-.items-table td.number {
-  text-align: right;
-}
 
 
-.centered {
+.center {
   margin: 0 auto;
-}
-.extendedright {
-  margin-right: auto;
 }
 .hexpand {
   width: 100%;
 }
-.hflex {
+.flex {
   display: flex;
   gap: 0.8em;
 }
-.hflex.reverse {
+.flex.reverse {
   flex-direction: row-reverse;
 }
-.hflex.centered {
-  justify-content: center;
+.flex.vertical {
+  flex-direction: column;
 }
 .hint {
   color: var(--color-table-gray);
@@ -597,10 +555,11 @@ header {
   color: var(--color-gray);
   font-style: italic;
 }
-.vflex {
-  display: flex;
-  gap: 0.8em;
-  flex-direction: column;
+.ralign {
+  text-align: right;
+}
+.rextend {
+  margin-right: auto;
 }
 
 
@@ -647,7 +606,7 @@ summary::marker {
 }
 /* NOTE: use `details[open]::details-content` once widely available. */
 details[open] ul {
-  background: white;
+  background-color: white;
   border: 1px solid var(--color-border-gray);
   border-radius: 0.25em;
   box-shadow: 1px 1px 3px var(--color-border-gray);
@@ -670,11 +629,6 @@ li input[type=checkbox] {
 li::marker {
   content: '';
 }
-
-#measurement_form {
-  min-width: 66%;
-  width: max-content;
-}
 /*
  * TODO:
  * * disable <label> containing disabled checkbox: `label:has(input[disabled])`,
@@ -682,3 +636,8 @@ li::marker {
  * * focused label styling (currently only checkbox has focus),
  * * disabled checkbox blue square focus removal.
  * */
+
+#measurement_form {
+  min-width: 66%;
+  width: max-content;
+}

@@ -9,7 +9,7 @@
       <%= form.text_area :description, cols: 30, rows: 1, escape: false %>
     </td>
 
-    <td class="actions">
+    <td class="flex">
       <%= form.button %>
       <%= image_link_to t(:cancel), "close-outline", quantities_path, class: 'dangerous',
         name: :cancel, onclick: render_turbo_stream('form_close', {row: row}) %>

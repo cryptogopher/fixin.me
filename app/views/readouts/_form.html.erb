@@ -4,6 +4,7 @@
     <td>
       <%# TODO: add grayed readout index (in separate column?) %>
       <%= readout.quantity.relative_pathname(@superquantity) %>
+      <%= form.hidden_field :quantity_id %>
     </td>
     <td>
       <%= form.number_field :value, required: true,
@@ -11,12 +12,11 @@
         autofocus: readout_counter == 0 %>
     </td>
     <td>
-      <%= form.hidden_field :quantity_id %>
       <%= form.collection_select :unit_id, @user_units, :id,
         ->(u){ sanitize('&emsp;' * (u.base_id ? 1 : 0) + u.symbol) },
         {prompt: '', disabled: '', selected: ''}, required: true %>
     </td>
-    <td class="actions">
+    <td class="flex">
       <%# TODO: change to _link_ after giving up displaying relative paths %>
       <%= image_button_tag '', 'delete-outline', class: 'dangerous', name: nil,
         formaction: discard_readouts_path(readout.quantity),
