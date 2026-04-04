@@ -25,9 +25,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     user
   end
 
-  def inject_button_to(after, *button_options)
+  def inject_button_to(inside, *button_options)
     button = button_to *button_options
-    evaluate_script("arguments[0].insertAdjacentHTML('beforeend', '#{button.html_safe}');", after)
+    inside.evaluate_script("this.insertAdjacentHTML('beforeend', arguments[0]);",
+                           button.html_safe)
   end
 
   # Allow skipping interpolations when translating for testing purposes
