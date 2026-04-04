@@ -227,7 +227,8 @@ class UsersTest < ApplicationSystemTestCase
 
     within all(:xpath, "//tbody//tr[not(descendant::select)]").sample do |tr|
       user = User.find_by_email!(first(:link).text)
-      inject_button_to first('td:not(.link)'), "update status", user_path(user), method: :patch,
+      inject_button_to find('td', exact_text: user.status), "update status",
+        user_path(user), method: :patch,
         params: {user: {status: User.statuses.keys.sample}}, data: {turbo: false}
       click_on "update status"
     end
@@ -237,8 +238,8 @@ class UsersTest < ApplicationSystemTestCase
   test 'update status forbidden for non admin' do
     sign_in user: users.reject(&:admin?).select(&:confirmed?).sample
     visit units_path
-    inject_button_to find('body'), "update status", user_path(User.all.sample), method: :patch,
-      params: {user: {status: User.statuses.keys.sample}}
+    inject_button_to find('body'), "update status", user_path(User.all.sample),
+      method: :patch, params: {user: {status: User.statuses.keys.sample}}
     click_on "update status"
     assert_text t('actioncontroller.exceptions.status.forbidden')
   end
