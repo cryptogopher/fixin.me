@@ -89,13 +89,9 @@ Running
 
 ### Standalone Rails server + Apache proxy
 
-Customize Puma config template:
+Copy and customize Puma config template if required:
 
     cp -a config/puma.rb.dist config/puma.rb
-
-and specify server IP/port, either with `port` or `bind`, e.g.:
-
-    bind 'tcp://0.0.0.0:3000'
 
 #### (option 1) Start server manually
 

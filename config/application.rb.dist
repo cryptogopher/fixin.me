@@ -21,11 +21,12 @@ Bundler.require(*Rails.groups)
 module FixinMe
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
+    config.load_defaults 8.0
 
-    # Autoload lib/, required e.g. for core library extensions.
-    # https://guides.rubyonrails.org/autoloading_and_reloading_constants.html#config-autoload-lib-ignore.
-    config.autoload_lib(ignore: %w(assets tasks))
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w[assets tasks])
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -40,14 +41,14 @@ module FixinMe
 
     # SETUP: Below settings need to be updated on a per-installation basis.
     #
-    # URL to use in sent e-mails.
+    # Set host to be used by links generated in mailer templates.
     config.action_mailer.default_url_options = {host: 'localhost', :protocol => 'https'}
     # https://guides.rubyonrails.org/configuring.html#config-action-mailer-delivery-method
     config.action_mailer.delivery_method = :sendmail
 
     # List of hosts this app is available at.
     # https://guides.rubyonrails.org/configuring.html#actiondispatch-hostauthorization
-    config.hosts += ['localhost', 'example.com', IPAddr.new('1.2.3.4/32')]
+    config.hosts += ['localhost', IPAddr.new('1.2.3.4/32'), 'example.com']
 
     # Email address of admin account
     config.admin = 'admin@localhost'
