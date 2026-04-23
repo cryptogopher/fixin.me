@@ -1,14 +1,14 @@
 source "https://rubygems.org"
 
 # The requirement for the Ruby version comes from Rails
-gem "rails", "~> 7.2.3"
+gem "rails", "~> 8.0.5"
 gem "sprockets-rails"
 gem "puma", "~> 6.0"
 gem "sassc-rails"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 
-# TODO: select db gems automatically
+# TODO: select db gems automatically?
 #   database_config = ERB.new(File.read("config/database.yml")).result
 #   YAML.load(database_config, aliases: true).values.map { |env| env["adapter"] }.uniq
 group :mysql, optional: true do
@@ -42,11 +42,4 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
-
-  # Remove minitest version restriction after error fixed:
-  #   railties-7.2.3/lib/rails/test_unit/line_filtering.rb:7:in `run':
-  #     wrong number of arguments (given 3, expected 1..2) (ArgumentError)
-  #   from /var/www/.gem/ruby/3.3.0/gems/minitest-6.0.2/lib/minitest.rb:473:in
-  #     `block (2 levels) in run_suite'
-  gem "minitest", "< 6"
 end
