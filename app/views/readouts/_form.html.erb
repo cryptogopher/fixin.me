@@ -7,9 +7,7 @@
       <%= form.hidden_field :quantity_id %>
     </td>
     <td>
-      <%= form.number_field :value, required: true,
-        size: readout.type_for_attribute(:value).precision / 2,
-        autofocus: readout_counter == 0 %>
+      <%= form.number_field :value, required: true, autofocus: readout_counter == 0 %>
     </td>
     <td>
       <%= form.collection_select :unit_id, @user_units, :id,

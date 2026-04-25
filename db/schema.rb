@@ -28,8 +28,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_21_230456) do
   create_table "readouts", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "quantity_id", null: false
+    t.integer "category", default: 0, null: false
+    t.float "value", limit: 53, null: false
     t.bigint "unit_id"
-    t.decimal "value", precision: 30, scale: 15, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["quantity_id", "created_at"], name: "index_readouts_on_quantity_id_and_created_at", unique: true

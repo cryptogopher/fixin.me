@@ -3,8 +3,10 @@ class CreateReadouts < ActiveRecord::Migration[7.2]
     create_table :readouts do |t|
       t.references :user, null: false, foreign_key: true
       t.references :quantity, null: false, foreign_key: true
+      # :category + :value + :unit as a separate table? (NumericValue, TextValue)
+      t.integer :category, null: false, default: 0
+      t.float :value, null: false, limit: Float::MANT_DIG
       t.references :unit, foreign_key: true
-      t.decimal :value, null: false, precision: 30, scale: 15
       #t.references :collector, foreign_key: true
       #t.references :device, foreign_key: true
 

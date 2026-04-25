@@ -102,13 +102,17 @@ module ApplicationHelper
 
     def number_field(method, options = {})
       attr_type = object.type_for_attribute(method)
-      if attr_type.type == :decimal
+      case attr_type.type
+      when :decimal
         options[:value] = object.public_send(method)&.to_scientific
         options[:step] ||= BigDecimal(10).power(-attr_type.scale)
         options[:max] ||= BigDecimal(10).power(attr_type.precision - attr_type.scale) -
           options[:step]
         options[:min] = options[:min] == :step ? options[:step] : options[:min]
         options[:min] ||= -options[:max]
+        options[:size] ||= attr_type.precision / 2
+      when :float
+        options[:size] ||= 6
       end
       super
     end
