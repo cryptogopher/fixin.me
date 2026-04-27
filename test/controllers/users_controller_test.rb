@@ -1,5 +1,7 @@
 require "test_helper"
 
+# TODO: make sure tested actions are covered by system tests and remove all
+# controller tests.
 class UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:one)

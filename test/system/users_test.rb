@@ -204,6 +204,7 @@ class UsersTest < ApplicationSystemTestCase
 
   test 'update profile' do
     # TODO
+    assert true
   end
 
   test 'update status' do

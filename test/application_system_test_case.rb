@@ -39,6 +39,32 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
   alias :t :translate
 
+  DB_CONFIGS = ActiveRecord::Base.configurations.configs_for(env_name: "test")
+  TEST_CONFIGS = Hash.new(DB_CONFIGS.first.name.to_sym)
+  class << self
+    # NOTE: alternative to current solution is to create shards:
+    #   ActiveRecord::Base.connects_to(
+    #     shards: {mysql2: {writing: :mysql2}, sqlite3: {writing: :sqlite3}}
+    #   )
+    # and use them in one of the following ways:
+    # * set config.active_record.shard_selector/shard_resolver
+    # * run tests within: ActiveRecord::Base.connected_to(shard: :sqlite3) { test_ }
+    # Remove this note once current solution is confirmed to work.
+    #
+    # Test block should not be modified here, as it would change its binding from
+    # instance level to class level.
+    if DB_CONFIGS.many?
+      def test(name, ...)
+        DB_CONFIGS.each do |config|
+          TEST_CONFIGS[super("#{config.name} #{name}", ...)] = config.name.to_sym
+        end
+      end
+    end
+  end
+  setup do
+    ActiveRecord::Base.establish_connection(TEST_CONFIGS[name.to_sym])
+  end
+
   #def assert_stale(element)
   #  assert_raises(Selenium::WebDriver::Error::StaleElementReferenceError) { element.tag_name }
   #end

@@ -15,6 +15,9 @@
 /config/master.key
 /config/puma.rb
 
+# Ignore test database.
+/db/test.sqlite3
+
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
@@ -30,7 +33,7 @@
 
 /tmp/restart.txt
 
-# Ignore user files
+# Ignore user files.
 /.bash_history
 /.byebug_history
 /.config
@@ -38,6 +41,7 @@
 /.lesshst
 /.local
 /.mysql_history
+/.sqlite_history
 /.ssh
 /.vim
 /.viminfo
