@@ -119,9 +119,10 @@ Contributing
 
 ### Gems
 
-Apart from database adapter, install development and testing gems:
+Install development and testing gems, including at least MySQL and SQLite
+database adapters:
 
-    bundle config --local with mysql development test
+    bundle config --local with development test mysql sqlite
 
 ### Configuration
 
@@ -134,8 +135,9 @@ assets.
 
 ### Database
 
-Grant database user privileges for development and test environments,
-possibly with different Ruby versions:
+Grant database user privileges for development and test environments. Example
+below shows how to grant privileges to all databases which names start with
+`fixinme-` on MySQL:
 
     > mysql -p
     mysql> create user `fixinme-dev`@localhost identified by '<some password>';
@@ -147,6 +149,10 @@ possibly with different Ruby versions:
 Starting application server in development environment:
 
     bundle exec rails s -e development
+
+Accessing database console when more than one test db is present:
+
+    bundle exec rails dbconsole -e test --db sqlite3
 
 For running rake tasks, prepend command with environment:
 
@@ -160,13 +166,21 @@ Tests need to be run from within toplevel application directory:
 
         bundle exec rails test:system
 
-* system test(s) with seed/test name specified:
+* system test(s) with seed or test name specified:
 
-        bundle exec rails test:system --seed 64690 --name test_add_unit
+        bundle exec rails test:system --include test_add_unit --seed 64690
 
-* all tests from one file, with optional seed:
+* all tests from one file, optionally with seed:
 
         bundle exec rails test test/system/users_test.rb --seed 1234
+
+* system tests for selected database configuration (if multiple present):
+
+        bundle exec rails test:system --include /^test_sqlite3_/
+
+* single system test for all database configurations (if multiple present):
+
+        bundle exec rails test:system --include /^test_\\w+_add_unit$/
 
 ### Icons
 

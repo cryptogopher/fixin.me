@@ -11,11 +11,11 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_01_21_230456) do
-  create_table "quantities", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
-    t.bigint "user_id"
+  create_table "quantities", force: :cascade do |t|
+    t.integer "user_id"
     t.string "name", limit: 31, null: false
     t.text "description"
-    t.bigint "parent_id"
+    t.integer "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "depth", default: 0, null: false
@@ -25,12 +25,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_21_230456) do
     t.index ["user_id"], name: "index_quantities_on_user_id"
   end
 
-  create_table "readouts", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "quantity_id", null: false
+  create_table "readouts", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "quantity_id", null: false
     t.integer "category", default: 0, null: false
     t.float "value", limit: 53, null: false
-    t.bigint "unit_id"
+    t.integer "unit_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["quantity_id", "created_at"], name: "index_readouts_on_quantity_id_and_created_at", unique: true
@@ -39,12 +39,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_21_230456) do
     t.index ["user_id"], name: "index_readouts_on_user_id"
   end
 
-  create_table "units", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
-    t.bigint "user_id"
+  create_table "units", force: :cascade do |t|
+    t.integer "user_id"
     t.string "symbol", limit: 15, null: false
     t.text "description"
     t.decimal "multiplier", precision: 30, scale: 15, default: "1.0", null: false
-    t.bigint "base_id"
+    t.integer "base_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["base_id"], name: "index_units_on_base_id"
@@ -52,7 +52,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_21_230456) do
     t.index ["user_id"], name: "index_units_on_user_id"
   end
 
-  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "email", limit: 64, null: false
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false

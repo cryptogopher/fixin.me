@@ -24,27 +24,45 @@
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 default: &default
-  adapter: mysql2
-  encoding: utf8mb4
-  collation: utf8mb4_0900_as_ci
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: fixinme
-  password: Some-password1%
-  socket: /run/mysqld/mysqld.sock
+  pool: <%= ENV.fetch('RAILS_MAX_THREADS', 3) %>
+
+#mysql_default: &mysql_default
+#  <<: *default
+#  username: fixinme
+#  password: Some-password1%
+#  host: 127.0.0.1
+#  encoding: utf8mb4
+#  collation: utf8mb4_0900_as_ci
 
 production:
   <<: *default
-  database: fixinme
+  adapter: sqlite3
+  database: db/production.sqlite3
 
-# Unless you're planning on developing the application, you can skip
+# Unless you're planning on developing the application, you can skip/remove
 # configurations for development and test databases altogether.
 #development:
-#  <<: *default
+#  <<: *mysql_default
+#  adapter: mysql2
 #  database: fixinme_dev
 
-# Warning: The database defined as "test" will be erased and
+# Warning: The database(s) defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 #test:
-#  <<: *default
+#  <<: *mysql_default
+#  adapter: mysql2
 #  database: fixinme_test
+
+# Multiple test databases can be provided. When more than one test db is
+# present, every test task (test, test:models, test:system, etc.) runs against
+# all of them.
+#test:
+#  mysql2:
+#    <<: *mysql_default
+#    adapter: mysql2
+#    database: fixinme_test
+#  sqlite3:
+#    <<: *default
+#    adapter: sqlite3
+#    database: db/test.sqlite3
