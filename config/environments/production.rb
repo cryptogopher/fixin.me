@@ -80,4 +80,7 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # Protect e-mail addresses from being logged only in production.
+  config.filter_parameters += [:email]
 end
