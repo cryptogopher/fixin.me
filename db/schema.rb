@@ -71,10 +71,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_21_230456) do
   end
 
   add_foreign_key "quantities", "quantities", column: "parent_id", on_delete: :cascade
-  add_foreign_key "quantities", "users"
+  add_foreign_key "quantities", "users", on_delete: :cascade
   add_foreign_key "readouts", "quantities"
   add_foreign_key "readouts", "units"
-  add_foreign_key "readouts", "users"
+  add_foreign_key "readouts", "users", on_delete: :cascade
   add_foreign_key "units", "units", column: "base_id", on_delete: :cascade
-  add_foreign_key "units", "users"
+  add_foreign_key "units", "users", on_delete: :cascade
 end

@@ -1,7 +1,7 @@
 class CreateQuantities < ActiveRecord::Migration[7.2]
   def change
     create_table :quantities do |t|
-      t.references :user, foreign_key: true
+      t.references :user, foreign_key: {on_delete: :cascade}
       t.string :name, null: false, limit: 31
       t.text :description
       t.references :parent, foreign_key: {to_table: :quantities, on_delete: :cascade}

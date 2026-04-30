@@ -7,17 +7,21 @@
 User.transaction do
   break if User.find_by status: :admin
 
-  User.create! email: Rails.configuration.admin, password: 'admin', status: :admin do |user|
+  email = Rails.configuration.admin
+  password_length = SecureRandom.rand(Rails.configuration.devise.password_length)
+  password = SecureRandom.alphanumeric(password_length)
+
+  User.create!(email: email, password: password, status: :admin) do |user|
     user.skip_confirmation!
-    print "Creating #{user.status} account '#{user.email}' with password '#{user.password}'..."
+    print "Creating #{user.status} account '#{user.email}'" \
+      " with password '#{user.password}'..."
   end
   puts "done."
-
 rescue ActiveRecord::RecordInvalid => exception
-  puts "failed. #{exception.message}"
+  puts "failed.", exception.message
 end
 
 # Formulas will be deleted as dependent on Quantities
 #[Source, Quantity, Unit].each { |model| model.defaults.delete_all }
 
-require_relative 'seeds/units.rb'
+load "db/seeds/units.rb"
