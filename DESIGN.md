@@ -32,3 +32,14 @@ whenever a change is considered, to avoid regressions.
     * as a standard with hardware implementations ensures both: computing
       efficiency and hardware/3rd party library compatibility as opposed to Ruby
       custom `BigDecimal` type
+
+### Database layer vs application layer data model constraints
+* database constraints are the final frontier against data corruption,
+    * they should safeguard against data _consistency_ loss under _all_ data
+      (not schema) manipulation scenarios, including application level logic
+      errors and direct data manipulation,
+* application constraints can be as restrictive as database constraints or more,
+  but not less, as it doesn't serve any use case,
+    * proper application level constraints should prevent unhandled database
+      exception occurences, e.g `ActiveRecord::InvalidForeignKey` for operations
+      performed through Models (i.e. not `#delete_all` etc.)

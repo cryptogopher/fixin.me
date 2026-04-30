@@ -1,7 +1,7 @@
 class CreateReadouts < ActiveRecord::Migration[7.2]
   def change
     create_table :readouts do |t|
-      t.references :user, null: false, foreign_key: true
+      t.references :user, null: false, foreign_key: {on_delete: :cascade}
       t.references :quantity, null: false, foreign_key: true
       # :category + :value + :unit as a separate table? (NumericValue, TextValue)
       t.integer :category, null: false, default: 0

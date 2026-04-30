@@ -1,7 +1,7 @@
 class CreateUnits < ActiveRecord::Migration[7.0]
   def change
     create_table :units do |t|
-      t.references :user, foreign_key: true
+      t.references :user, foreign_key: {on_delete: :cascade}
       t.string :symbol, null: false, limit: 15
       t.text :description
       t.decimal :multiplier, null: false, precision: 30, scale: 15, default: 1.0
