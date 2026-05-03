@@ -208,9 +208,7 @@ module ApplicationHelper
 
   def image_link_to_unless_current(name, image = nil, options = nil, html_options = {})
     name, html_options = link_or_button_options(:link, name, image, html_options)
-    # NOTE: Starting from Rails 8.1.0, below condition can be replaced with:
-    #   current_page?(options, method: [:get, :post])
-    if request.path == url_for(options)
+    if current_page?(options, method: [:get, :post])
       html_options = html_options.deep_merge DISABLED_ATTRIBUTES
     end
     link_to name, options, html_options
