@@ -1,7 +1,11 @@
 source "https://rubygems.org"
 
 # The requirement for the Ruby version comes from Rails
-gem "rails", "~> 8.0.5"
+# NOTE: after updating Rails make sure that schema dump is not sorted:
+#   v8.1.3/activerecord/lib/active_record/schema_dumper.rb#L195
+# Waiting for this change to be reverted/configuration setting added:
+# https://github.com/rails/rails/pull/56842, https://github.com/rails/rails/pull/55414
+gem "rails", "~> 8.1.3"
 gem "sprockets-rails"
 gem "puma", "~> 6.0"
 gem "sassc-rails"
