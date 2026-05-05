@@ -1,4 +1,4 @@
-class CreateReadouts < ActiveRecord::Migration[7.2]
+class CreateReadouts < ActiveRecord::Migration[8.1]
   def change
     create_table :readouts do |t|
       t.references :user, null: false, foreign_key: {on_delete: :cascade}
@@ -10,8 +10,7 @@ class CreateReadouts < ActiveRecord::Migration[7.2]
       #t.references :collector, foreign_key: true
       #t.references :device, foreign_key: true
 
-      t.timestamps null: false
+      t.timestamps
     end
-    add_index :readouts, [:quantity_id, :created_at], unique: true
   end
 end
