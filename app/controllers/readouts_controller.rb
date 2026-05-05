@@ -6,7 +6,7 @@ class ReadoutsController < ApplicationController
   def new
     @quantities -= @prev_quantities
     # TODO: raise ParameterInvalid if new_quantities.empty?
-    @readouts = current_user.readouts.build(@quantities.map { |q| {quantity: q} })
+    @readouts = @quantities.map { |q| q.readouts.build }
 
     @user_units = current_user.units.ordered
 

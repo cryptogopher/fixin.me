@@ -6,6 +6,7 @@ class Quantity < ApplicationRecord
   belongs_to :parent, optional: true, class_name: "Quantity"
   has_many :subquantities, ->{ order(:name) }, class_name: "Quantity",
     inverse_of: :parent, dependent: :restrict_with_error
+  has_many :readouts, dependent: :restrict_with_error
 
   validate if: ->{ parent.present? } do
     errors.add(:parent, :user_mismatch) unless user_id == parent.user_id

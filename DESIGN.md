@@ -34,10 +34,10 @@ whenever a change is considered, to avoid regressions.
       custom `BigDecimal` type
 
 ### Database layer vs application layer data model constraints
-* database constraints are the final frontier against data corruption,
-    * they should safeguard against data _consistency_ loss under _all_ data
-      (not schema) manipulation scenarios, including application level logic
-      errors and direct data manipulation,
+* database constraints are the final guard against data integrity corruption,
+    * they should safeguard against data referential integrity loss under _all_
+      data (not schema) manipulation scenarios, including application level
+      logic errors and direct data manipulation (e.g. through `dbconsole`),
 * application constraints can be as restrictive as database constraints or more,
   but not less, as it doesn't serve any use case,
     * proper application level constraints should prevent unhandled database

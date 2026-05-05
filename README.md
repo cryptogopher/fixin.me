@@ -144,6 +144,10 @@ below shows how to grant privileges to all databases which names start with
     mysql> grant all privileges on `fixinme-%`.* to `fixinme-dev`@localhost;
     mysql> flush privileges;
 
+Dumping development data before database reset:
+
+    mysqldump -h <address> -u <user> -p --no-create-info --no-tablespaces --complete-insert <database> > tmp/data.sql
+
 ### Development environment
 
 Starting application server in development environment:

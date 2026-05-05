@@ -13,5 +13,6 @@ class CreateQuantities < ActiveRecord::Migration[8.1]
       t.string :pathname, null: false, limit: 511
     end
     add_index :quantities, [:user_id, :parent_id, :name]
+    add_index :quantities, [:id, :user_id]
   end
 end
