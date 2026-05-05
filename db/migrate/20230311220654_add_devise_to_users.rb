@@ -1,4 +1,4 @@
-class AddDeviseToUsers < ActiveRecord::Migration[7.0]
+class AddDeviseToUsers < ActiveRecord::Migration[8.1]
   def change
     change_table :users do |t|
       ## NOTE: commented fields left for reference/inclusion in future migrations
@@ -34,8 +34,8 @@ class AddDeviseToUsers < ActiveRecord::Migration[7.0]
       # t.integer :failed_attempts, default: 0, null: false 
     end
 
-    add_index :users, :reset_password_token, unique: true
-    add_index :users, :confirmation_token, unique: true
+    add_index :users, :reset_password_token
+    add_index :users, :confirmation_token
     # add_index :users, :unlock_token, unique: true
   end
 end

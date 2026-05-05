@@ -1,4 +1,4 @@
-class CreateUnits < ActiveRecord::Migration[7.0]
+class CreateUnits < ActiveRecord::Migration[8.1]
   def change
     create_table :units do |t|
       t.references :user, foreign_key: {on_delete: :cascade}
@@ -7,8 +7,8 @@ class CreateUnits < ActiveRecord::Migration[7.0]
       t.decimal :multiplier, null: false, precision: 30, scale: 15, default: 1.0
       t.references :base, foreign_key: {to_table: :units, on_delete: :cascade}
 
-      t.timestamps null: false
+      t.timestamps
     end
-    add_index :units, [:user_id, :symbol], unique: true
+    add_index :units, [:user_id, :symbol]
   end
 end
