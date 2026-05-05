@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_21_230456) do
+ActiveRecord::Schema[8.1].define(version: 2025_01_21_230456) do
+  create_table "measurements", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
+    t.datetime "taken_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["taken_at"], name: "index_measurements_on_taken_at", unique: true
+  end
+
   create_table "quantities", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "name", limit: 31, null: false
@@ -20,6 +27,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_21_230456) do
     t.datetime "updated_at", null: false
     t.integer "depth", default: 0, null: false
     t.string "pathname", limit: 511, null: false
+    t.index ["id", "user_id"], name: "index_quantities_on_id_and_user_id", unique: true
     t.index ["parent_id"], name: "index_quantities_on_parent_id"
     t.index ["user_id", "parent_id", "name"], name: "index_quantities_on_user_id_and_parent_id_and_name", unique: true
     t.index ["user_id"], name: "index_quantities_on_user_id"
@@ -27,14 +35,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_21_230456) do
 
   create_table "readouts", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
+    t.bigint "measurement_id"
     t.bigint "quantity_id", null: false
     t.integer "category", default: 0, null: false
     t.float "value", limit: 53, null: false
-    t.bigint "unit_id"
+    t.bigint "unit_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["quantity_id", "created_at"], name: "index_readouts_on_quantity_id_and_created_at", unique: true
+    t.index ["measurement_id", "quantity_id", "category"], name: "index_readouts_on_measurement_id_and_quantity_id_and_category", unique: true
+    t.index ["measurement_id"], name: "index_readouts_on_measurement_id"
+    t.index ["quantity_id", "user_id"], name: "fk_rails_9d92eaafc6"
     t.index ["quantity_id"], name: "index_readouts_on_quantity_id"
+    t.index ["unit_id", "user_id"], name: "fk_rails_348b0fb4c5"
     t.index ["unit_id"], name: "index_readouts_on_unit_id"
     t.index ["user_id"], name: "index_readouts_on_user_id"
   end
@@ -48,6 +60,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_21_230456) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["base_id"], name: "index_units_on_base_id"
+    t.index ["id", "user_id"], name: "index_units_on_id_and_user_id", unique: true
     t.index ["user_id", "symbol"], name: "index_units_on_user_id_and_symbol", unique: true
     t.index ["user_id"], name: "index_units_on_user_id"
   end
@@ -72,8 +85,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_21_230456) do
 
   add_foreign_key "quantities", "quantities", column: "parent_id", on_delete: :cascade
   add_foreign_key "quantities", "users", on_delete: :cascade
-  add_foreign_key "readouts", "quantities"
-  add_foreign_key "readouts", "units"
+  add_foreign_key "readouts", "measurements", on_delete: :cascade
+  add_foreign_key "readouts", "quantities", column: ["quantity_id", "user_id"], primary_key: ["id", "user_id"]
+  add_foreign_key "readouts", "quantities", on_delete: :cascade
+  add_foreign_key "readouts", "units", column: ["unit_id", "user_id"], primary_key: ["id", "user_id"]
+  add_foreign_key "readouts", "units", on_delete: :cascade
   add_foreign_key "readouts", "users", on_delete: :cascade
   add_foreign_key "units", "units", column: "base_id", on_delete: :cascade
   add_foreign_key "units", "users", on_delete: :cascade

@@ -10,5 +10,6 @@ class CreateUnits < ActiveRecord::Migration[8.1]
       t.timestamps
     end
     add_index :units, [:user_id, :symbol]
+    add_index :units, [:id, :user_id]
   end
 end
