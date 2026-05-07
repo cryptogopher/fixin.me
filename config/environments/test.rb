@@ -32,7 +32,8 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :test
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: 'localhost', protocol: 'http' }
+  config.action_mailer.default_url_options = {host: Capybara.server_host,
+                                              protocol: 'http'}
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
@@ -45,6 +46,9 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Allow Capybara application server IP
+  config.hosts |= [IPAddr.new(Capybara.server_host)]
 
   config.log_level = :info
 end
