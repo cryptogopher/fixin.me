@@ -1,10 +1,16 @@
 class CreateReadouts < ActiveRecord::Migration[8.1]
   def change
+    create_table :notes do |t|
+      t.text :text, null: false
+
+      t.timestamps
+    end
+
     create_table :measurements do |t|
       t.datetime :taken_at, null: false
       #t.references :collector, foreign_key: true
       #t.references :device, foreign_key: true
-      #t.references :note, foreign_key: true
+      t.references :note, foreign_key: {on_delete: :nullify}
 
       t.timestamps
     end
