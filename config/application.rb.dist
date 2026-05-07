@@ -47,13 +47,13 @@ module FixinMe
     # SETUP: Below settings need to be updated on a per-installation basis.
     #
     # Set host to be used by links generated in mailer templates.
-    config.action_mailer.default_url_options = {host: 'localhost', :protocol => 'https'}
+    config.action_mailer.default_url_options = {host: 'localhost', protocol: 'https'}
     # https://guides.rubyonrails.org/configuring.html#config-action-mailer-delivery-method
     config.action_mailer.delivery_method = :sendmail
 
     # List of hosts this app is available at.
     # https://guides.rubyonrails.org/configuring.html#actiondispatch-hostauthorization
-    config.hosts += ['localhost', IPAddr.new('1.2.3.4/32'), 'example.com']
+    config.hosts |= ['localhost']
 
     # Email address of admin account
     config.admin = 'admin@localhost'
