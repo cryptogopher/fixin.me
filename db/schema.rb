@@ -13,9 +13,17 @@
 ActiveRecord::Schema[8.1].define(version: 2025_01_21_230456) do
   create_table "measurements", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
     t.datetime "taken_at", null: false
+    t.bigint "note_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["note_id"], name: "index_measurements_on_note_id"
     t.index ["taken_at"], name: "index_measurements_on_taken_at", unique: true
+  end
+
+  create_table "notes", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
+    t.text "text", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "quantities", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
@@ -83,6 +91,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_01_21_230456) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "measurements", "notes", on_delete: :nullify
   add_foreign_key "quantities", "quantities", column: "parent_id", on_delete: :cascade
   add_foreign_key "quantities", "users", on_delete: :cascade
   add_foreign_key "readouts", "measurements", on_delete: :cascade
