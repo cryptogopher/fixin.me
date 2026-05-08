@@ -35,6 +35,67 @@ class ActiveSupport::TestCase
     result
   end
 
+  # Range based string generation. Not finished, but saved as a potential
+  # reference for future work. To work properly it needs to sort in collation
+  # order of database.
+  #def random_between(from, to, maxlength)
+  #  # TODO: sort UNICODE_CHARS
+  #  byebug
+  #  result = ''
+  #  maxlength.times do |i|
+  #    case
+  #    when from[i] == to[i]
+  #      result += from[i]
+  #    else
+  #      from_index = UNICODE_CHARS.bsearch_index(from[i] || UNICODE_CHARS[0])
+  #      to_index = UNICODE_CHARS.bsearch_index(to[i])
+  #      index = rand(from_index..to_index)
+  #      case
+  #      when index == from_index
+  #        result += UNICODE_CHARS[index]
+  #        from[i+1..].each_char do |c|
+  #          from_index = UNICODE_CHARS.bsearch_index(from[i])
+  #          index = rand(from_index..UNICODE_CHARS.length-1)
+  #          result += UNICODE_CHARS[index]
+  #          break if index != from_index
+  #        end
+  #        if result == from
+  #          if result.length < maxlength
+  #            result += UNICODE_CHARS.sample
+  #          else
+  #            # TODO: succ result[i..]
+  #            # raise if result == to
+  #          end
+  #        end
+  #        break
+  #      when index == to_index
+  #        result += UNICODE_CHARS[index]
+  #        to[i+1..].each_char do |c|
+  #          to_index = UNICODE_CHARS.bsearch_index(to[i])
+  #          index = rand(-1..to_index)
+  #          break if index == -1
+  #          result += UNICODE_CHARS[index]
+  #          break if index != to_index
+  #        end
+  #        if result == to
+  #          if result.length > i+1
+  #            result = result[..-2]
+  #          else
+  #            # TODO: prev result[i..]
+  #            # raise if result == from
+  #          end
+  #        end
+  #        break
+  #      else
+  #        result += UNICODE_CHARS[index]
+  #        break
+  #      end
+  #    end
+  #  end
+  #  return result += UNICODE_CHARS.sample(rand(0..maxlength-i-1)).join
+  #  # if result == from/to ...
+  #end
+
   def deep_rand(*args)
     case args
     when Array
