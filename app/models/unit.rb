@@ -77,15 +77,13 @@ class Unit < ApplicationRecord
       .from(units).group(:base_id, :symbol)
   }
   scope :ordered, ->{
-    left_outer_joins(:base).order(ordering)
+    left_outer_joins(:base).order([
+      arel_table.coalesce(Arel::Table.new(:bases_units)[:symbol], arel_table[:symbol]),
+      arel_table[:base_id].not_eq(nil),
+      arel_table[:multiplier],
+      arel_table[:symbol]
+    ])
   }
-
-  def self.ordering
-    [arel_table.coalesce(Arel::Table.new(:bases_units)[:symbol], arel_table[:symbol]),
-     arel_table[:base_id].not_eq(nil),
-     :multiplier,
-     :symbol]
-  end
 
   before_destroy do
     # TODO: disallow destruction if any object depends on this unit
@@ -114,11 +112,11 @@ class Unit < ApplicationRecord
 
   def successive
     units = Unit.arel_table
-    lead = Arel::Nodes::NamedFunction.new('LAG', [units[:id]])
-    window = Arel::Nodes::Window.new.order(*Unit.ordering)
-    lag_id = lead.over(window).as('lag_id')
-    Unit.with(
-      units: user.units.left_outer_joins(:base).select(units[Arel.star], lag_id)
-    ).where(units[:lag_id].eq(id)).first
+    Unit.with(units_with_lag: user.units.left_outer_joins(:base).select(
+      units[Arel.star],
+      Arel::Nodes::NamedFunction.new('LAG', [units[:id]])
+        .over(Arel::Nodes::Window.new.order(Unit.ordered.order_values)).as('lag_id')
+    )).from(Arel::Table.new(:units_with_lag).as(:units))
+      .where(units[:lag_id].eq(id)).take
   end
 end

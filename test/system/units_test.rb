@@ -74,6 +74,30 @@ class UnitsTest < ApplicationSystemTestCase
     assert_equal values, Unit.last.attributes.slice(*values.keys)
   end
 
+  test "create updates view in order" do
+    # Destroy and re-create unit to verify its index position is unchanged.
+    sign_in(user: users.select { |u| u.confirmed? && u.units.many? }.sample)
+
+    link = all(:link_or_button, exact_text: t('units.unit.destroy')).sample
+    symbol = link.ancestor('tr').first(:link).text
+    index = link.ancestor('tbody').all('tr').index { |e| e.first(:link).text == symbol }
+    unit = @user.units.find_by(symbol: symbol)
+
+    link.click
+    if unit.base_id?
+      find_link(unit.base.symbol).ancestor('tr').click_on(t('units.unit.new_subunit'))
+      fill_in 'unit[multiplier]', with: unit.multiplier
+    else
+      click_on t('units.index.new_unit')
+    end
+    fill_in 'unit[symbol]', with: unit.symbol
+    click_on t('helpers.submit.create')
+
+    within "tbody > tr:nth-child(#{index+1})" do
+      assert_selector :link, exact_text: symbol
+    end
+  end
+
   test "new and edit on validation error" do
     # It's not possible to cause validation error on :edit with single unit
     LINK_LABELS.delete(:edit) unless @user.units.count > 1
