@@ -44,10 +44,12 @@ class UnitsTest < ApplicationSystemTestCase
     within 'tbody > tr:has(input[type=text], textarea)' do
       assert_selector ':focus'
 
-      maxlength = all(:fillable_field).to_h { |f| [f[:name], f[:maxlength].to_i || 2**16] }
+      maxlength = all(:fillable_field).to_h do |field|
+        [field[:name], field[:maxlength].to_i || 2**16]
+      end
       values = {
-        symbol: random_string(rand([1..3, 4..maxlength['unit[symbol]']].sample),
-                              except: units.map(&:symbol)),
+        symbol: random_string(deep_rand(1..3, 4..maxlength['unit[symbol]']),
+                              except: units.map(&:symbol), allow_blank: false),
         description: random_string(rand(0..maxlength['unit[description]']))
       }.with_indifferent_access
       within :field, 'unit[multiplier]' do |field|
@@ -61,7 +63,8 @@ class UnitsTest < ApplicationSystemTestCase
       end
     end
 
-    assert_selector '.flash.notice', text: t('units.create.success', unit: Unit.last.symbol)
+    assert_selector '.flash.notice',
+      text: t('units.create.success', unit: Unit.last.symbol)
     within 'tbody' do
       assert_no_selector :fillable_field
       assert_selector 'tr', count: @user.units.count

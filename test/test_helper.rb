@@ -13,25 +13,34 @@ class ActiveSupport::TestCase
   include ActionView::Helpers::TranslationHelper
 
   # List of categorized Unicode characters:
-  # * http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
-  # File format: http://www.unicode.org/L2/L1999/UnicodeData.html
-  # Select from graphic ranges: L, M, N, P, S, Zs
-  UNICODE_CHARS = {
-    1 => [*"\u0020".."\u007E"],
-    2 => [*"\u00A0".."\u00AC",
-          *"\u00AE".."\u05FF",
-          *"\u0606".."\u061B",
-          *"\u061D".."\u06DC",
-          *"\u06DE".."\u070E",
-          *"\u0710".."\u07FF"]
-  }
-  UNICODE_CHARS.default = UNICODE_CHARS[1] + UNICODE_CHARS[2]
-  def random_string(bytes = 10, except: [])
+  #   * source: http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
+  #   * file format: http://www.unicode.org/L2/L1999/UnicodeData.html
+  #   * select from graphic ranges: L, M, N, P, S, Zs
+  UNICODE_CHARS = [
+    *"\u0020".."\u007E",
+    *"\u00A0".."\u00AC",
+    *"\u00AE".."\u05FF",
+    *"\u0606".."\u061B",
+    *"\u061D".."\u06DC",
+    *"\u06DE".."\u070E",
+    *"\u0710".."\u07FF"
+  ]
+  def random_string(length, except: [], allow_blank: true)
     begin
-      result = ''
-      result += UNICODE_CHARS[bytes - result.bytesize].sample while bytes > result.bytesize
-    end while except.include?(result)
+      result = UNICODE_CHARS.sample(length).join
+    end while except.include?(result) || (!allow_blank && result.blank?)
     result
+  end
+
+  def deep_rand(*args)
+    case args
+    when Array
+      args = args.sample
+    when Range
+      args = rand(args)
+    else
+      return args
+    end while true
   end
 
   # Assumes: max >= step and step = 1e[-]N, both as strings
