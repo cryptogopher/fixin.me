@@ -17,11 +17,13 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     options.add_preference('browser.download.dir', "#{Rails.root}/tmp/")
   end
 
-  def sign_in(user: users.select(&:confirmed?).sample, password: randomize_user_password!(user))
+  def sign_in(user: users.select(&:confirmed?).sample,
+              password: randomize_user_password!(user))
     visit new_user_session_url
     fill_in User.human_attribute_name(:email), with: user.email
     fill_in User.human_attribute_name(:password), with: password
     click_on t(:sign_in)
+    yield if block_given?
     user
   end
 
