@@ -1,5 +1,6 @@
 require "application_system_test_case"
 
+# TODO: review #visit usage and replace with #click_on where applicable
 class UsersTest < ApplicationSystemTestCase
   setup do
     @admin = users(:admin)
