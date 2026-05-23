@@ -1,5 +1,6 @@
 require 'core_ext/array_delete_bang'
-require 'core_ext/big_decimal_scientific_notation'
+require 'core_ext/float'
+require 'core_ext/range'
 
 ActiveSupport.on_load :action_dispatch_system_test_case do
   prepend CoreExt::ActionDispatch::SystemTesting::TestHelpers::ScreenshotHelperUniqueId
@@ -10,9 +11,6 @@ ActiveSupport.on_load :action_view do
 end
 
 ActiveSupport.on_load :active_record do
-  ActiveModel::Validations::NumericalityValidator
-    .prepend CoreExt::ActiveModel::Validations::NumericalityValidatesPrecisionAndScale
-
   # Temporary patch for https://github.com/rails/rails/pull/54658
   Arel::TreeManager::StatementMethods
     .prepend CoreExt::Arel::TreeManager::StatementMethodsCteUpdateAndDelete

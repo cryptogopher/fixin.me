@@ -4,10 +4,6 @@ en:
       # Format contains non-breaking space: 160.chr(Encoding::UTF_8)
       default: "%Y-%m-%d %H:%M %Z"
       without_tz: "%Y-%m-%d %H:%M"
-  errors:
-    messages:
-      precision_exceeded: must not exceed %{value} significant digits
-      scale_exceeded: must not exceed %{value} decimal digits
   activerecord:
     attributes:
       quantity:

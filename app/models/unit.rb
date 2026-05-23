@@ -1,5 +1,5 @@
 class Unit < ApplicationRecord
-  ATTRIBUTES = [:symbol, :description, :multiplier, :base_id]
+  ATTRIBUTES = {unit: [:symbol, :description, :multiplier, :base_id]}
 
   belongs_to :user, optional: true
   belongs_to :base, optional: true, class_name: "Unit"
@@ -14,8 +14,8 @@ class Unit < ApplicationRecord
   validates :symbol, presence: true, uniqueness: {scope: :user_id},
     length: {maximum: type_for_attribute(:symbol).limit}
   validates :description, length: {maximum: type_for_attribute(:description).limit}
-  validates :multiplier, numericality: {equal_to: 1}, unless: :base
-  validates :multiplier, numericality: {greater_than: 0, precision: true, scale: true}, if: :base
+  validates :multiplier, numericality: {equal_to: 1.0}, unless: :base
+  validates :multiplier, numericality: {greater_than: 0.0}, if: :base
 
   scope :defaults, ->{ where(user: nil) }
   scope :defaults_diff, ->{
@@ -102,10 +102,10 @@ class Unit < ApplicationRecord
     user_id.nil?
   end
 
-  # Should only by invoked on Units returned from #defaults_diff which are #portable
+  # Should only by invoked on Units returned from #defaults_diff which are #portable.
   def port!(recipient)
     recipient_base = base && Unit.find_by!(symbol: base.symbol, user: recipient)
-    params = slice(ATTRIBUTES - [:symbol, :base_id])
+    params = slice(ATTRIBUTES[:unit] - [:symbol, :base_id])
     Unit.find_or_initialize_by(user: recipient, symbol: symbol)
       .update!(base: recipient_base, **params)
   end
