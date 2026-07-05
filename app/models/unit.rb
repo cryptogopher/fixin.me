@@ -91,7 +91,7 @@ class Unit < ApplicationRecord
   end
 
   def to_s
-    symbol
+    tag.pre symbol
   end
 
   def movable?

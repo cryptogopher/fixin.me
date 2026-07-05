@@ -1,4 +1,6 @@
 class ApplicationRecord < ActiveRecord::Base
+  include ActionView::Helpers::TagHelper
+
   class << self
     # Cached attribute has non-user assignable value calculated from other
     # attributes' values on create/update. This simplifies and speeds up
