@@ -199,6 +199,10 @@ textarea:invalid {
   border-color: var(--color-red);
   outline-color: var(--color-red);
 }
+pre {
+  display: inline;
+  font: inherit;
+}
 
 /* `.button`: button-styled <a>, <button>, <input type=submit>.
  * `.link`: any other <a>.

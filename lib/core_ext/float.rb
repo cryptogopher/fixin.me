@@ -20,7 +20,7 @@ class Float
       result += "&times;" if significand != '1'
       result += "10<sup>% d</sup>" % exponent
     end
-    result.html_safe
+    "<pre>#{result}</pre>".html_safe
   end
 
   # Assume #finite? is true.

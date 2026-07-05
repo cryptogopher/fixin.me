@@ -4,7 +4,7 @@
       <th><%= User.human_attribute_name(:email) %></th>
       <th><%= User.human_attribute_name(:status) %></th>
       <th><%= User.human_attribute_name(:confirmed_at) %></th>
-      <th><%= User.human_attribute_name(:created_at) %>&nbsp;<sup>(UTC)</sup></th>
+      <th><pre><%= User.human_attribute_name(:created_at) %> <sup>(UTC)</sup></pre></th>
       <th><%= t :actions %></th>
     </tr>
   </thead>
@@ -23,7 +23,7 @@
           <% end %>
         </td>
         <td><%= svg_tag 'checkbox-marked-outline' if user.confirmed_at.present? %></td>
-        <td><%= l user.created_at, format: :without_tz %></td>
+        <td><pre><%= l user.created_at, format: :without_tz %></pre></td>
         <td class="flex">
           <% if allow_disguise?(user) %>
             <%= image_link_to t('.disguise'), 'incognito', disguise_user_path(user) %>

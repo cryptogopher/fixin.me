@@ -98,7 +98,7 @@ class Quantity < ApplicationRecord
   }
 
   def to_s
-    name
+    tag.pre name
   end
 
   def to_s_with_depth
