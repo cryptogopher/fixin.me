@@ -365,14 +365,14 @@ header {
   width: 1.4em;
 }
 .flash.alert::before {
-  content: url('pictograms/alert-outline.svg');
+  content: url('alert-outline.svg');
 }
 .flash.alert {
   border-color: var(--color-red);
   background-color: var(--color-red);
 }
 .flash.notice::before {
-  content: url('pictograms/check-circle-outline.svg');
+  content: url('check-circle-outline.svg');
 }
 .flash.notice {
   border-color: var(--color-blue);
@@ -579,7 +579,7 @@ summary::before {
   background-color: currentColor;
   content: "";
   height: 1em;
-  mask-image: url('pictograms/chevron-down.svg');
+  mask-image: url('chevron-down.svg');
   mask-size: cover;
   width: 1em;
 }

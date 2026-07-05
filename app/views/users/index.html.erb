@@ -22,9 +22,7 @@
             <% end %>
           <% end %>
         </td>
-        <td>
-          <%= svg_tag 'pictograms/checkbox-marked-outline' if user.confirmed_at.present? %>
-        </td>
+        <td><%= svg_tag 'checkbox-marked-outline' if user.confirmed_at.present? %></td>
         <td><%= l user.created_at, format: :without_tz %></td>
         <td class="flex">
           <% if allow_disguise?(user) %>

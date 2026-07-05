@@ -1,6 +1,5 @@
 <% content_for :navigation, flush: true do %>
-  <%= link_to svg_tag('pictograms/arrow-left-bold-outline', t(:back)), users_path,
-    class: 'tab' %>
+  <%= link_to svg_tag('arrow-left-bold-outline', t(:back)), users_path, class: 'tab' %>
 <% end %>
 
 <%= labeled_form_for @user, html: {class: 'main-area'} do |f| %>

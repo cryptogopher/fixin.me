@@ -135,7 +135,7 @@ module ApplicationHelper
 
     def submit_default_value
       svg_name = object ? (object.persisted? ? 'update' : 'plus-circle-outline') : ''
-      @template.svg_tag("pictograms/#{svg_name}", super)
+      @template.svg_tag(svg_name, super)
     end
 
     def except_pattern(value, pattern = nil)
@@ -164,7 +164,7 @@ module ApplicationHelper
   def svg_tag(source, label = nil, options = {})
     label, options = nil, label if label.is_a? Hash
     svg_tag = tag.svg(**options) do
-      tag.use(href: "#{image_path(source + ".svg")}#icon")
+      tag.use(href: image_path("#{source}.svg") + '#icon')
     end
     label.blank? ? svg_tag : svg_tag + tag.span(label)
   end
@@ -180,7 +180,7 @@ module ApplicationHelper
 
     menu_tabs.map do |name, image, status, css_class|
       if current_user.at_least(status)
-        link_to svg_tag("pictograms/#{image}", t("#{name}.navigation")),
+        link_to svg_tag(image, t("#{name}.navigation")),
           {controller: "/#{name}", action: "index"},
           class: class_names('tab', css_class, active: name == current_tab)
       end
@@ -231,7 +231,7 @@ module ApplicationHelper
       Array(messages).map do |message|
         tag.div class: "flash #{entry}" do
           tag.span(sanitize(message)) +
-            svg_tag('pictograms/close-outline', {onclick: "this.parentElement.remove()"})
+            svg_tag('close-outline', {onclick: "this.parentElement.remove()"})
         end
       end
     end.join.html_safe
@@ -263,7 +263,7 @@ module ApplicationHelper
     link_is_local = html_options[:onclick] || html_options.dig(:data, :turbo_stream)
     name = name.to_s
     name += '...' if type == :link && !link_is_local
-    name = svg_tag("pictograms/#{image}", name) if image
+    name = svg_tag(image, name) if image
 
     [name, html_options]
   end
