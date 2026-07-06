@@ -50,21 +50,30 @@ function formValidate(event) {
 window.formValidate = formValidate
 
 
-/* Turbo stream actions */
+// Turbo stream actions.
+const FORM_CONTROLS = ["BUTTON", "FIELDSET", "INPUT", "OPTGROUP", "OPTION", "SELECT",
+                       "TEXTAREA"]
 Turbo.StreamElement.prototype.disableElement = function(element) {
+  if (FORM_CONTROLS.includes(element.tagName)) {
     element.setAttribute("disabled", "disabled")
+  } else {
     element.setAttribute("aria-disabled", "true")
+    // NOTE: tabindex should not be disabled?
     element.setAttribute("tabindex", "-1")
+  }
 }
 Turbo.StreamActions.disable = function() {
   this.targetElements.forEach((e) => { this.disableElement(e) })
 }
 
 Turbo.StreamElement.prototype.enableElement = function(element) {
+  if (FORM_CONTROLS.includes(element.tagName)) {
     element.removeAttribute("disabled")
+  } else {
     element.removeAttribute("aria-disabled")
-    // Assume 'tabindex' is not used explicitly, so removing it is safe
+    // Assume 'tabindex' is not used explicitly, so removing it is safe.
     element.removeAttribute("tabindex")
+  }
 }
 Turbo.StreamActions.enable = function() {
   this.targetElements.forEach((e) => { this.enableElement(e) })

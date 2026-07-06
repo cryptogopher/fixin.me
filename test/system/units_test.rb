@@ -41,9 +41,10 @@ class UnitsTest < ApplicationSystemTestCase
     sign_in
     link_labels.slice!(:new_unit, :new_subunit)
     type, label = link_labels.to_a.sample
-    new_link = all(:link, exact_text: label).sample
-    new_link.click
-    assert_equal 'disabled', new_link[:disabled]
+    all(:link, exact_text: label).sample.then do |link|
+      link.click
+      link.assert_matches_selector :link, disabled: true
+    end
 
     values = nil
     within 'tbody > tr:has(input[type=text], textarea)' do
@@ -74,7 +75,7 @@ class UnitsTest < ApplicationSystemTestCase
       assert_no_selector :fillable_field
       assert_selector 'tr', count: @user.units.count
     end
-    assert_no_selector :element, :a, 'disabled': 'disabled',
+    assert_no_selector :link, disabled: true,
       exact_text: Regexp.union(link_labels.values)
     assert_equal values, Unit.last.attributes.slice(*values.keys)
   end
@@ -126,7 +127,7 @@ class UnitsTest < ApplicationSystemTestCase
     if type == :edit
       assert_no_selector :link, exact_text: link[:text]
     else
-      assert_equal 'disabled', link[:disabled]
+      link.assert_matches_selector :link, disabled: true
     end
 
     within 'tbody > tr:has(input[type=text])' do
@@ -159,7 +160,7 @@ class UnitsTest < ApplicationSystemTestCase
       refute subunit_link&.visible?
       links[:new_subunit].delete(subunit_link)
     else
-      assert link[:disabled]
+      link.assert_matches_selector :link, disabled: true
     end
 
     type, link = random_link[]
