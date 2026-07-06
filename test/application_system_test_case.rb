@@ -1,7 +1,6 @@
 require "test_helper"
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-  include ActionView::Helpers::SanitizeHelper
   include ActionView::Helpers::UrlHelper
 
   # NOTE: geckodriver installed with Firefox, ignore incompatibility warning
@@ -32,14 +31,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     inside.evaluate_script("this.insertAdjacentHTML('beforeend', arguments[0]);",
                            button.html_safe)
   end
-
-  # Allow skipping interpolations when translating for testing purposes
-  INTERPOLATION_PATTERNS = Regexp.union(I18n.config.interpolation_patterns)
-  def translate(key, **options)
-    translation = options.empty? ? super.split(INTERPOLATION_PATTERNS, 2).first : super
-    sanitize(translation, tags: [])
-  end
-  alias :t :translate
 
   DB_CONFIGS = ActiveRecord::Base.configurations.configs_for(env_name: "test")
   TEST_CONFIGS = Hash.new(DB_CONFIGS.first.name.to_sym)
@@ -73,5 +64,43 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     end
   end
 
+  # This regex has to be only strict enough to properly reconstruct number. It
+  # is not used for format validation.
+  NUMBER = /\A(
+    (?<base>\-?\d[\d\.]*)
+    (×(?<pow>10(?<ws>\s)?(?<exp>(?(<-2>)()|(\-))[\d]+)))?
+      |
+    \g<pow>
+  )\z/x
+  # Finds table cell in current row corresponding to column name given in locator.
+  # Based on Capybara :table and :table_row selectors.
+  Capybara.add_selector(:table_cell, locator_type: [String, Symbol]) do
+    xpath do |locator|
+      column = XPath.string.n.is(locator.to_s)
+      header_xp = XPath.ancestor(:table)[1].descendant(:tr)[1].descendant(:th)[column]
+      position_xp = XPath.position.equals(header_xp.preceding_sibling.count.plus(1))
+      XPath.descendant(:td).where(header_xp.boolean & position_xp)
+    end
 
+    node_filter(:with_value) do |node, expected|
+      value =
+        case expected
+        when Float
+          node.text.match(NUMBER) { |m| "#{m['base'] || '1'}e#{m['exp']&.lstrip}".to_f }
+        else
+          node.text
+        end
+      (expected == value).tap do |result|
+        add_error("Expected value to be #{expected.inspect}" \
+                  " but was #{value.inspect}") unless result
+      end
+    end
+  end
+
+  Capybara.modify_selector(:table_row) do
+    # Beware: filters of #boolean? type are called within different context.
+    node_filter(:with_focus, :boolean) do |node, value|
+      node.has_selector?(':focus') == value
+    end
+  end
 end

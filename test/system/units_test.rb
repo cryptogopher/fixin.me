@@ -21,6 +21,10 @@ class UnitsTest < ApplicationSystemTestCase
     }
   end
 
+  def list_symbols
+    all(:table_cell, column_title(:symbol)).map(&:text)
+  end
+
   test "index" do
     sign_in
     # Wait for the table to appear first, only then check row count.
@@ -39,6 +43,8 @@ class UnitsTest < ApplicationSystemTestCase
 
   test "new and create" do
     sign_in
+    symbols = list_symbols
+
     link_labels.slice!(:new_unit, :new_subunit)
     type, label = link_labels.to_a.sample
     all(:link, exact_text: label).sample.then do |link|
@@ -46,38 +52,50 @@ class UnitsTest < ApplicationSystemTestCase
       link.assert_matches_selector :link, disabled: true
     end
 
-    values = nil
-    within 'tbody > tr:has(input[type=text], textarea)' do
-      assert_selector ':focus'
-
-      maxlength = all(:fillable_field).to_h do |field|
-        [field[:name], field[:maxlength].to_i || 2**16]
+    attributes = [:symbol, :description]
+    attributes << :multiplier if type == :new_subunit
+    within :table_row, {}, with_focus: true do
+      attributes.map! do |name|
+        field = within(:table_cell, column_title(name)) { find(:fillable_field) }
+        value = case name
+                when :symbol
+                  random_string(1..3, 4..field[:maxlength].to_i,
+                                allow_blank: false, except: symbols)
+                when :description
+                  random_string(0, 1..field[:maxlength].to_i)
+                when :multiplier
+                  if rand < 0.5
+                    random_float(min: field[:min].to_f, max: field[:max].to_f)
+                  else
+                    10.0**rand(-15..15)
+                  end
+                end
+        field.fill_in with: value
+        [name, value]
       end
-      values = {
-        symbol: random_string(deep_rand(1..3, 4..maxlength['unit[symbol]']),
-                              except: @user.units.map(&:symbol), allow_blank: false),
-        description: random_string(rand(0..maxlength['unit[description]']))
-      }.with_indifferent_access
-      within :field, 'unit[multiplier]' do |field|
-        values[:multiplier] = random_number(field[:max], field[:step])
-      end if type == :new_subunit
 
-      values.each_pair { |name, value| fill_in "unit[#{name}]", with: value }
-
-      assert_difference ->{ Unit.count }, 1 do
-        click_on t('helpers.submit.create')
-      end
+      click_on t('helpers.submit.create')
     end
+    attributes = attributes.to_h
 
-    assert_selector '.flash.notice',
-      text: t('units.create.success', unit: Unit.last.symbol)
-    within 'tbody' do
+    assert_selector '.flash.notice', exact_text: t('units.create.success',
+                                                   unit: attributes[:symbol])
+    new_symbols = list_symbols
+
+    within :table do
       assert_no_selector :fillable_field
-      assert_selector 'tr', count: @user.units.count
+      assert_equal symbols.length + 1, new_symbols.length
+
+      m = attributes.delete(:multiplier).to_f if type == :new_subunit
+      within :table_row, attributes.transform_keys { |k| column_title(k) } do
+        assert_selector :table_cell, column_title(:multiplier), with_value: m if m
+      end
     end
     assert_no_selector :link, disabled: true,
       exact_text: Regexp.union(link_labels.values)
-    assert_equal values, Unit.last.attributes.slice(*values.keys)
+
+    refresh
+    assert_equal new_symbols, list_symbols
   end
 
   test "create updates view in order" do
