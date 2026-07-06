@@ -67,21 +67,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     ActiveRecord::Base.establish_connection(TEST_CONFIGS[name.to_sym])
   end
 
-  #def assert_stale(element)
-  #  assert_raises(Selenium::WebDriver::Error::StaleElementReferenceError) { element.tag_name }
-  #end
+  Capybara.modify_selector(:link) do
+    expression_filter(:disabled) do |xpath, value|
+      builder(xpath).add_attribute_conditions('aria-disabled': value)
+    end
+  end
 
-  # HTML does not allow [disabled] attribute on <a> tag, so it's not possible to
-  # easily find them using e.g. :link selector
-  #Capybara.add_selector(:disabled_link) do
-  #  label "<a> tag with [disabled] attribute"
-  #end
 
-  #test "click disabled link" do
-    # Link should be unclickable
-    # assert_raises(Selenium::WebDriver::Error::ElementClickInterceptedError) do
-    #   # Use custom selector for disabled links
-    #   find('a[disabled]').click
-    # end
-  #end
 end

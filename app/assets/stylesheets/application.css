@@ -57,6 +57,11 @@
 }
 /* NOTE: move to higher priority layer instead of using !important?; add CSS
  * @layer requirements in README */
+/* Disable elements with:
+ *  `[aria-disabled=true]` - non-form elements (e.g. links),
+ *  `[disabled]` - form controls, that may be enabled conditionally,
+ *  `[readonly]` - form controls, that stay disabled for form lifetime. */
+[aria-disabled=true],
 [disabled] {
   border-color: var(--color-border-gray) !important;
   color: var(--color-border-gray) !important;

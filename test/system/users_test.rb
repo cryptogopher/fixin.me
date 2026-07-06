@@ -8,7 +8,7 @@ class UsersTest < ApplicationSystemTestCase
 
   test 'sign in' do
     visit root_url
-    assert find_link(href: new_user_session_path)[:disabled]
+    assert_selector :link, text: t(:sign_in), disabled: true
 
     sign_in
     assert_no_current_path new_user_session_path
@@ -27,7 +27,7 @@ class UsersTest < ApplicationSystemTestCase
 
     assert_current_path new_user_session_path
     assert_text t('devise.failure.invalid', authentication_keys: label.downcase_first)
-    assert find_link(href: new_user_session_path)[:disabled]
+    assert_selector :link, text: t(:sign_in), disabled: true
     assert has_field?(label, with: email)
   end
 
@@ -89,7 +89,7 @@ class UsersTest < ApplicationSystemTestCase
   test 'register' do
     visit root_url
     click_on t(:register)
-    assert find_link(href: new_user_registration_path)[:disabled]
+    assert_selector :link, text: t(:register), disabled: true
 
     fill_in User.human_attribute_name(:email), with: random_email
     password = random_password
