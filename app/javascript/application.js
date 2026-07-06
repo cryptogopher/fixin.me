@@ -3,12 +3,14 @@
 import "@hotwired/turbo-rails"
 
 
-/* Hide page before loaded for testing purposes */
+// Show page if hidden for testing purposes.
 function showPage(event) {
   document.documentElement.style.visibility="visible"
 }
 document.addEventListener('turbo:load', showPage)
 
+
+// <details> event handlers.
 function detailsChange(event) {
   var target = event.currentTarget
   var count = target.querySelectorAll('input:checked:not([disabled])').length
@@ -24,7 +26,7 @@ function detailsChange(event) {
 }
 window.detailsChange = detailsChange
 
-/* Close open <details> when focus lost */
+// Close open <details> when focus lost.
 function detailsClose(event) {
   if (!event.relatedTarget ||
       event.relatedTarget.closest("details") != event.currentTarget) {
@@ -37,6 +39,8 @@ window.detailsObserver = new MutationObserver((mutations) => {
   mutations[0].target.dispatchEvent(new Event('change', {bubbles: true}))
 });
 
+
+// Validation of multiple-submit forms with different field requirements.
 function formValidate(event) {
   var id = event.submitter.getAttribute("data-validate")
   if (!id) return;
@@ -79,7 +83,7 @@ Turbo.StreamActions.enable = function() {
   this.targetElements.forEach((e) => { this.enableElement(e) })
 }
 
-/* TODO: change to visibility = collapse to avoid width change? */
+// TODO: change to visibility = collapse to avoid width change?
 Turbo.StreamActions.hide = function() {
   this.targetElements.forEach((e) => { e.style.display = "none" })
 }
@@ -96,7 +100,7 @@ Turbo.StreamActions.collapse = function() {
 
 Turbo.StreamActions.close_form = function() {
   this.targetElements.forEach((e) => {
-    /* Move focus if there's no focus or focus inside form being closed */
+    // Move focus if there's no focus or focus inside form being closed.
     const focused = document.activeElement
     if (!focused || (focused == document.body) || e.contains(focused)) {
       let nextForm = e.parentElement.querySelector(`#${e.id} ~ tr:has([autofocus])`)
@@ -121,6 +125,8 @@ Turbo.StreamActions.unselect = function() {
   })
 }
 
+
+// Keyboard event processing handlers.
 function formProcessKey(event) {
   switch (event.key) {
     case "Escape":
@@ -147,7 +153,7 @@ function detailsProcessKey(event) {
       var button = event.currentTarget.querySelector("button:not([disabled])")
       if (button) {
         button.click()
-        // Autofocus won't be respected unless target is blurred
+        // Autofocus won't be respected unless target is blurred.
         event.target.blur()
         event.preventDefault()
         event.stopPropagation()
@@ -157,7 +163,8 @@ function detailsProcessKey(event) {
 }
 window.detailsProcessKey = detailsProcessKey;
 
-/* Items table drag and drop support */
+
+// Items table drag and drop support.
 var lastEnterTime
 function dragStart(event) {
   lastEnterTime = event.timeStamp
@@ -167,7 +174,8 @@ function dragStart(event) {
   })
   event.dataTransfer.setData("text/plain", row.getAttribute("data-drag-path"))
   var rowRectangle = row.getBoundingClientRect()
-  event.dataTransfer.setDragImage(row, event.x - rowRectangle.left, event.y - rowRectangle.top)
+  event.dataTransfer.setDragImage(row, event.x - rowRectangle.left,
+                                  event.y - rowRectangle.top)
   event.dataTransfer.dropEffect = "move"
 }
 window.dragStart = dragStart
@@ -177,7 +185,7 @@ window.dragStart = dragStart
 *   * Enter/Leave events at the same timeStamp may not be logically ordered
 *     (e.g. E -> E -> L, not E -> L -> E),
 *   * not every Enter event has corresponding Leave event, especially during
-*     rapid pointer moves
+*     rapid pointer moves.
 * NOTE: sometimes Leave is not emitted when pointer goes fast over table
 * and outside. This should probably be fixed in browser, than patched here.
 */
@@ -197,7 +205,7 @@ window.dragOver = dragOver
 
 function dragLeave(event) {
   //console.log(event.timeStamp + " " + event.type + ": " + event.currentTarget.id)
-  // Leave has been accounted for by Enter at the same timestamp, processed earlier
+  // Leave has been accounted for by Enter at the same timestamp, processed earlier.
   if (event.timeStamp <= lastEnterTime) return
   event.currentTarget.closest("table").querySelectorAll(".dropzone").forEach((tr) => {
     tr.classList.remove("dropzone")
