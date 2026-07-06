@@ -4,6 +4,9 @@ require 'core_ext/range'
 
 ActiveSupport.on_load :action_dispatch_system_test_case do
   prepend CoreExt::ActionDispatch::SystemTesting::TestHelpers::ScreenshotHelperUniqueId
+  # Allow denormalized string comparison,
+  # https://github.com/orgs/teamcapybara/discussions/2841
+  XPath::DSL.prepend CoreExt::XPath::DSL::NormalizeSpaceDefault
 end
 
 ActiveSupport.on_load :action_view do

@@ -7,91 +7,45 @@ class ActiveSupport::TestCase
   fixtures :all
 
   include ActionMailer::TestHelper
+  include ActionView::Helpers::SanitizeHelper
   include ActionView::Helpers::TranslationHelper
 
-  # List of categorized Unicode characters:
-  #   * source: http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
-  #   * file format: http://www.unicode.org/L2/L1999/UnicodeData.html
-  #   * select from graphic ranges: L, M, N, P, S, Zs
-  UNICODE_CHARS = [
-    *"\u0020".."\u007E",
-    *"\u00A0".."\u00AC",
-    *"\u00AE".."\u05FF",
-    *"\u0606".."\u061B",
-    *"\u061D".."\u06DC",
-    *"\u06DE".."\u070E",
-    *"\u0710".."\u07FF"
-  ]
-  def random_string(length, except: [], allow_blank: true)
-    # Rails String#blank? is based on [[:space:]] character class (String::BLANK_RE).
-    # Here we use more general class including tabs, cariage returns and newlines.
-    except << /^\p{Space}+$/ unless allow_blank
+  # Allow skipping interpolations when translating for testing purposes
+  INTERPOLATION_PATTERNS = Regexp.union(I18n.config.interpolation_patterns)
+  def translate(key, **options)
+    translation = options.empty? ? super.split(INTERPOLATION_PATTERNS, 2).first : super
+    sanitize(translation, tags: [])
+  end
+  alias :t :translate
+
+  CHARACTER_SET = {exemplar: 5, index: 1, numbers: 3, auxiliary: 1,
+                   punctuation: 1/16r, symbols: 1/16r, space: 1/6r}
+  # Initialize after setting Minitest.seed to ensure reproducibility.
+  def character_set
+    @@character_set ||=
+      CHARACTER_SET.reduce([]) do |chars, (subset, factor)|
+        s = t("activesupport.characters.subsets.#{subset}").chars
+        if factor.is_a?(Rational)
+          elements = factor * chars.length
+          s *= (elements / s.length).ceil
+          chars + s.sample(elements)
+        else
+          chars + s * factor
+        end
+      end
+  end
+
+  def random_string(*length_ranges, allow_blank: true, except: [])
+    length = deep_rand(length_ranges)
+    raise ArgumentError, "Allow blanks for 0 length" if length == 0 && !allow_blank
     begin
-      result = UNICODE_CHARS.sample(length).join
+      result = character_set.sample(length).join
+      # Rails String#blank? is based on [[:space:]] character class (String::BLANK_RE).
+      # Here we use more general class including tabs, carriage returns and newlines.
+      redo if !allow_blank && /^\p{Space}+$/ === result
     end while except.any? { |e| e === result }
     result
   end
-
-  # Range based string generation. Not finished, but saved as a potential
-  # reference for future work. To work properly it needs to sort in collation
-  # order of database.
-  #def random_between(from, to, maxlength)
-  #  # TODO: sort UNICODE_CHARS
-  #  byebug
-  #  result = ''
-  #  maxlength.times do |i|
-  #    case
-  #    when from[i] == to[i]
-  #      result += from[i]
-  #    else
-  #      from_index = UNICODE_CHARS.bsearch_index(from[i] || UNICODE_CHARS[0])
-  #      to_index = UNICODE_CHARS.bsearch_index(to[i])
-  #      index = rand(from_index..to_index)
-  #      case
-  #      when index == from_index
-  #        result += UNICODE_CHARS[index]
-  #        from[i+1..].each_char do |c|
-  #          from_index = UNICODE_CHARS.bsearch_index(from[i])
-  #          index = rand(from_index..UNICODE_CHARS.length-1)
-  #          result += UNICODE_CHARS[index]
-  #          break if index != from_index
-  #        end
-  #        if result == from
-  #          if result.length < maxlength
-  #            result += UNICODE_CHARS.sample
-  #          else
-  #            # TODO: succ result[i..]
-  #            # raise if result == to
-  #          end
-  #        end
-  #        break
-  #      when index == to_index
-  #        result += UNICODE_CHARS[index]
-  #        to[i+1..].each_char do |c|
-  #          to_index = UNICODE_CHARS.bsearch_index(to[i])
-  #          index = rand(-1..to_index)
-  #          break if index == -1
-  #          result += UNICODE_CHARS[index]
-  #          break if index != to_index
-  #        end
-  #        if result == to
-  #          if result.length > i+1
-  #            result = result[..-2]
-  #          else
-  #            # TODO: prev result[i..]
-  #            # raise if result == from
-  #          end
-  #        end
-  #        break
-  #      else
-  #        result += UNICODE_CHARS[index]
-  #        break
-  #      end
-  #    end
-  #  end
-  #  return result += UNICODE_CHARS.sample(rand(0..maxlength-i-1)).join
-  #  # if result == from/to ...
-  #end
 
   def deep_rand(*args)
     case args
@@ -104,16 +58,45 @@ class ActiveSupport::TestCase
     end while true
   end
 
-  # Assumes: max >= step and step = 1e[-]N, both as strings
-  def random_number(max, step)
-    max.delete!('.')
-    precision = max.length
-    start = rand(precision) + 1
-    d = (rand(max.to_i) + 1) % 10**start
-    length = rand([0, 1..4, 4..precision].sample)
-    d = d.truncate(-start + length)
-    d = 10**(start - length) if d.zero?
-    BigDecimal(step) * d
+  # Return string representation of number selected randomly within given limits.
+  # Distrbiution is roughly uniform first with regard to: sign and exponent, then
+  # significand, with some extra skew towards most expected values and boundaries.
+  # Variants:
+  #   min max exp_range         range (magnitude)
+  #   -   +   MIN_EXP..min/max  0.5..min/max if min/max.exp
+  #   -   -   max..min          0.5..min if min.exp, max...1.0 if max.exp
+  #   -   0   MIN_EXP..min      0.5..min if min.exp
+  #   0   +   MIN_EXP..max      0.5..max if max.exp
+  #   +   +   min..max          0.5..max if max.exp, min...1.0 if min.exp
+  # TODO: alternate between floating-point and exponential representation.
+  def random_float(min: -Float::MAX_15, max: Float::MAX_15, except: [])
+    # For now assume ranges are same on both sides of 0.
+    assert_equal -min, max if min.negative? && max.positive?
+
+    include_zero = (min.negative? && max.positive?) || min.zero? || max.zero?
+    precision_range = [1..2, 3..4, 5..Float::DIG-1, Float::DIG]
+    # Returns 0.0 <=> (precision == 0).
+    precision_range << 0 if include_zero
+
+    min_frexp, max_frexp = [min, max].map(&:abs).minmax.map { |f| Math.frexp(f) }
+    fractions, exponents = min_frexp.zip(max_frexp)
+    exponents[0] = Float::MIN_EXP if include_zero
+    exp_range = Range.new(*exponents)
+    exp_range &= [Float::MIN_EXP..-10, -9..-4, -3..0, 1..4, 5..10, 11..Float::MAX_EXP]
+    begin
+      precision = deep_rand(*precision_range)
+      exp = deep_rand(*exp_range)
+
+      range = [0.5, 1.0, true]
+      range = [range[0], fractions[1], false] if exp == exponents[1]
+      range = [fractions[0], range[1], range[2]] if exp == exponents[0] && !include_zero
+
+      fr = rand(Range.new(*range))
+      number = Math.ldexp(fr, exp)
+      number *= [min.negative? ? -1.0 : 1.0, max.positive? ? 1.0 : -1.0].sample
+      number = number.limit(precision).clamp(min, max)
+    end while except.any? { |e| e === number }
+    number.to_s
   end
 
   def randomize_user_password!(user)
@@ -130,5 +113,10 @@ class ActiveSupport::TestCase
 
   def with_last_email
     yield(ActionMailer::Base.deliveries.last)
+  end
+
+  def column_title(attribute)
+    model = self.class.name.delete_suffix('Test').singularize.constantize
+    model.human_attribute_name(attribute)
   end
 end

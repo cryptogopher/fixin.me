@@ -41,6 +41,24 @@ en:
               descendant_reference: cannot be changed to any of descendants
               self_reference: of the quantitiy cannot be the quantity itself
               user_mismatch: has to belong to the same user as quantity
+  activesupport:
+    # Based on: https://github.com/unicode-org/cldr-json/blob/main/cldr-json/cldr-misc-full/main/en/characters.json
+    characters:
+      subsets:
+        # :exemplarCharacters[EN]
+        exemplar: abcdefghijklmnopqrstuvwxyz
+        # :index[EN]
+        index: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+        numbers: 0123456789
+        # :exemplarCharacters[DE, PL] - exemplarCharacters[EN] +
+        #   :index[DE, PL] - :index[EN]
+        auxiliary: äößüĆŁÓŚŹŻąćęłńóśźż
+        # :punctuation* + :numbers* - space - numbers
+        punctuation: >-
+          !\"#%&'()*+,-./:;?@[]{|}~§«°»×‐‑–—‘’‚“”„†‡…‰′″−
+        # :exemplarCharacters[EL] + :index[EL]
+        symbols: αάβγδεέζηήθιίϊΐκλμνξοόπρσςτυύϋΰφχψωώΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ
+        space: ' '
   actioncontroller:
     exceptions:
       status:
