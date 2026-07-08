@@ -1,11 +1,15 @@
 require "application_system_test_case"
 
 # Fixture prerequisites:
-#  * user with multiple units (at least 1 w/o subunit) + subunits,
-#  * user with single unit,
-# FIXME: add confirmed user without units
-#  * user with no units.
-# Users need to be active and confirmed.
+#   * user with multiple units:
+#     * at least 1 w/o subunit,
+#     * at least 1 w/ single subunit,
+#     * at least 1 w/ multiple subunits:
+#       * at least 1 subunit w/ multiplier == 1.0,
+#       * at least 1 subunit w/ multiplier != 10^[-]N,
+#   * user with single unit,
+#   * user with no units.
+# Users need to be active and confirmed. Units w/ and w/o description.
 
 class UnitsTest < ApplicationSystemTestCase
   def sign_in(...)
@@ -22,22 +26,19 @@ class UnitsTest < ApplicationSystemTestCase
   end
 
   def list_symbols
-    all(:table_cell, column_title(:symbol)).map(&:text)
+    all(:table_cell, column(:symbol))
+      .select{ |cell| cell.has_sibling?(:table_cell, wait: 0) }
+      .map(&:text)
   end
 
   test "index" do
     sign_in
-    # Wait for the table to appear first, only then check row count.
-    within 'tbody' do
-      assert_selector 'tr', count: @user.units.count
-    end
 
-    # Cannot #destroy_all due to {dependent: :restrict*} on Unit.subunits association.
-    @user.units.delete_all
-    refresh
-    within 'tbody' do
-      assert_selector 'tr', count: 1
-      assert_text t('units.no_items')
+    if @user.units.empty?
+      assert_selector :table, rows: [[t('units.no_items')]]
+    else
+      column = column(:symbol)
+      assert_selector :table, rows_with: @user.units.map { |u| {column => u.symbol} }
     end
   end
 
@@ -45,18 +46,19 @@ class UnitsTest < ApplicationSystemTestCase
     sign_in
     symbols = list_symbols
 
-    link_labels.slice!(:new_unit, :new_subunit)
-    type, label = link_labels.to_a.sample
+    actions = @user.units.empty? ? [:new_unit] : [:new_unit, :new_subunit]
+    link_labels.slice!(*actions)
+    action, label = link_labels.to_a.sample
     all(:link, exact_text: label).sample.then do |link|
       link.click
-      link.assert_matches_selector :link, disabled: true
+      assert_matches_selector link, :link, disabled: true
     end
 
     attributes = [:symbol, :description]
-    attributes << :multiplier if type == :new_subunit
+    attributes << :multiplier if action == :new_subunit
     within :table_row, {}, with_focus: true do
       attributes.map! do |name|
-        field = within(:table_cell, column_title(name)) { find(:fillable_field) }
+        field = find(:table_cell, column(name)).find(:fillable_field)
         value = case name
                 when :symbol
                   random_string(1..3, 4..field[:maxlength].to_i,
@@ -86,9 +88,9 @@ class UnitsTest < ApplicationSystemTestCase
       assert_no_selector :fillable_field
       assert_equal symbols.length + 1, new_symbols.length
 
-      m = attributes.delete(:multiplier).to_f if type == :new_subunit
-      within :table_row, attributes.transform_keys { |k| column_title(k) } do
-        assert_selector :table_cell, column_title(:multiplier), with_value: m if m
+      multiplier = attributes.delete(:multiplier).to_f if action == :new_subunit
+      within :table_row, attributes.transform_keys { |k| column(k) } do
+        assert_selector :table_cell, column(:multiplier), with: multiplier if multiplier
       end
     end
     assert_no_selector :link, disabled: true,
@@ -98,8 +100,14 @@ class UnitsTest < ApplicationSystemTestCase
     assert_equal new_symbols, list_symbols
   end
 
+  test "create fails with out of range multiplier" do
+    # TODO: multiplier with exponent > max, < min, precision > DIG, value <= 0
+    assert true
+  end
+
   test "create updates view in order" do
     # Destroy and re-create unit to verify its index position is unchanged.
+    # NOTE: does this test add anything over "new and create"?
     sign_in(user: users.select { |u| u.confirmed? && u.units.many? }.sample)
 
     link = all(:link_or_button, exact_text: t('units.unit.destroy')).sample
@@ -108,6 +116,7 @@ class UnitsTest < ApplicationSystemTestCase
     unit = @user.units.find_by(symbol: symbol)
 
     link.click
+    assert_selector '.flash.notice'
     if unit.base_id?
       find_link(unit.base.symbol).ancestor('tr').click_on(t('units.unit.new_subunit'))
       fill_in 'unit[multiplier]', with: unit.multiplier
@@ -122,40 +131,48 @@ class UnitsTest < ApplicationSystemTestCase
     end
   end
 
-  test "new and edit on validation error" do
-    sign_in
+  test "create and update on validation error" do
+    # Require at least 1 unit to be able to try and create unit with duplicate symbol.
+    sign_in(user: users.select { |u| u.confirmed? && !u.units.empty? }.sample)
+    symbols = list_symbols
+
     # It's impossible to cause validation error on :edit with single unit.
     link_labels.delete(:edit) unless @user.units.many?
-    type, label = link_labels.to_a.sample
+    action, label = link_labels.to_a.sample
     link = all(:link, exact_text: label).sample
     link.click
 
-    get_values = -> { all(:field).map { |f| [f[:name], f[:value]] }.to_h }
+    get_values = ->{ all(:field).map { |f| [f[:name], f.value] }.to_h }
     values = nil
-    within 'tbody > tr:has(input[type=text])' do
-      # Provide duplicate :symbol as input invalidatable server side.
-      fill_in 'unit[symbol]',
-        with: (@user.units.map(&:symbol) - [find_field('unit[symbol]').value]).sample
+    within :table_row, {}, with_focus: true do
+      # Provide duplicate :symbol as server-side invalidated input.
+      field = find(:table_cell, column(:symbol)).find(:fillable_field)
+      field.fill_in with: (symbols - [field.value]).sample
       values = get_values[]
       send_keys :enter
     end
 
-    # Wait for flash before checking link :disabled status.
-    assert_selector '.flash.alert'
-    if type == :edit
+    assert_selector '.flash.alert',
+      text: t('activerecord.errors.models.unit.attributes.symbol.taken')
+    if action == :edit
       assert_no_selector :link, exact_text: link[:text]
     else
-      link.assert_matches_selector :link, disabled: true
+      assert_matches_selector link, :link, disabled: true
     end
 
-    within 'tbody > tr:has(input[type=text])' do
+    within :table_row, {}, with_focus: true do
       assert_equal values, get_values[]
+      click_on t(:cancel)
     end
+    assert_no_selector '.flash.alert'
+    assert_equal symbols, list_symbols
+    refresh
+    assert_equal symbols, list_symbols
   end
 
   test "new and edit allow opening multiple forms" do
     # Require at least 1 unit to be able to open 2 forms.
-    sign_in(user: users.select { |u| u.confirmed? && u.units.any? }.sample)
+    sign_in(user: users.select { |u| u.confirmed? && !u.units.empty? }.sample)
     links = link_labels.transform_values do |labels|
       all(:link, exact_text: labels).to_a
     end
@@ -163,26 +180,26 @@ class UnitsTest < ApplicationSystemTestCase
     # Define <tr> count change depending on link clicked.
     tr_diff = {new_unit: 1, new_subunit: 1, edit: 0}
 
-    type, link = random_link[].tap { |t, l| links[t].delete(l) }
+    action, link = random_link[].tap { |t, l| links[t].delete(l) }
     subunit_link = link.ancestor('tr')
-      .first(:link, link_labels[:new_subunit], between: 0..1) if type == :edit
-    assert_difference ->{ all('tbody tr').count }, tr_diff[type] do
+      .first(:link, link_labels[:new_subunit], between: 0..1) if action == :edit
+    assert_difference ->{ all('tbody tr').count }, tr_diff[action] do
       assert_difference ->{ all('tbody tr:has(input[type=text])').count }, 1 do
         link.click
       end
     end
     form = find('tbody tr:has(input:focus)')
 
-    if type == :edit
+    if action == :edit
       refute link.visible?
       refute subunit_link&.visible?
       links[:new_subunit].delete(subunit_link)
     else
-      link.assert_matches_selector :link, disabled: true
+      assert_matches_selector link, :link, disabled: true
     end
 
-    type, link = random_link[]
-    assert_difference ->{ all('tbody tr').count }, tr_diff[type] do
+    action, link = random_link[]
+    assert_difference ->{ all('tbody tr').count }, tr_diff[action] do
       assert_difference ->{ all('tbody tr:has(input[type=text])').count }, 1 do
         link.click
       end
@@ -223,13 +240,18 @@ class UnitsTest < ApplicationSystemTestCase
   end
 
   test "destroy" do
-    sign_in(user: users.select { |u| u.confirmed? && u.units.any? }.sample)
-    link = all(:link_or_button, exact_text: t('units.unit.destroy')).sample
-    symbol = link.ancestor('tr').first(:link).text
-    assert_difference ->{ @user.units.count }, -1 do
-      link.click
+    sign_in(user: users.select { |u| u.confirmed? && !u.units.empty? }.sample)
+
+    while button = all(:button, exact_text: t('units.unit.destroy')).sample
+      symbol = button.ancestor(:table_row, {}).find(:table_cell, column(:symbol)).text
+      assert_changes ->{ list_symbols }, to: list_symbols - [symbol] do
+        button.click
+        assert_selector '.flash.notice', text: t('units.destroy.success', unit: symbol)
+      end
     end
-    assert_selector 'tbody tr', count: [@user.units.count, 1].max
-    assert_selector '.flash.notice', text: t('units.destroy.success', unit: symbol)
+
+    assert_selector :table, rows: [[t('units.no_items')]]
+    refresh
+    assert_selector :table, rows: [[t('units.no_items')]]
   end
 end

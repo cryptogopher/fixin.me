@@ -1,5 +1,6 @@
 require "test_helper"
 
+# TODO: optimize execution time by monitoring/eliminating synchronization timeouts
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   include ActionView::Helpers::UrlHelper
 
@@ -46,6 +47,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     #
     # Test block should not be modified here, as it would change its binding from
     # instance level to class level.
+    # TODO: allow multiple iterations of tests? would require saving seed in
+    # #setup to make reproducing easier
     if DB_CONFIGS.many?
       def test(name, ...)
         DB_CONFIGS.each do |config|
@@ -61,6 +64,14 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   Capybara.modify_selector(:link) do
     expression_filter(:disabled) do |xpath, value|
       builder(xpath).add_attribute_conditions('aria-disabled': value)
+    end
+  end
+
+  Capybara.modify_selector(:table) do
+    # Matches all rows, with partial row data (i.e. doesn't match row size).
+    expression_filter(:rows_with, valid_values: [Array]) do |xpath, rows|
+      rows_conditions = rows.map { |row| match_row(row) }.reduce(:&)
+      xpath[match_row_count(rows.size)][rows_conditions]
     end
   end
 
@@ -82,7 +93,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       XPath.descendant(:td).where(header_xp.boolean & position_xp)
     end
 
-    node_filter(:with_value) do |node, expected|
+    node_filter(:with) do |node, expected|
       value =
         case expected
         when Float
