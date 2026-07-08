@@ -12,6 +12,7 @@ class UsersTest < ApplicationSystemTestCase
 
     sign_in
     assert_no_current_path new_user_session_path
+    # TODO: assert_selector '.flash.notice', text:
     assert_text t('devise.sessions.signed_in')
   end
 

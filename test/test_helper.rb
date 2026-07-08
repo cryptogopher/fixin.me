@@ -115,7 +115,7 @@ class ActiveSupport::TestCase
     yield(ActionMailer::Base.deliveries.last)
   end
 
-  def column_title(attribute)
+  def column(attribute)
     model = self.class.name.delete_suffix('Test').singularize.constantize
     model.human_attribute_name(attribute)
   end

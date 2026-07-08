@@ -9,7 +9,12 @@ alice:
   encrypted_password: <%= Devise::Encryptor.digest(User, 'alice') %>
   confirmed_at: <%= DateTime.now - 7.days %>
 bob:
-  email: bob@gmail.com
+  email: bob@g.net
   status: active
   encrypted_password: <%= Devise::Encryptor.digest(User, 'bob') %>
   confirmed_at:
+carlos:
+  email: carlos@noreply-to-me.ever.gov
+  status: active
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'carlos') %>
+  confirmed_at: <%= DateTime.now - 2.months %>
