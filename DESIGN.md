@@ -22,18 +22,32 @@ whenever a change is considered, to avoid regressions.
           and scale approximately half of that - 9,
     * double precision floating point guarantees 15 digits of precision, which
       is more than enough for all expected use cases,
+        * if a decimal string with at most 15 significant digits is converted to
+          the IEEE 754 double-precision format, giving a normal number, and then
+          converted back to a decimal string with the same number of digits, the
+          final result should match the original string,
+        * if an IEEE 754 double-precision number is converted to a decimal
+          string with at least 17 significant digits, and then converted back to
+          double-precision representation, the final result must match the
+          original number,
         * single precision floating point only guarntees 6 digits of precision,
           which is estimated to be too low for some use cases (e.g. storing
-          latitude/longitude with a resolution grater than 100m)
+          latitude/longitude with a resolution grater than 100m),
 * double precision floating point (IEEE 754) is a standard that ensures
-  compatibility with all database engines,
+  compatibility with majority of database engines,
     * the same data format is used internally by Ruby as a `Float`; it
       guarantees no conversions between storage and computation,
     * as a standard with hardware implementations ensures both: computing
       efficiency and hardware/3rd party library compatibility as opposed to Ruby
-      custom `BigDecimal` type
+      custom `BigDecimal` type,
+    * at present, only normalized numbers are used and considered sufficient, in
+      order to avoid potential issues with the cross-platform compatibility of
+      subnormal (denormal) numbers,
+* in the future, the IEEE 754 decimal64 data type may be considered once it is
+  supported by database engines.
 
 ### Database layer vs application layer data model constraints
+
 * database constraints are the final guard against data integrity corruption,
     * they should safeguard against data referential integrity loss under _all_
       data (not schema) manipulation scenarios, including application level

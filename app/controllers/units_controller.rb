@@ -17,7 +17,7 @@ class UnitsController < ApplicationController
   end
 
   def create
-    @unit = current_user.units.new(unit_params)
+    @unit = current_user.units.new(params.expect(Unit::ATTRIBUTES))
     if @unit.save
       @before = @unit.successive
       flash.now[:notice] = t('.success', unit: @unit)
@@ -30,7 +30,7 @@ class UnitsController < ApplicationController
   end
 
   def update
-    if @unit.update(unit_params.except(:base_id))
+    if @unit.update(params.except(:base_id).expect(Unit::ATTRIBUTES))
       flash.now[:notice] = t('.success', unit: @unit)
     else
       render :edit
@@ -40,11 +40,11 @@ class UnitsController < ApplicationController
   # TODO: Avoid double table width change by first un-hiding table header,
   # then displaying index, e.g. by re-displaying header in index
   def rebase
-    permitted = params.require(:unit).permit(:base_id)
-    permitted.merge!(multiplier: 1) if permitted[:base_id].blank? && @unit.multiplier != 1
+    unit_params = params.expect(unit: :base_id)
+    unit_params.merge!(multiplier: 1.0) if unit_params[:base_id].blank?
 
     @previous_base = @unit.base
-    @unit.update!(permitted)
+    @unit.update!(unit_params)
 
     @before = @unit.successive
     if @unit.multiplier_previously_changed?
@@ -58,10 +58,6 @@ class UnitsController < ApplicationController
   end
 
   private
-
-  def unit_params
-    params.require(:unit).permit(Unit::ATTRIBUTES)
-  end
 
   def find_unit
     @unit = current_user.units.find_by!(id: params[:id])

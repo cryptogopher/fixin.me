@@ -9,7 +9,7 @@
       <%= form.text_area :description, cols: 30, rows: 1, escape: false %>
     </td>
     <td>
-      <%= form.number_field :multiplier, required: true, size: 10, min: :step if @unit.base_id? %>
+      <%= form.number_field :multiplier, required: true if @unit.base_id? %>
     </td>
 
     <td class="flex">
