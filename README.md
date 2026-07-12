@@ -16,14 +16,10 @@ environment, see the _Contributing_ section below.
 * Server side:
     * Ruby interpreter, depending on the version of Rails used (see _Gemfile_),
         * https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#ruby-versions
-    * database (e.g. MySQL >= 8.0) supporting:
+    * database (e.g. SQLite, MySQL >= 8.0) supporting:
         * recursive Common Table Expressions (CTE) for SELECT/UPDATE/DELETE,
             * MariaDB does not support CTE for UPDATE/DELETE
               (https://jira.mariadb.org/browse/MDEV-18511)
-        * decimal datatype with precision of at least 30,
-            * SQLite3 _flexible typing_ decimal will work, but precision
-              will be limited to 16, making it practical mostly for testing
-              purposes
     * for testing: browser as specified in _Client side_ requirements
 * Client side:
     * browser (e.g. Firefox >= 121) supporting:

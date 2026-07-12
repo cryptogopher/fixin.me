@@ -11,7 +11,7 @@
       data: {turbo_stream: true} %>
   </td>
   <td><%= unit.description %></td>
-  <td class="ralign"><%= unit.multiplier.to_html %></td>
+  <td class="ralign"><%= unit.multiplier.to_html if unit.base_id? %></td>
 
   <% if current_user.at_least(:active) %>
     <td class="flex">

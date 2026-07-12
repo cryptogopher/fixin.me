@@ -4,7 +4,7 @@ Unit.transaction do
 <% Unit.defaults.ordered.each do |unit| %>
 <%= "\n" if unit.base.nil? %>
   units['<%= unit.symbol %>'] =
-    Unit.create symbol: '<%= unit.symbol %>',<% unless unit.base.nil? %> base: units['<%= unit.base.symbol %>'], multiplier: '<%= unit.multiplier.to_scientific %>',<% end %>
+    Unit.create symbol: '<%= unit.symbol %>',<% if unit.base_id? %> base: units['<%= unit.base.symbol %>'], multiplier: '<%= unit.multiplier.to_scientific %>',<% end %>
                 description: '<%= unit.description %>'
 <% end %>
 end

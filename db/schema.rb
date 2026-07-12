@@ -63,7 +63,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_01_21_230456) do
     t.bigint "user_id"
     t.string "symbol", limit: 15, null: false
     t.text "description"
-    t.decimal "multiplier", precision: 30, scale: 15, default: "1.0", null: false
+    t.float "multiplier", limit: 53, default: 1.0, null: false
     t.bigint "base_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
