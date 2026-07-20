@@ -101,8 +101,29 @@ class UnitsTest < ApplicationSystemTestCase
   end
 
   test "create fails with out of range multiplier" do
-    # TODO: multiplier with exponent > max, < min, precision > DIG, value <= 0
-    assert true
+    sign_in(user: users.select { |u| u.confirmed? && !u.units.empty? }.sample)
+    all(:link, exact_text: link_labels[:new_subunit]).sample.click
+
+    multipliers = [
+      "a",                                       # * not a number (NaN)
+      "1e#{Float::MAX_10_EXP + 1}",              # * value too big (Infinity)
+                                                 # * value too big (> max), N/A
+      "-1e#{Float::MAX_10_EXP + 1}",             # * value too small (-Infinity)
+      "-1",                                      # * value too small (< min)
+      "0",                                       # * -"-
+      "1." + "0" * (Float::DIG - 1) + "1",       # * precision too big
+      "1" + "0" * (Float::DIG - 1) + "1",        # * -"-
+      "0.1" + "0" * (Float::DIG - 1) + "1",      # * -"-
+      "1e#{Float::MIN_10_EXP - Float::DIG - 1}", # * precision too big (MIN > value > 0)
+    ]
+
+    field = find(:table_cell, column(:multiplier), fillable: true).find_field
+    assert_not_matches_selector field, ':invalid'
+
+    multipliers.shuffle.each do |multiplier|
+      field.fill_in with: multiplier
+      assert_matches_selector field, ':invalid'
+    end
   end
 
   test "create updates view in order" do

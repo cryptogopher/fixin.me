@@ -101,22 +101,14 @@ module ApplicationHelper
     end
 
     def number_field(method, options = {})
-      attr_type = object.type_for_attribute(method)
-      case attr_type.type
+      case object.type_for_attribute(method).type
       when :float, :double
-        options[:value] = object.public_send(method)&.to_scientific
-        options[:step] ||= :any
-        options[:min] ||= Float::MIN_15
-        options[:max] ||= Float::MAX_15
-        # Longest possible number (written not using exponent):
-        #   sign (1), leading 0 (1), dot (1), exponent 0s (307), digits (15).
-        # This is only upper bound, which cannot guarantee the number won't fall
-        # out of range.
-        # TODO: add `[pattern]` to limit precision and (possibly) replace `[maxlength]`?
-        # NOTE: `[pattern]` is unavailable on `input[type=number]` and `[min]/[max]` is
-        # unavailable on `input[type=text]`.
-        options[:maxlength] ||= 3 + Float::MIN_10_EXP + Float::DIG
+        options[:min] ||= Float::MIN_15.to_scientific
+        options[:max] ||= Float::MAX_15.to_scientific
+        options[:oninput] = 'numberValidate(event)'
         options[:size] ||= 6
+        options[:step] ||= :any
+        options[:value] = object.public_send("#{method}_before_type_cast")
       end
       super
     end

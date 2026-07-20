@@ -93,6 +93,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       XPath.descendant(:td).where(header_xp.boolean & position_xp)
     end
 
+    expression_filter(:fillable) do |xpath, value|
+      value ? xpath.where(XPath.descendant(:input, :select, :textarea)) : xpath
+    end
+
     node_filter(:with) do |node, expected|
       value =
         case expected

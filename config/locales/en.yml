@@ -5,7 +5,7 @@ en:
       without_tz: "%Y-%m-%d %H:%M"
   errors:
     messages:
-      precision_exceeded: must not exceed %{value} significant digits
+      out_of_range: exceeds range of double precision floating-point format
   activerecord:
     attributes:
       quantity:
