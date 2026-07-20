@@ -57,3 +57,20 @@ whenever a change is considered, to avoid regressions.
     * proper application level constraints should prevent unhandled database
       exception occurences, e.g `ActiveRecord::InvalidForeignKey` for operations
       performed through Models (i.e. not `#delete_all` etc.)
+
+### User interface
+* values provided by user have to be exactly preserved, avoiding any precision
+  loss due to e.g. type casting
+    * when it's not possible to store value without information loss, feedback has to
+      be given at the time of entering value
+    * values can be received using either:
+        * `input[number]` - validates: number format, value against `[min]` and
+          `[max]` attributes; cannot validate precision (no `[pattern]` support);
+          or
+        * `input[text]` - can validate number format and precision with
+          `[pattern]`; cannot validate range (no `[min]`/`[max]` support),
+        * none of the above prevents misinterpretation of values between 0 and
+          Float::MIN as 0.0 - this has to be checked manually,
+        * assuming that user input with _precision > DIG_ is as rare as in
+          the range _(0, MIN)_, the decision is to choose input which requires
+          the least/simplest additional code.

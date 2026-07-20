@@ -15,7 +15,7 @@ end
 
 ActiveSupport.on_load :active_record do
   ActiveModel::Validations::NumericalityValidator
-    .prepend CoreExt::ActiveModel::Validations::NumericalityValidatesPrecisionAndScale
+    .prepend CoreExt::ActiveModel::Validations::NumericalityValidatesPrecision
 
   # Temporary patch for https://github.com/rails/rails/pull/54658
   Arel::TreeManager::StatementMethods

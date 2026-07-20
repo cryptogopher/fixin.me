@@ -50,5 +50,6 @@ class Float
   # TODO: change MIN_15 to MIN.ceil(MIN_10_EXP - DIG) after #ceil fix in Ruby
   # v4.0.5: https://bugs.ruby-lang.org/issues/22079
   MIN_15 = MIN.ceil(-(MIN_10_EXP - 1))
-  MAX_15 = MAX.floor(-(MAX_10_EXP - DIG + 1))
+  # MAX is an integer.
+  MAX_15 = MAX.floor(-(MAX_10_EXP - DIG + 1)).to_f
 end

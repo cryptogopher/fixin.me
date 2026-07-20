@@ -53,6 +53,27 @@ function formValidate(event) {
 }
 window.formValidate = formValidate
 
+// Pattern for number precision verification. Should accept all number formats
+// accepted by Kernel#Float. Lookahead checks the number of significant digits
+// in mantissa, following expression makes sure there is only one dot.
+const numberRegExp = /^\-?(?=(?:\.?0)*(?:\.?\d){1,15}?(?:\.?0)*\.?(?:[eE]|$))(?<mantissa>\d*\.?\d+|\d+\.)(?:[eE]\-?\d{1,3})?$/
+
+// Validation of input[type=number] value precision.
+function numberValidate(event) {
+  var input = event.target
+
+  input.setCustomValidity("")
+  if (!input.validity.valid) return
+
+  var match = numberRegExp.exec(input.value)
+  if (!match ||
+      (parseFloat(input.value) == 0.0 && match.groups['mantissa'].match(/[1-9]/))) {
+    // TODO: move message to locales
+    input.setCustomValidity("Please select a value within range of double precision floating-point format.")
+  }
+}
+window.numberValidate = numberValidate
+
 
 // Turbo stream actions.
 const FORM_CONTROLS = ["BUTTON", "FIELDSET", "INPUT", "OPTGROUP", "OPTION", "SELECT",
