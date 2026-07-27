@@ -17,7 +17,7 @@ class Default::UnitsController < ApplicationController
 
   def import
     @unit.port!(current_user)
-    flash.now[:notice] = t('.success', unit: @unit)
+    flash.now.notice = t('.success', unit: @unit)
   ensure
     run_and_render :index
   end
@@ -30,14 +30,14 @@ class Default::UnitsController < ApplicationController
 
   def export
     @unit.port!(nil)
-    flash.now[:notice] = t('.success', unit: @unit)
+    flash.now.notice = t('.success', unit: @unit)
   ensure
     run_and_render :index
   end
 
   def destroy
     @unit.destroy!
-    flash.now[:notice] = t('.success', unit: @unit)
+    flash.now.notice = t('.success', unit: @unit)
   ensure
     run_and_render :index
   end

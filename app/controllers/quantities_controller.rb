@@ -21,7 +21,7 @@ class QuantitiesController < ApplicationController
     if @quantity.save
       @before = @quantity.successive
       @ancestors = @quantity.ancestors
-      flash.now[:notice] = t('.success', quantity: @quantity)
+      flash.now.notice = t('.success', quantity: @quantity)
     else
       render :new
     end
@@ -33,7 +33,7 @@ class QuantitiesController < ApplicationController
   def update
     if @quantity.update(quantity_params.except(:parent_id))
       @ancestors = @quantity.ancestors
-      flash.now[:notice] = t('.success', quantity: @quantity)
+      flash.now.notice = t('.success', quantity: @quantity)
     else
       render :edit
     end
@@ -57,7 +57,7 @@ class QuantitiesController < ApplicationController
   def destroy
     @quantity.destroy!
     @ancestors = @quantity.ancestors
-    flash.now[:notice] = t('.success', quantity: @quantity)
+    flash.now.notice = t('.success', quantity: @quantity)
   end
 
   private
