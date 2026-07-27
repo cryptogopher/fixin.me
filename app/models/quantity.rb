@@ -13,6 +13,7 @@ class Quantity < ApplicationRecord
     errors.add(:parent, :self_reference) if id == parent_id
   end
   validate if: ->{ parent.present? }, on: :update do
+    # TODO: should not report error for (parent == self)
     errors.add(:parent, :descendant_reference) if ancestor_of?(parent)
   end
   validates :name, presence: true, uniqueness: {scope: [:user_id, :parent_id]},

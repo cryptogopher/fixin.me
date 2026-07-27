@@ -1,4 +1,4 @@
-<%= turbo_stream.close_form dom_id(@unit.base || Unit, :new) %>
+<%= turbo_stream.close_form dom_target(:new, @unit.base || :unit) %>
 <%= turbo_stream.remove :no_items %>
 <%= turbo_stream.replace @unit.base if @unit.base_id? %>
 <%= @before ? turbo_stream.before(@before, @unit) : turbo_stream.append(:units, @unit) %>

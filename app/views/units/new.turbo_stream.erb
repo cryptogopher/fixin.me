@@ -1,8 +1,8 @@
-<% dom_obj = @unit.base || @unit %>
-<% ids = {row: dom_id(dom_obj, :new),
+<% target_id = dom_target(:new, @unit.base || :unit) %>
+<% ids = {row: target_id,
           hidden_row: nil,
-          link: dom_id(dom_obj, :new, :link),
-          form_tag: dom_id(dom_obj, :new, :form)} %>
+          link: dom_target(target_id, :link),
+          form_tag: dom_target(target_id, :form)} %>
 
 <%= turbo_stream.disable ids[:link] -%>
 
