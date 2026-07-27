@@ -3,6 +3,7 @@ class Unit < ApplicationRecord
 
   belongs_to :user, optional: true
   belongs_to :base, optional: true, class_name: "Unit"
+  alias_method :parent, :base
   has_many :subunits, class_name: "Unit", inverse_of: :base,
     dependent: :restrict_with_error
 

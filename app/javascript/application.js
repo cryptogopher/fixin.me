@@ -1,6 +1,8 @@
 // Configure your import map in config/importmap.rb. Read more:
 // https://github.com/rails/importmap-rails
 import "@hotwired/turbo-rails"
+// TODO: access `data-` attributes through
+// `keyname in`/`dataset.keyname`/`delete dataset.keyname`
 
 
 // Show page if hidden for testing purposes.
@@ -146,6 +148,33 @@ Turbo.StreamActions.unselect = function() {
   })
 }
 
+Turbo.StreamActions.validate = function() {
+  this.targetElements.forEach((form) => {
+    this.templateContent.querySelectorAll("span").forEach((span) => {
+      var control = document.querySelector(
+        `[form="${form.id}"][name="${span.dataset.name}"]`
+      )
+      control.setCustomValidity(span.textContent)
+      // Add event listener in capture phase to clear custom validity before
+      // `[oninput]` or any other bubble phase handler is invoked.
+      //   https://www.quirksmode.org/js/events_order.html
+      // TODO: keep invalidating current value whenever user re-enters it. Store
+      // invalid value and validation message in `[data-invalid-message/value]`
+      // and check input value on "input" event (below) (using `[pattern]` may not
+      // be suitable due to inability to customize validtion message; also
+      // pattern may be used for other, conflicting purposes).
+      // After user executes any other action (while form is open), remove `[data-]`
+      // attributes and custom validation, as value may no longer be invalid.
+      control.addEventListener(
+        "input",
+        function(event) { event.target.setCustomValidity("") },
+        {capture: true, once: true}
+      )
+    })
+    form.reportValidity()
+  })
+}
+
 
 // Keyboard event processing handlers.
 function formProcessKey(event) {
@@ -209,6 +238,8 @@ window.dragStart = dragStart
 *     rapid pointer moves.
 * NOTE: sometimes Leave is not emitted when pointer goes fast over table
 * and outside. This should probably be fixed in browser, than patched here.
+* TODO: replace Leave table with Enter document?
+*   https://www.quirksmode.org/js/events_order.html#link4
 */
 function dragEnter(event) {
   //console.log(event.timeStamp + " " + event.type + ": " + event.currentTarget.id)

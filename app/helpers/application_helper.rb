@@ -91,10 +91,7 @@ module ApplicationHelper
     [:text_field, :password_field, :text_area].each do |selector|
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def #{selector}(method, options = {})
-          options[:maxlength] ||= object.class.type_for_attribute(method).limit
-          if object.errors.include?(method)
-            options[:pattern] = except_pattern(object.public_send(method), options[:pattern])
-          end
+          options[:maxlength] ||= object.type_for_attribute(method).limit
           super
         end
       RUBY_EVAL
@@ -129,10 +126,6 @@ module ApplicationHelper
       svg_name = object ? (object.persisted? ? 'update' : 'plus-circle-outline') : ''
       @template.svg_tag(svg_name, super)
     end
-
-    def except_pattern(value, pattern = nil)
-      "(?!^#{Regexp.escape(value)}$)" + (pattern || ".*")
-    end
   end
 
   def tabular_fields_for(record_name, record_object = nil, options = {}, &block)
@@ -142,8 +135,6 @@ module ApplicationHelper
     record_object, options = nil, record_object if record_object.is_a?(Hash)
     extra_options = {builder: TabularFormBuilder, skip_default_ids: true}
     options = merge_attributes(options, extra_options)
-    # TODO: set error message with setCustomValidity instead of rendering to flash?
-    render_errors(record_object || record_name)
     fields_for(record_name, record_object, **options, &block)
   end
 
@@ -210,16 +201,9 @@ module ApplicationHelper
     link_to name, options, html_options
   end
 
-  def render_errors(records)
-    # Conversion of flash to Array only required because of Devise
-    # TODO: override Devise message setting to Array()?
-    flash[:alert] = Array(flash[:alert])
-    Array(records).each { |record| flash[:alert] += record.errors.full_messages }
-  end
-
-  def render_flash_messages
+  def render_flash
     flash.map do |entry, messages|
-      # Conversion of flash to Array only required because of Devise
+      # Conversion of flash to Array only required because of Devise.
       Array(messages).map do |message|
         tag.div class: "flash #{entry}" do
           tag.span(sanitize(message)) +

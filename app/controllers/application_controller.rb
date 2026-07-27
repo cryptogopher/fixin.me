@@ -55,9 +55,9 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def render_no_content(record)
-    helpers.render_errors(record)
-    render html: nil, layout: true
+  def render_errors(record)
+    target = record.new_record? ? [:new, record.parent || record.class] : [:edit, record]
+    render 'errors', assigns: {record: record, target: target}
   end
 
   def rescue_turbo(exception)
