@@ -43,12 +43,15 @@ class QuantitiesController < ApplicationController
     permitted = params.require(:quantity).permit(:parent_id)
     @previous_ancestors = @quantity.ancestors
 
-    # Until UI blocks all disallowed reparents, render error messages if present
-    render_no_content(@quantity) unless @quantity.update(permitted)
-
-    @ancestors = @quantity.ancestors
-    @self_and_progenies = @quantity.with_progenies
-    @before = @self_and_progenies.last.successive
+    if @quantity.update(permitted)
+      @ancestors = @quantity.ancestors
+      @self_and_progenies = @quantity.with_progenies
+      @before = @self_and_progenies.last.successive
+    else
+      # Until UI blocks all disallowed reparents, render error messages if present.
+      flash.now.alert = @quantity.errors.full_messages
+      render :nothing
+    end
   end
 
   def destroy

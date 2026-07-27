@@ -163,31 +163,32 @@ class UnitsTest < ApplicationSystemTestCase
     link = all(:link, exact_text: label).sample
     link.click
 
-    get_values = ->{ all(:field).map { |f| [f[:name], f.value] }.to_h }
-    values = nil
-    within :table_row, {}, with_focus: true do
-      # Provide duplicate :symbol as server-side invalidated input.
-      field = find(:table_cell, column(:symbol)).find(:fillable_field)
-      field.fill_in with: (symbols - [field.value]).sample
-      values = get_values[]
-      send_keys :enter
-    end
+    get_values = ->{
+      find(:table_row, {}, with_focus: true)
+        .all(:field).map { |f| [f[:name], f.value] }.to_h
+    }
 
-    assert_selector '.flash.alert',
-      text: t('activerecord.errors.models.unit.attributes.symbol.taken')
+    # Provide duplicate :symbol as server-side invalidated input.
+    field = find(:field, focused: true)
+    field.fill_in with: (symbols - [field.value]).sample
+    values = get_values[]
+    send_keys :enter
+
+    assert_matches_selector field, :field, validation_message:
+      /#{t('activerecord.errors.models.unit.attributes.symbol.taken')}/
+    assert_no_selector '.flash.alert'
+    assert_equal values, get_values[]
     if action == :edit
       assert_no_selector :link, exact_text: link[:text]
     else
       assert_matches_selector link, :link, disabled: true
     end
+    click_on t(:cancel)
 
-    within :table_row, {}, with_focus: true do
-      assert_equal values, get_values[]
-      click_on t(:cancel)
-    end
     assert_no_selector '.flash.alert'
     assert_equal symbols, list_symbols
     refresh
+    assert_no_selector '.flash.alert'
     assert_equal symbols, list_symbols
   end
 

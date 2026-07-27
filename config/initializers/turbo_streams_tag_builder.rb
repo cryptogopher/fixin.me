@@ -34,4 +34,8 @@ ActiveSupport.on_load :turbo_streams_tag_builder do
   def unselect(target)
     action :unselect, target, allow_inferred_rendering: false
   end
+
+  def validate(target, content = nil, **rendering, &block)
+    action :validate, target, content, **rendering, &block
+  end
 end

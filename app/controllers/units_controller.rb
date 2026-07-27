@@ -22,7 +22,7 @@ class UnitsController < ApplicationController
       @before = @unit.successive
       flash.now[:notice] = t('.success', unit: @unit)
     else
-      render :new
+      render_errors @unit
     end
   end
 
@@ -33,7 +33,7 @@ class UnitsController < ApplicationController
     if @unit.update(params.except(:base_id).expect(Unit::ATTRIBUTES))
       flash.now[:notice] = t('.success', unit: @unit)
     else
-      render :edit
+      render_errors @unit
     end
   end
 

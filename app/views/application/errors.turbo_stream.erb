@@ -1,0 +1,7 @@
+<%= turbo_stream.validate dom_target(*@target, :form) do %>
+  <% @record.errors.attribute_names.map do |attr| %>
+    <%= tag.span data: {name: field_name(dom_class(@record), attr)} do %>
+      <%- @record.errors.full_messages_for(attr).map { |m| m + '.' }.join(' ') %>
+    <% end %>
+  <% end %>
+<% end %>
