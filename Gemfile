@@ -1,11 +1,7 @@
 source "https://rubygems.org"
 
-# The requirement for the Ruby version comes from Rails
-# NOTE: after updating Rails make sure that schema dump is not sorted:
-#   v8.1.3/activerecord/lib/active_record/schema_dumper.rb#L195
-# Waiting for this change to be reverted/configuration setting added:
-# https://github.com/rails/rails/pull/56842, https://github.com/rails/rails/pull/55414
-gem "rails", "~> 8.1.3"
+# The requirement for the Ruby version comes from Rails.
+gem "rails", "~> 8.1.4"
 gem "sprockets-rails"
 gem "puma", "~> 6.0"
 gem "sassc-rails"
@@ -25,7 +21,7 @@ group :sqlite, optional: true do
   gem "sqlite3", "~> 2.7"
 end
 
-gem "devise"
+gem "devise", "~> 5.0.4"
 
 gem "importmap-rails"
 gem "turbo-rails", "~> 2.0"
@@ -47,3 +43,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+# TODO: remove after upgrade to next version containing PR:
+#   https://github.com/ruby-i18n/i18n/pull/755
+gem "i18n", git: "https://github.com/ruby-i18n/i18n", branch: "delegate-missing-interpolation-handler"
