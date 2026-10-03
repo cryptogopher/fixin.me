@@ -120,6 +120,22 @@ database adapters:
 
     bundle config --local with development test mysql sqlite
 
+#### Using gems from local git repos
+
+When working on gem PRs, it may be useful to work with proposed changes locally
+until PRs get accepted upstream. To add gem hosted in local git repository:
+
+    bundle config set local.capybara /var/www/tmp/capybara
+
+Add gem to `Gemfile`:
+
+  gem "capybara", git: "https://github.com/teamcapybara/capybara", branch: "branch-name"
+
+and install:
+
+    bundle install
+    bundle show capybara
+
 ### Configuration
 
 If you have previously precomiled assets for production environment, you should

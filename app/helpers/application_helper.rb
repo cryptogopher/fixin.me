@@ -40,7 +40,7 @@ module ApplicationHelper
       #   controller.action.* => helpers.label.model.* => activerecord.attributes.model.*
       # First 2 levels are translated recursively.
       label(method, class: classes) do |builder|
-        translation = I18n.config.with(**handler) { deep_translate(method, **options) }
+        translation = I18n.with(**handler) { deep_translate(method, **options) }
         translation.presence || "#{builder.translation}:"
       end
     end
