@@ -1,6 +1,7 @@
 // Configure your import map in config/importmap.rb. Read more:
 // https://github.com/rails/importmap-rails
 import "@hotwired/turbo-rails"
+import "./turbo_actions.js"
 // TODO: access `data-` attributes through
 // `keyname in`/`dataset.keyname`/`delete dataset.keyname`
 
@@ -77,111 +78,13 @@ function numberValidate(event) {
 window.numberValidate = numberValidate
 
 
-// Turbo stream actions.
-const FORM_CONTROLS = ["BUTTON", "FIELDSET", "INPUT", "OPTGROUP", "OPTION", "SELECT",
-                       "TEXTAREA"]
-Turbo.StreamElement.prototype.disableElement = function(element) {
-  if (FORM_CONTROLS.includes(element.tagName)) {
-    element.setAttribute("disabled", "disabled")
-  } else {
-    element.setAttribute("aria-disabled", "true")
-    // NOTE: tabindex should not be disabled?
-    element.setAttribute("tabindex", "-1")
-  }
-}
-Turbo.StreamActions.disable = function() {
-  this.targetElements.forEach((e) => { this.disableElement(e) })
-}
-
-Turbo.StreamElement.prototype.enableElement = function(element) {
-  if (FORM_CONTROLS.includes(element.tagName)) {
-    element.removeAttribute("disabled")
-  } else {
-    element.removeAttribute("aria-disabled")
-    // Assume 'tabindex' is not used explicitly, so removing it is safe.
-    element.removeAttribute("tabindex")
-  }
-}
-Turbo.StreamActions.enable = function() {
-  this.targetElements.forEach((e) => { this.enableElement(e) })
-}
-
-// TODO: change to visibility = collapse to avoid width change?
-Turbo.StreamActions.hide = function() {
-  this.targetElements.forEach((e) => { e.style.display = "none" })
-}
-
-Turbo.StreamActions.show = function() {
-  this.targetElements.forEach((e) => { e.style.removeProperty("display") })
-}
-
-/*
-Turbo.StreamActions.collapse = function() {
-  this.targetElements.forEach((e) => { e.style.visibility = "collapse" })
-}
-*/
-
-Turbo.StreamActions.close_form = function() {
-  this.targetElements.forEach((e) => {
-    // Move focus if there's no focus or focus inside form being closed.
-    const focused = document.activeElement
-    if (!focused || (focused == document.body) || e.contains(focused)) {
-      let nextForm = e.parentElement.querySelector(`#${e.id} ~ tr:has([autofocus])`)
-      nextForm ??= e.parentElement.querySelector("tr:has([autofocus])")
-      nextForm?.querySelector("[autofocus]").focus()
-    }
-    document.getElementById(e.getAttribute("data-form")).remove()
-    if (e.hasAttribute("data-link")) {
-      this.enableElement(document.getElementById(e.getAttribute("data-link")))
-    }
-    if (e.hasAttribute("data-hidden-row")) {
-      document.getElementById(e.getAttribute("data-hidden-row")).removeAttribute("style")
-    }
-    e.remove()
-  })
-}
-
-Turbo.StreamActions.unselect = function() {
-  this.targetElements.forEach((e) => {
-    e.checked = false
-    this.enableElement(e)
-  })
-}
-
-Turbo.StreamActions.validate = function() {
-  this.targetElements.forEach((form) => {
-    this.templateContent.querySelectorAll("span").forEach((span) => {
-      var control = document.querySelector(
-        `[form="${form.id}"][name="${span.dataset.name}"]`
-      )
-      control.setCustomValidity(span.textContent)
-      // Add event listener in capture phase to clear custom validity before
-      // `[oninput]` or any other bubble phase handler is invoked.
-      //   https://www.quirksmode.org/js/events_order.html
-      // TODO: keep invalidating current value whenever user re-enters it. Store
-      // invalid value and validation message in `[data-invalid-message/value]`
-      // and check input value on "input" event (below) (using `[pattern]` may not
-      // be suitable due to inability to customize validtion message; also
-      // pattern may be used for other, conflicting purposes).
-      // After user executes any other action (while form is open), remove `[data-]`
-      // attributes and custom validation, as value may no longer be invalid.
-      control.addEventListener(
-        "input",
-        function(event) { event.target.setCustomValidity("") },
-        {capture: true, once: true}
-      )
-    })
-    form.reportValidity()
-  })
-}
-
-
 // Keyboard event processing handlers.
 function formProcessKey(event) {
   switch (event.key) {
     case "Escape":
       event.currentTarget.querySelector("a[name=cancel]").click()
       break
+    // TODO: allow new line inside <textarea> (submit with ctrl-enter?)
     case "Enter":
       event.currentTarget.querySelector("button[name=button]").click()
       event.preventDefault()
