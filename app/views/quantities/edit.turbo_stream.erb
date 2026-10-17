@@ -1,7 +1,7 @@
-<% ids = {row: dom_id(@quantity, :edit),
-          hidden_row: dom_id(@quantity),
+<% ids = {row: dom_target(:edit, @quantity),
+          hidden_row: dom_target(@quantity),
           link: nil,
-          form_tag: dom_id(@quantity, :edit, :form)} %>
+          form_tag: dom_target(:edit, @quantity, :form)} %>
 
 <%= turbo_stream.append :quantity_form do %>
   <%- tabular_form_with model: @quantity, html: {id: ids[:form_tag]} do %>

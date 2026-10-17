@@ -1,5 +1,5 @@
 <% @readouts.each do |r| %>
-  <%= turbo_stream.disable dom_id(r.quantity) %>
+  <%= turbo_stream.disable dom_target(r.quantity) %>
 <% end %>
 <%= render partial: 'form_repath' %>
 <%= turbo_stream.append :readouts do %>
