@@ -1,7 +1,5 @@
 <%= turbo_stream.close_form dom_target(:new, @quantity.parent || :quantity) %>
-<%= turbo_stream.remove :no_items %>
 <% @ancestors.each do |ancestor| %>
   <%= turbo_stream.replace ancestor %>
 <% end %>
-<%= @before ? turbo_stream.before(@before, @quantity) :
-  turbo_stream.append(:quantities, @quantity) %>
+<%= turbo_stream.before @before || :endmark, @quantity %>

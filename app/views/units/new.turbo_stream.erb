@@ -6,15 +6,10 @@
 
 <%= turbo_stream.disable ids[:link] -%>
 
-<%= turbo_stream.append :unit_form do %>
+<%= turbo_stream.append_all 'body' do %>
   <%- tabular_form_with model: @unit, html: {id: ids[:form_tag]} do |form| %>
     <%= form.hidden_field :base_id if @unit.base_id? %>
   <% end %>
 <% end %>
 
-<% if @unit.base_id? %>
-  <%= turbo_stream.remove ids[:row] %>
-  <%= turbo_stream.after @unit.base, partial: 'form', locals: ids %>
-<% else %>
-  <%= turbo_stream.prepend :units, partial: 'form', locals: ids %>
-<% end %>
+<%= turbo_stream.after @unit.base || :unit_, partial: 'form', locals: ids %>

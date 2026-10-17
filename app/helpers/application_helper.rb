@@ -92,6 +92,10 @@ module ApplicationHelper
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def #{selector}(method, options = {})
           options[:maxlength] ||= object.type_for_attribute(method).limit
+          # If [cols]/[size] is not set, minimum field width is controlled with
+          # stylesheet. To prevent browser estimating missing [cols]/[size]
+          # based on e.g. [maxlength], set it to 1.
+          options[:#{selector == :text_area ? :cols : :size}] ||= 1
           super
         end
       RUBY_EVAL
@@ -103,7 +107,7 @@ module ApplicationHelper
         options[:min] ||= Float::MIN_15.to_scientific
         options[:max] ||= Float::MAX_15.to_scientific
         options[:oninput] = 'numberValidate(event)'
-        options[:size] ||= 6
+        options[:size] ||= options[:class]&.split&.include?('hstretch') ? 1 : 6
         options[:step] ||= :any
         options[:value] = object.public_send("#{method}_before_type_cast")
       end

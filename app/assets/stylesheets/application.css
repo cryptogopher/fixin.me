@@ -24,6 +24,7 @@
  *
  * NOTE: style in a modular way, similar to how CSS @scope would be used,
  * to make transition easier once @scope is widely available. */
+/* TODO: change :root -> <html> ? */
 :root {
   --color-focus-gray: #f3f3f3;
   --color-border-gray: #dddddd;
@@ -171,6 +172,7 @@ table svg:not(:only-child) {
   width: 1.25em;
 }
 input:focus-visible,
+/* TODO: select:focus-visible is redundant with -within? */
 select:focus-visible,
 select:focus-within,
 /* TODO: how to achieve `summary:focus-within` for `::details-content`? */
@@ -301,6 +303,7 @@ header {
   grid-area: header;
 }
 
+/* TODO: change .navigation -> <nav> ? */
 .navigation {
   display: flex;
   grid-area: nav;
@@ -463,20 +466,27 @@ header {
 
 
 .items-table {
-  border-spacing: 0;
-  border: 1px solid var(--color-border-gray);
+  border: none;
   border-radius: 0.25em;
+  border-spacing: 0;
   font-size: 0.85rem;
   text-align: left;
 }
-.items-table thead {
-  font-size: 0.8rem;
+.items-table:has(tbody > tr > td) {
+  border: 1px solid var(--color-border-gray);
 }
-.items-table thead,
-.items-table tbody tr:hover {
+.items-table:has(tbody > tr > td) caption {
+  display: none;
+}
+.items-table tbody:not(:has(tr > td)){
+  visibility: collapse;
+}
+.items-table th,
+.items-table tr:where(:hover) {
   background-color: var(--color-focus-gray);
 }
 .items-table th {
+  font-size: 0.8rem;
   padding: 0.75em 0 0.75em 1em;
   text-align: center;
 }
@@ -559,6 +569,20 @@ header {
 }
 .hmin50 {
   min-width: 50%;
+}
+.hminnumber {
+  min-width: 5em;
+}
+.hmintext {
+  min-width: 6em;
+}
+.hstretch {
+  /* `width` conflicts with <input>/<textarea> size defined by [size]/[cols]
+   * attributes. It's best to not use these attributes (e.g. set them to 1) when
+   * setting width through stylesheet. */
+  /* NOTE: `field-sizing` can be considered after upgrade do FF >=152 */
+  width: -moz-available;
+  width: stretch;
 }
 .italic {
   color: var(--color-gray);

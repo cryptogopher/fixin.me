@@ -9,9 +9,9 @@
   <td style="--depth:<%= unit.base_id? ? 1 : 0 %>">
     <%= link_to unit, edit_unit_path(unit), class: 'link', onclick: 'this.blur();',
       data: {turbo_stream: true} %>
-  <td><%= unit.description %>
   <%# Closing <td> tag required to avoid whitespace inclusion for testing. %>
   <td class="ralign"><%= unit.multiplier.to_html if unit.base_id? %></td>
+  <td><%= unit.description %>
 
   <% if current_user.at_least(:active) %>
     <td class="flex">
