@@ -3,31 +3,29 @@
     <%= image_link_to t('.new_quantity'), 'plus-outline', new_quantity_path,
       id: :new_quantity_link, onclick: 'this.blur();', data: {turbo_stream: true} %>
   <% end %>
-  <%#= image_link_to t('.import_quantities'), 'download-outline', default_quantities_path,
-    class: 'tools-area' %>
+  <%#= image_link_to t('.import_quantities'), 'download-outline',
+    default_quantities_path, class: 'tools-area' %>
 </div>
 
-<%# TODO: remove? form can be inserted directly, e.g. at the end of index %>
-<%= tag.div class: 'main-area', id: :quantity_form %>
-
 <table class="main-area items-table">
-  <thead>
+  <caption class="hint"><%= t '.no_items' %></caption>
+
+  <tbody>
     <tr>
-      <th><%= Quantity.human_attribute_name(:name) %></th>
-      <th class="hexpand"><%= Quantity.human_attribute_name(:description) %></th>
-      <% if current_user.at_least(:active) %>
-        <th><%= t :actions %></th>
-        <th></th>
-      <% end %>
-    </tr>
-    <%= tag.tr id: "quantity_", hidden: true,
-               ondragover: "dragOver(event)", ondrop: "drop(event)",
-               ondragenter: "dragEnter(event)", ondragleave: "dragLeave(event)",
-               data: {drop_id: "quantity_", drop_id_param: "quantity[parent_id]"} do %>
-      <th colspan="4"><%= t '.top_level_drop' %></th>
+      <th class="hmintext"><%= Quantity.human_attribute_name(:name) %>
+      <th class="hexpand"><%= Quantity.human_attribute_name(:description) %>
+    <% if current_user.at_least(:active) %>
+      <th><%= t :actions %>
+      <th>
+
+    <tr id="quantity_" hidden
+      ondragover="dragOver(event)" ondrop="drop(event)"
+      ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"
+      data-drop-id="quantity_"
+      data-drop-id-param="<%= field_name(:quantity, :parent_id) %>">
+      <th colspan="4"><%= t '.top_level_drop' %>
     <% end %>
-  </thead>
-  <tbody id="quantities">
-    <%= render(@quantities) || render_no_items %>
-  </tbody>
+
+    <%= render @quantities %>
+    <tr id="endmark" hidden>
 </table>

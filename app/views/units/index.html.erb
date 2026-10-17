@@ -7,28 +7,27 @@
     class: 'tools-area' %>
 </div>
 
-<%# TODO: remove? form can be inserted directly, e.g. at the end of index %>
-<%= tag.div id: :unit_form %>
-
 <table class="main-area items-table">
-  <thead>
+  <caption class="hint"><%= t '.no_items' %></caption>
+
+  <tbody>
     <tr>
-      <th><%= Unit.human_attribute_name(:symbol) %></th>
-      <th class="hexpand"><%= Unit.human_attribute_name(:description) %></th>
-      <th><%= Unit.human_attribute_name(:multiplier) %></th>
-      <% if current_user.at_least(:active) %>
-        <th><%= t :actions %></th>
-        <th></th>
-      <% end %>
-    </tr>
-    <%= tag.tr id: "unit_", hidden: true,
-               ondragover: "dragOver(event)", ondrop: "drop(event)",
-               ondragenter: "dragEnter(event)", ondragleave: "dragLeave(event)",
-               data: {drop_id: "unit_", drop_id_param: "unit[base_id]"} do %>
-      <th colspan="5"><%= t '.top_level_drop' %></th>
+      <th class="hmintext"><%= Unit.human_attribute_name(:symbol) %>
+      <th class="hminnumber"><%= Unit.human_attribute_name(:multiplier) %>
+      <th class="hexpand"><%= Unit.human_attribute_name(:description) %>
+    <% if current_user.at_least(:active) %>
+      <th><%= t :actions %>
+      <th>
+
+    <tr id="unit_" hidden
+      ondragover="dragOver(event)" ondrop="drop(event)"
+      ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"
+      data-drop-id="unit_" data-drop-id-param="<%= field_name(:unit, :base_id) %>">
+      <th colspan="5"><%= t '.top_level_drop' %>
     <% end %>
-  </thead>
-  <tbody id="units">
-    <%= render(@units) || render_no_items %>
-  </tbody>
+
+    <%= render @units %>
+    <%# Hidden rows with IDs allow simplier row insertion by using only
+      turbo_stream #after/#before instead of #after + #prepend/#before + #append. %>
+    <tr id="endmark" hidden>
 </table>

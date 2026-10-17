@@ -3,11 +3,10 @@
           link: nil,
           form_tag: dom_target(:edit, @quantity, :form)} %>
 
-<%= turbo_stream.append :quantity_form do %>
+<%= turbo_stream.append_all 'body' do %>
   <%- tabular_form_with model: @quantity, html: {id: ids[:form_tag]} do %>
   <% end %>
 <% end %>
 
 <%= turbo_stream.hide ids[:hidden_row] %>
-<%= turbo_stream.remove ids[:row] %>
 <%= turbo_stream.after @quantity, partial: 'form', locals: ids -%>
