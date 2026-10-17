@@ -1,32 +1,32 @@
-<%= tag.tr id: dom_id(unit),
-           ondragstart: "dragStart(event)", ondragend: "dragEnd(event)",
-           ondragover: "dragOver(event)", ondrop: "drop(event)",
-           ondragenter: "dragEnter(event)", ondragleave: "dragLeave(event)",
-           data: {drag_path: rebase_unit_path(unit),
-                  drop_id: dom_id(unit.base || unit),
-                  drop_id_param: "unit[base_id]"} do %>
+<tr id="<%= dom_target(unit) %>"
+    ondragstart="dragStart(event)" ondragend="dragEnd(event)"
+    ondragover="dragOver(event)" ondrop="drop(event)"
+    ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"
+    data-drag-path="<%= rebase_unit_path(unit) %>"
+    data-drop-id="<%= dom_target(unit.base || unit) %>"
+    data-drop-id-param="<%= field_name(:unit, :base_id) %>">
 
   <td style="--depth:<%= unit.base_id? ? 1 : 0 %>">
     <%= link_to unit, edit_unit_path(unit), class: 'link', onclick: 'this.blur();',
       data: {turbo_stream: true} %>
-  </td>
-  <td><%= unit.description %></td>
+  <td><%= unit.description %>
+  <%# Closing <td> tag required to avoid whitespace inclusion for testing. %>
   <td class="ralign"><%= unit.multiplier.to_html if unit.base_id? %></td>
 
   <% if current_user.at_least(:active) %>
     <td class="flex">
       <% unless unit.base_id? %>
         <%= image_link_to t('.new_subunit'), 'plus-outline', new_unit_path(unit),
-          id: dom_id(unit, :new, :link), onclick: 'this.blur();', data: {turbo_stream: true} %>
+          id: dom_target(:new, unit, :link), onclick: 'this.blur();',
+          data: {turbo_stream: true} %>
       <% end %>
 
-      <%= image_button_to_if unit.movable?, t('.destroy'), 'delete-outline', unit_path(unit),
-        method: :delete %>
-    </td>
+      <%= image_button_to_if unit.movable?, t('.destroy'), 'delete-outline',
+        unit_path(unit), method: :delete %>
+
     <% if unit.movable? %>
-      <td class="handle" draggable="true">&#x283F</td>
+      <td class="handle" draggable="true">&#x283F
     <% else %>
-      <td></td>
+      <td>
     <% end %>
   <% end %>
-<% end %>

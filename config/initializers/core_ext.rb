@@ -9,10 +9,6 @@ ActiveSupport.on_load :action_dispatch_system_test_case do
   XPath::DSL.prepend CoreExt::XPath::DSL::NormalizeSpaceDefault
 end
 
-ActiveSupport.on_load :action_view do
-  ActionView::RecordIdentifier.prepend CoreExt::ActionView::RecordIdentifierWithSuffix
-end
-
 ActiveSupport.on_load :active_record do
   ActiveModel::Validations::NumericalityValidator
     .prepend CoreExt::ActiveModel::Validations::NumericalityValidatesPrecision

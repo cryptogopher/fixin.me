@@ -1,4 +1,4 @@
-<%= turbo_stream.close_form dom_id(@quantity, :edit) %>
+<%= turbo_stream.close_form dom_target(:edit, @quantity) %>
 <% @ancestors.push(@quantity).each do |ancestor| %>
   <%= turbo_stream.replace ancestor %>
 <% end %>

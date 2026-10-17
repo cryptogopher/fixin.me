@@ -1,6 +1,6 @@
 <%# TODO: add readout reordering by dragging %>
 <%= tabular_fields_for 'readouts[]', readout do |form| %>
-  <%- tag.tr id: dom_id(readout.quantity, :new, :readout) do %>
+  <%- tag.tr id: dom_target(:new, readout.quantity, :readout) do %>
     <td>
       <%# TODO: add grayed readout index (in separate column?) %>
       <%= readout.quantity.relative_pathname(@superquantity) %>
