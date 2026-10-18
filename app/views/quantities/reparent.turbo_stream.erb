@@ -1,7 +1,7 @@
 <% @previous_ancestors.union(@ancestors).each do |ancestor| %>
   <%= turbo_stream.replace ancestor %>
 <% end %>
-<% @self_and_progenies.each do |quantity| %>
+<% @quantities.each do |quantity| %>
   <%= turbo_stream.remove quantity %>
   <%= turbo_stream.before @before || :endmark, quantity %>
 <% end %>
