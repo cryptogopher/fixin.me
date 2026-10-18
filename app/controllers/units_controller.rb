@@ -18,7 +18,7 @@ class UnitsController < ApplicationController
   def create
     @unit = current_user.units.new(params.expect(Unit::ATTRIBUTES))
     if @unit.save
-      @before = @unit.successive
+      @before = @unit.succeeding
       flash.now.notice = t('.success', unit: @unit)
     else
       render_errors @unit
@@ -45,7 +45,7 @@ class UnitsController < ApplicationController
     @previous_base = @unit.base
     @unit.update!(unit_params)
 
-    @before = @unit.successive
+    @before = @unit.succeeding
     if @unit.multiplier_previously_changed?
       flash.now.notice = t(".multiplier_reset", unit: @unit)
     end

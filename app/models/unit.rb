@@ -3,6 +3,7 @@ class Unit < ApplicationRecord
 
   belongs_to :user, optional: true
   belongs_to :base, optional: true, class_name: "Unit"
+  # TODO: use #alias_attribute after Rails upgrade?
   alias_method :parent, :base
   has_many :subunits, class_name: "Unit", inverse_of: :base,
     dependent: :restrict_with_error
@@ -111,13 +112,13 @@ class Unit < ApplicationRecord
       .update!(base: recipient_base, **params)
   end
 
-  def successive
+  def succeeding
     units = Unit.arel_table
-    Unit.with(units_with_lag: user.units.left_outer_joins(:base).select(
+    Unit.with(lagging_units: user.units.left_outer_joins(:base).select(
       units[Arel.star],
       Arel::Nodes::NamedFunction.new('LAG', [units[:id]])
         .over(Arel::Nodes::Window.new.order(Unit.ordered.order_values)).as('lag_id')
-    )).from(Arel::Table.new(:units_with_lag).as(:units))
+    )).from(Arel::Table.new(:lagging_units).as(:units))
       .where(units[:lag_id].eq(id)).take
   end
 end

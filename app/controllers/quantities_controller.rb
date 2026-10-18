@@ -19,7 +19,7 @@ class QuantitiesController < ApplicationController
   def create
     @quantity = current_user.quantities.new(quantity_params)
     if @quantity.save
-      @before = @quantity.successive
+      @before = @quantity.succeeding
       @ancestors = @quantity.ancestors
       flash.now.notice = t('.success', quantity: @quantity)
     else
@@ -45,8 +45,9 @@ class QuantitiesController < ApplicationController
 
     if @quantity.update(permitted)
       @ancestors = @quantity.ancestors
-      @self_and_progenies = @quantity.with_progenies
-      @before = @self_and_progenies.last.successive
+      # TODO: simplify into 1 query (see #succeeding comment)
+      @quantities = @quantity.with_progenies
+      @before = @quantities.last.succeeding
     else
       # Until UI blocks all disallowed reparents, render error messages if present.
       flash.now.alert = @quantity.errors.full_messages

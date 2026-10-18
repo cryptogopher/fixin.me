@@ -18,6 +18,9 @@ class Quantity < ApplicationRecord
   end
   validates :name, presence: true, uniqueness: {scope: [:user_id, :parent_id]},
     length: {maximum: type_for_attribute(:name).limit}
+  # FIXME: length validation for :text type column is probably wrong; reported
+  # limit is in bytes (at least for MySQL) and check is for #length (i.e.
+  # characters); this doesn't seem to apply to :string (implemented as varchar)
   validates :description, length: {maximum: type_for_attribute(:description).limit}
 
   # Update :depths of progenies after parent change
@@ -62,26 +65,42 @@ class Quantity < ApplicationRecord
   scope :defaults, ->{ where(user: nil) }
 
   # Return: ordered [sub]hierarchy
-  scope :ordered, ->(root: nil, include_root: true) {
-    numbered = Arel::Table.new('numbered')
+  scope :ordered, ->(**kwargs) {
+    with_path(**kwargs).order(arel_table[:path])
+  }
 
-    self.model.with(numbered: numbered(:parent_id, :name)).with_recursive(arel_table.name => [
-      numbered.project(
-        numbered[Arel.star],
-        numbered.cast(numbered[:child_number], 'BINARY').as('path')
-      ).where(numbered[root && include_root ? :id : :parent_id].eq(root)),
-      numbered.project(
-        numbered[Arel.star],
-        arel_table[:path].concat(numbered[:child_number])
-      ).join(arel_table).on(numbered[:parent_id].eq(arel_table[:id]))
-    ]).order(arel_table[:path])
+  # TODO: sort recursive CTE using ORDER BY; it's supported by SQLite, so
+  # drop MySQL until it is available (?)
+  # Only ORDER BY allows proper i.e. not placing limits on user data and
+  # efficient with regard to paging (LIMIT/OFFSET) depth-first search.
+  # Sorting based on numbering is less elegant/efficient (MySQL: ROW_NUMBER cannot
+  # be used inside recursive CTE and needs separate SELECT,
+  # https://bugs.mysql.com/bug.php?id=96538).
+  # Sorting based on pathname requires I) padding to maximum column length or
+  # II) delimiter which a) cannot be used in sorted column and b) sorts before
+  # anything else (this adds complexity; NULL cannot be used when sorting).
+  # Sorting based on ARRAY is only available on PostgreSQL.
+  scope :with_path, ->(root: nil, include_root: true) {
+    with_number = Arel::Table.new('with_number')
+
+    self.model.with(with_number: with_number(:parent_id, :name))
+      .with_recursive(arel_table.name => [
+        with_number.project(
+          with_number[Arel.star],
+          with_number.cast(with_number[:number], 'BINARY').as('path')
+        ).where(with_number[root && include_root ? :id : :parent_id].eq(root)),
+        with_number.project(
+          with_number[Arel.star],
+          arel_table[:path].concat(with_number[:number])
+        ).join(arel_table).on(with_number[:parent_id].eq(arel_table[:id]))
+      ])
   }
 
   # TODO: extract named functions to custom Arel extension
   # NOTE: once recursive queries allow use of window functions, this scope can
   # be merged with :ordered
   # https://gist.github.com/ProGM/c6df08da14708dcc28b5ca325df37ceb#extending-arel
-  scope :numbered, ->(parent_column, order_column) {
+  scope :with_number, ->(parent_column, order_column) {
     select(
       arel_table[Arel.star],
       Arel::Nodes::NamedFunction.new(
@@ -94,7 +113,7 @@ class Quantity < ApplicationRecord
           ).from(arel_table),
           Arel::Nodes.build_quoted('0')
         ],
-      ).as('child_number')
+      ).as('number')
     )
   }
 
@@ -132,15 +151,17 @@ class Quantity < ApplicationRecord
       .order(arel_table[:depth].desc)
   }
 
-  # Return: successive record in order of appearance; used for partial view reload
-  def successive
+  # Return: succeeding record in order of appearance, used for partial view reload.
+  # TODO: add scope returning succeeding element for multiple records
+  def succeeding
     quantities = Quantity.arel_table
-    Quantity.with(
-      quantities: user.quantities.ordered.select(
-        quantities[Arel.star],
-        Arel::Nodes::NamedFunction.new('LAG', [quantities[:id]]).over.as('lag_id')
-      )
-    ).where(quantities[:lag_id].eq(id)).first
+    Quantity.with(lagging_quantities: user.quantities.with_path.select(
+      quantities[Arel.star],
+      # For SQLite 'OVER () ORDER BY x' is not equivalent to 'OVER (ORDER BY x)'.
+      Arel::Nodes::NamedFunction.new('LAG', [quantities[:id]])
+        .over(Arel::Nodes::Window.new.order(Quantity.ordered.order_values)).as('lag_id')
+    )).from(Arel::Table.new(:lagging_quantities).as(:quantities))
+      .where(quantities[:lag_id].eq(id)).take
   end
 
   def with_progenies
