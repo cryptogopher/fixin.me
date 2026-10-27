@@ -10,6 +10,7 @@ require "application_system_test_case"
 #   * user with single unit,
 #   * user with no units.
 # Users need to be active and confirmed. Units w/ and w/o description.
+# TODO: use :table_row instead of css locators (tbody etc.), optionally without locator
 
 class UnitsTest < ApplicationSystemTestCase
   def sign_in(...)
@@ -35,7 +36,7 @@ class UnitsTest < ApplicationSystemTestCase
     sign_in
 
     if @user.units.empty?
-      assert_selector :table, rows: [[t('units.no_items')]]
+      assert_selector :table, caption: t('units.index.no_items'), rows: []
     else
       column = column(:symbol)
       assert_selector :table, rows_with: @user.units.map { |u| {column => u.symbol} }
@@ -56,6 +57,8 @@ class UnitsTest < ApplicationSystemTestCase
 
     attributes = [:symbol, :description]
     attributes << :multiplier if action == :new_subunit
+    # TODO: verify form location and focus
+    # action == :new_subunit ? first(:table_row) : :table_row, after: {column(:symbol) => ...}
     within :table_row, {}, with_focus: true do
       attributes.map! do |name|
         field = find(:table_cell, column(name)).find(:fillable_field)
@@ -90,13 +93,16 @@ class UnitsTest < ApplicationSystemTestCase
 
       multiplier = attributes.delete(:multiplier).to_f if action == :new_subunit
       within :table_row, attributes.transform_keys { |k| column(k) } do
-        assert_selector :table_cell, column(:multiplier), with: multiplier if multiplier
+        assert_selector :table_cell, column(:multiplier), value: multiplier
       end
     end
     assert_no_selector :link, disabled: true,
       exact_text: Regexp.union(link_labels.values)
 
+    # TODO: 50/50 open new form and check if alert is no longer visible? #91
+
     refresh
+    # TODO: change to assert_selector :table, rows: ...
     assert_equal new_symbols, list_symbols
   end
 
@@ -132,23 +138,24 @@ class UnitsTest < ApplicationSystemTestCase
     sign_in(user: users.select { |u| u.confirmed? && u.units.many? }.sample)
 
     link = all(:link_or_button, exact_text: t('units.unit.destroy')).sample
-    symbol = link.ancestor('tr').first(:link).text
-    index = link.ancestor('tbody').all('tr').index { |e| e.first(:link).text == symbol }
-    unit = @user.units.find_by(symbol: symbol)
+    symbol = link.ancestor(:table_row).find(:table_cell, column(:symbol)).text
+    index = all(:table_cell, column(:symbol)).map(&:text).index(symbol)
+    unit = @user.units.find_sole_by(symbol: symbol)
 
     link.click
     assert_selector '.flash.notice'
     if unit.base_id?
       find_link(unit.base.symbol).ancestor('tr').click_on(t('units.unit.new_subunit'))
-      fill_in 'unit[multiplier]', with: unit.multiplier
+      find(:table_cell, column(:multiplier), fillable: true)
+        .fill_in with: unit.multiplier
     else
       click_on t('units.index.new_unit')
     end
-    fill_in 'unit[symbol]', with: unit.symbol
+    find(:table_cell, column(:symbol), fillable: true).fill_in with: unit.symbol
     click_on t('helpers.submit.create')
 
-    within "tbody > tr:nth-child(#{index+1})" do
-      assert_selector :link, exact_text: symbol
+    within :table_row, index+1 do
+      assert_selector :table_cell, column(:symbol), exact_text: symbol
     end
   end
 
@@ -186,9 +193,11 @@ class UnitsTest < ApplicationSystemTestCase
     click_on t(:cancel)
 
     assert_no_selector '.flash.alert'
+    # TODO: change to assert_selector :table, rows: ...
     assert_equal symbols, list_symbols
     refresh
     assert_no_selector '.flash.alert'
+    # TODO: change to assert_selector :table, rows: ...
     assert_equal symbols, list_symbols
   end
 
@@ -235,11 +244,11 @@ class UnitsTest < ApplicationSystemTestCase
   end
 
   # NOTE: extend with any add/edit link
-  test "new form closes on escape key" do
+  test "new and edit forms close on escape key" do
     sign_in
     click_on t('units.index.new_unit')
-    first('tbody > tr').all(:field).sample.send_keys :escape
-    within 'tbody' do
+    first(:table_row).all(:field).sample.send_keys :escape
+    within :table do
       assert_no_selector :fillable_field
     end
   end
@@ -272,8 +281,8 @@ class UnitsTest < ApplicationSystemTestCase
       end
     end
 
-    assert_selector :table, rows: [[t('units.no_items')]]
+    assert_selector :table, caption: t('units.index.no_items'), rows: []
     refresh
-    assert_selector :table, rows: [[t('units.no_items')]]
+    assert_selector :table, caption: t('units.index.no_items'), rows: []
   end
 end
