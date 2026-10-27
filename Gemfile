@@ -40,7 +40,9 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
+  # TODO: move back from git after this PR is included:
+  #   https://github.com/teamcapybara/capybara/pull/2862
+  gem "capybara", git: "https://github.com/teamcapybara/capybara", branch: "table_row-optional-header-and-integer-locator"
   gem "selenium-webdriver"
 end
 

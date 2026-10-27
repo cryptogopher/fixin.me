@@ -73,6 +73,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       rows_conditions = rows.map { |row| match_row(row) }.reduce(:&)
       xpath[match_row_count(rows.size)][rows_conditions]
     end
+
+    # Override to count only data rows, to make it consistent with #match_row.
+    def match_row_count(size)
+      XPath.descendant(:tr).where(XPath.descendant(:td)).count.equals(size)
+    end
   end
 
   # This regex has to be only strict enough to properly reconstruct number. It
@@ -87,6 +92,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # Based on Capybara :table and :table_row selectors.
   Capybara.add_selector(:table_cell, locator_type: [String, Symbol]) do
     xpath do |locator|
+      # TODO: make sure to only include visible column headers
       column = XPath.string.n.is(locator.to_s)
       header_xp = XPath.ancestor(:table)[1].descendant(:tr)[1].descendant(:th)[column]
       position_xp = XPath.position.equals(header_xp.preceding_sibling.count.plus(1))
@@ -97,13 +103,15 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       value ? xpath.where(XPath.descendant(:input, :select, :textarea)) : xpath
     end
 
-    node_filter(:with) do |node, expected|
+    node_filter(:value) do |node, expected|
       value =
         case expected
         when Float
           node.text.match(NUMBER) { |m| "#{m['base'] || '1'}e#{m['exp']&.lstrip}".to_f }
+        when Integer
+          node.to_i
         else
-          node.text
+          node.text.presence || nil
         end
       (expected == value).tap do |result|
         add_error("Expected value to be #{expected.inspect}" \
@@ -114,6 +122,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   Capybara.modify_selector(:table_row) do
     # Beware: filters of #boolean? type are called within different context.
+    # TODO: add in separate FilterSet and import using #filter_set?
+    # TODO: replace node_filter with expression_filter `:focus-within`?
     node_filter(:with_focus, :boolean) do |node, value|
       node.has_selector?(':focus') == value
     end
