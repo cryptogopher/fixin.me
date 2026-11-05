@@ -16,18 +16,26 @@
       <th class="hminnumber"><%= Unit.human_attribute_name(:multiplier) %>
       <th class="hexpand"><%= Unit.human_attribute_name(:description) %>
     <% if current_user.at_least(:active) %>
-      <th><%= t :actions %>
-      <th>
+      <th colspan="3"><%= t :actions %>
 
     <tr id="unit_" hidden
       ondragover="dragOver(event)" ondrop="drop(event)"
       ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"
       data-drop-id="unit_" data-drop-id-param="<%= field_name(:unit, :base_id) %>">
-      <th colspan="5"><%= t '.top_level_drop' %>
+      <th colspan="6"><%= t '.top_level_drop' %>
     <% end %>
 
     <%= render @units %>
-    <%# Hidden rows with IDs allow simplier row insertion by using only
+
+  <% if current_user.at_least(:active) %>
+    <%# Hidden header and `#endmark` rows allows simplier row insertion by using only
       turbo_stream #after/#before instead of #after + #prepend/#before + #append. %>
+    <%# TODO: replace with custom turbo_stream action, e.g. #afterrow that #prepend-s
+      if ID has `rows` property (`rows` in object) and #after otherwise? %>
     <tr id="endmark" hidden>
+
+  <tfoot>
+    <%# Insert form to prevent actions column width change on form toggle. %>
+    <%= render partial: 'form', locals: {hidden: true} %>
+  <% end %>
 </table>

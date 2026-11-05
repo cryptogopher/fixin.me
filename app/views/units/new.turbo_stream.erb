@@ -1,15 +1,17 @@
 <% target_id = dom_target(:new, @unit.base || :unit) %>
-<% ids = {row: target_id,
-          hidden_row: nil,
-          link: dom_target(target_id, :link),
-          form_tag: dom_target(target_id, :form)} %>
+<% attrs = {record: @unit,
+            id: target_id,
+            data: {form: dom_target(target_id, :form),
+                   hidden_row: nil,
+                   link: dom_target(target_id, :link)}} %>
 
-<%= turbo_stream.disable ids[:link] -%>
+<%= turbo_stream.disable attrs[:data][:link] -%>
+<%# TODO: disable base unit delete button if subunit; same for quantities %>
 
 <%= turbo_stream.append_all 'body' do %>
-  <%- tabular_form_with model: @unit, html: {id: ids[:form_tag]} do |form| %>
+  <%- tabular_form_with model: @unit, html: {id: attrs[:data][:form]} do |form| %>
     <%= form.hidden_field :base_id if @unit.base_id? %>
   <% end %>
 <% end %>
 
-<%= turbo_stream.after @unit.base || :unit_, partial: 'form', locals: ids %>
+<%= turbo_stream.after @unit.base || :unit_, partial: 'form', locals: attrs %>

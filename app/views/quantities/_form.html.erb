@@ -1,16 +1,16 @@
-<%= tabular_fields_for @quantity, form: form_tag do |form| %>
-  <%- tag.tr id: row, class: "form", onkeydown: "formProcessKey(event)",
-    data: {link: link, form: form_tag, hidden_row: hidden_row} do %>
+<%# locals: (record: Quantity.new, **attrs) %>
+<%= tabular_fields_for record, form: attrs.dig(:data, :form) do |form| %>
+  <%- tag.tr class: "form", onkeydown: "formProcessKey(event)", **attrs do %>
 
-    <td style="--depth:<%= @quantity.depth %>">
+    <td style="--depth:<%= form.object.depth %>">
       <%= form.text_field :name, autofocus: true, class: 'hstretch', required: true %>
     <td><%= form.text_area :description, class: 'hstretch', escape: false, rows: 1 %>
 
-    <td class="flex">
-      <%= form.button %>
-      <%= image_link_to t(:cancel), "close-outline", quantities_path,
-        class: 'dangerous', name: :cancel,
-        onclick: render_turbo_stream('form_close', {row: row}) %>
+    <td><%= form.button %>
     <td>
+      <%= image_link_to t(:discard), "close-outline", quantities_path,
+        class: 'dangerous', name: :discard,
+        onclick: render_turbo_stream('form_close', {id: attrs[:id]}) %>
+    <td><!-- TODO: add aria-disabled drag handle with proper vertical alignment? -->
   <% end %>
 <% end %>

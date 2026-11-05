@@ -76,7 +76,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
     # Override to count only data rows, to make it consistent with #match_row.
     def match_row_count(size)
-      XPath.descendant(:tr).where(XPath.descendant(:td)).count.equals(size)
+      XPath.descendant(:tbody).descendant(:tr)[XPath.descendant(:td)].count.equals(size)
     end
   end
 
@@ -92,15 +92,22 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # Based on Capybara :table and :table_row selectors.
   Capybara.add_selector(:table_cell, locator_type: [String, Symbol]) do
     xpath do |locator|
-      # TODO: make sure to only include visible column headers
-      column = XPath.string.n.is(locator.to_s)
-      header_xp = XPath.ancestor(:table)[1].descendant(:tr)[1].descendant(:th)[column]
-      position_xp = XPath.position.equals(header_xp.preceding_sibling.count.plus(1))
-      XPath.descendant(:td).where(header_xp.boolean & position_xp)
+      xpath = XPath.descendant(:td)
+      case locator
+      when String, Symbol
+        # TODO: make sure to only include visible column headers
+        column = XPath.string.n.is(locator.to_s)
+        header_xp = XPath.ancestor(:table)[1].descendant(:tr)[1].descendant(:th)[column]
+        position_xp = XPath.position.equals(header_xp.preceding_sibling.count.plus(1))
+        xpath.where(header_xp.boolean & position_xp)
+      else
+        xpath
+      end
     end
 
     expression_filter(:fillable) do |xpath, value|
-      value ? xpath.where(XPath.descendant(:input, :select, :textarea)) : xpath
+      value ? xpath[XPath.descendant(:input, :select, :textarea)
+        .where(!XPath.attr(:type).one_of('submit', 'hidden'))] : xpath
     end
 
     node_filter(:value) do |node, expected|

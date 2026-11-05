@@ -14,13 +14,13 @@
   <td><%= unit.description %>
 
   <% if current_user.at_least(:active) %>
-    <td class="flex">
+    <td>
       <% unless unit.base_id? %>
         <%= image_link_to t('.new_subunit'), 'plus-outline', new_unit_path(unit),
           id: dom_target(:new, unit, :link), onclick: 'this.blur();',
           data: {turbo_stream: true} %>
       <% end %>
-
+    <td>
       <%= image_button_to_if unit.movable?, t('.destroy'), 'delete-outline',
         unit_path(unit), method: :delete %>
 

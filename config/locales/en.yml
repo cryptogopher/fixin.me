@@ -88,8 +88,6 @@ en:
         unconfirmed_email_html: >
           Awaiting confirmation for:<br><em>(since %{confirmation_sent_at})</em>
     submit:
-      create: Create
-      update: Update
       user:
         update: Update profile
   layouts:
@@ -181,10 +179,11 @@ en:
   add: Add
   apply: Apply
   back: Back
-  cancel: Cancel
   delete: Delete
+  discard: Discard
   :no: 'no'
   register: Register
+  save: Save
   sign_in: Sign in
   recover_password: Recover password
   resend_confirmation: Resend confirmation

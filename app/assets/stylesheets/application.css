@@ -72,10 +72,20 @@
   fill: var(--color-border-gray) !important;
   pointer-events: none !important;
 }
-/* Styles set `display` without distinguishing between [hidden] elements, making
- * them visible. */
+/* For hidden elements that need to influence layout and/or are only temporarily
+ * hidden use [hidden=until-found] instead of [hidden] to:
+ *  - avoid hiding with `display: none` as `display` may be overridden by
+ *  selectors with greater specificity and element may become visible,
+ *  - use `visibility: collapse` for hiding, to avoid excessive resizing.
+ * TODO: change to `until-found` after upgrade to Rails > 8.1.4 (#59338)
+ *  - change hidden values in index <tr>s
+ *  - check if toggleAttribute("hidden") works properly (use turbo action #hide?)
+[hidden=until-found] {
+  visibility: collapse;
+}*/
 [hidden] {
-  display: none !important;
+  display: revert;
+  visibility: collapse;
 }
 
 
@@ -229,6 +239,7 @@ pre {
   display: flex;
   fill: var(--color-gray);
   font-weight: bold;
+  justify-content: center;
 }
 .button {
   border: 1px solid var(--color-gray);
@@ -252,6 +263,7 @@ table .button {
   font-weight: normal;
   height: 100%;
   padding: 0.4em;
+  width: 100%;
 }
 .button:focus-visible,
 .tab:focus-visible,
@@ -460,25 +472,26 @@ header {
 .tabular-form table td:last-child {
   padding-inline-end: 0;
 }
-.tabular-form table :is(form, input, select, textarea):only-child {
-  margin-inline-start: 0;
+.tabular-form table :is(input, select, textarea) {
+  margin-inline: 0;
 }
 
 
+/* FIXME: <button> has different height (28px) inside <td> than <a> (29px) */
 .items-table {
   border: none;
-  border-radius: 0.25em;
   border-spacing: 0;
   font-size: 0.85rem;
   text-align: left;
 }
-.items-table:has(tbody > tr > td) {
+.items-table:has(> tbody > tr > td) {
   border: 1px solid var(--color-border-gray);
+  border-radius: 0.25em;
 }
-.items-table:has(tbody > tr > td) caption {
+.items-table:has(> tbody > tr > td) caption {
   display: none;
 }
-.items-table tbody:not(:has(tr > td)){
+.items-table tbody:not(:has(> tr > td)) {
   visibility: collapse;
 }
 .items-table th,
@@ -496,13 +509,18 @@ header {
 .items-table td {
   border-top: 1px solid var(--color-border-gray);
   height: 2.4em;
-  padding: 0.1em 0 0.1em calc(1em + var(--depth) * 0.8em);
+  padding: 0.1em 0.5em;
 }
+.items-table td[style*="--depth"] {
+  padding-inline-start: calc(1em + var(--depth) * 0.8em);
+}
+.items-table td:has(> .button, > :where(form) > .button),
 .items-table td:last-child {
   padding-inline-end: 0.1em;
 }
-.items-table :is(form, input, select, textarea):only-child {
-  margin-inline-start: calc(-0.4em - 0.9px);
+/* Vertically align text inside form controls with ordinary data cells. */
+.items-table :is(input, select, textarea) {
+  margin-inline: calc(-0.4em - 0.9px);
 }
 /* For <a> to fill table cell completely, we use an `::after` pseudoelement. */
 /* TODO: expand to whole row? will require adjusting z-index on inputs/buttons */

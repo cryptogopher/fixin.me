@@ -15,17 +15,22 @@
       <th class="hmintext"><%= Quantity.human_attribute_name(:name) %>
       <th class="hexpand"><%= Quantity.human_attribute_name(:description) %>
     <% if current_user.at_least(:active) %>
-      <th><%= t :actions %>
-      <th>
+      <th colspan="3"><%= t :actions %>
 
     <tr id="quantity_" hidden
       ondragover="dragOver(event)" ondrop="drop(event)"
       ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"
       data-drop-id="quantity_"
       data-drop-id-param="<%= field_name(:quantity, :parent_id) %>">
-      <th colspan="4"><%= t '.top_level_drop' %>
+      <th colspan="5"><%= t '.top_level_drop' %>
     <% end %>
 
     <%= render @quantities %>
+
+  <% if current_user.at_least(:active) %>
     <tr id="endmark" hidden>
+
+  <tfoot>
+    <%= render partial: 'form', locals: {hidden: true} %>
+  <% end %>
 </table>

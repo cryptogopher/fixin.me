@@ -23,6 +23,8 @@ class Quantity < ApplicationRecord
   # characters); this doesn't seem to apply to :string (implemented as varchar)
   validates :description, length: {maximum: type_for_attribute(:description).limit}
 
+  # TODO: initialize `depth` to `parent.depth + 1`
+
   # Update :depths of progenies after parent change
   before_save if: :parent_changed? do
     self[:depth] = parent&.depth&.succ || 0

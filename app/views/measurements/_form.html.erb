@@ -33,7 +33,7 @@
 
   <div class="flex reverse">
     <%= form.button id: :create_measurement_button, disabled: true -%>
-    <%= image_link_to t(:cancel), "close-outline", measurements_path, name: :cancel,
+    <%= image_link_to t(:discard), "close-outline", measurements_path, name: :discard,
       class: 'auxiliary dangerous', onclick: render_turbo_stream('form_close') %>
   </div>
 <% end %>

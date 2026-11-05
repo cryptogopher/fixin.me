@@ -82,7 +82,7 @@ window.numberValidate = numberValidate
 function formProcessKey(event) {
   switch (event.key) {
     case "Escape":
-      event.currentTarget.querySelector("a[name=cancel]").click()
+      event.currentTarget.querySelector("a[name=discard]").click()
       break
     // TODO: allow new line inside <textarea> (submit with ctrl-enter?)
     case "Enter":

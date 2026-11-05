@@ -127,8 +127,7 @@ module ApplicationHelper
     private
 
     def submit_default_value
-      svg_name = object ? (object.persisted? ? 'update' : 'plus-circle-outline') : ''
-      @template.svg_tag(svg_name, super)
+      @template.svg_tag('check-outline', I18n.t(:"save"))
     end
   end
 
@@ -151,6 +150,8 @@ module ApplicationHelper
   def svg_tag(source, label = nil, options = {})
     label, options = nil, label if label.is_a? Hash
     svg_tag = tag.svg(**options) do
+      # TODO: move pictograms to 1 file with unique IDs instead of `icon`
+      # TODO: add test/rake task to detect unused and missing pictograms
       tag.use(href: image_path("#{source}.svg") + '#icon')
     end
     label.blank? ? svg_tag : svg_tag + tag.span(label)

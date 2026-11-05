@@ -1,12 +1,13 @@
-<% ids = {row: dom_target(:edit, @quantity),
-          hidden_row: dom_target(@quantity),
-          link: nil,
-          form_tag: dom_target(:edit, @quantity, :form)} %>
+<% attrs = {record: @quantity,
+            id: dom_target(:edit, @quantity),
+            data: {form: dom_target(:edit, @quantity, :form),
+                   hidden_row: dom_target(@quantity),
+                   link: nil}} %>
 
 <%= turbo_stream.append_all 'body' do %>
-  <%- tabular_form_with model: @quantity, html: {id: ids[:form_tag]} do %>
+  <%- tabular_form_with model: @quantity, html: {id: attrs[:data][:form]} do %>
   <% end %>
 <% end %>
 
-<%= turbo_stream.hide ids[:hidden_row] %>
-<%= turbo_stream.after @quantity, partial: 'form', locals: ids -%>
+<%= turbo_stream.hide attrs[:data][:hidden_row] %>
+<%= turbo_stream.after @quantity, partial: 'form', locals: attrs -%>

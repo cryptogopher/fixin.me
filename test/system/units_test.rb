@@ -79,7 +79,7 @@ class UnitsTest < ApplicationSystemTestCase
         [name, value]
       end
 
-      click_on t('helpers.submit.create')
+      click_on t(:save)
     end
     attributes = attributes.to_h
 
@@ -152,7 +152,7 @@ class UnitsTest < ApplicationSystemTestCase
       click_on t('units.index.new_unit')
     end
     find(:table_cell, column(:symbol), fillable: true).fill_in with: unit.symbol
-    click_on t('helpers.submit.create')
+    click_on t(:save)
 
     within :table_row, index+1 do
       assert_selector :table_cell, column(:symbol), exact_text: symbol
@@ -190,7 +190,7 @@ class UnitsTest < ApplicationSystemTestCase
     else
       assert_matches_selector link, :link, disabled: true
     end
-    click_on t(:cancel)
+    click_on t(:discard)
 
     assert_no_selector '.flash.alert'
     # TODO: change to assert_selector :table, rows: ...
@@ -258,11 +258,25 @@ class UnitsTest < ApplicationSystemTestCase
     sign_in
     click_on t('units.index.new_unit')
     within 'tbody' do
-      find(:link_or_button, exact_text: t(:cancel)).click
+      find(:link_or_button, exact_text: t(:discard)).click
       assert_no_selector :fillable_field
     end
     click_on t('units.index.new_unit')
     assert_selector 'tbody > tr:has(input, textarea)'
+  end
+
+  test "new and edit forms open without changing table columns width" do
+    sign_in
+    width = if has_selector?(:table_row)
+              -> { all(:table_row).sample.all(:table_cell).map { |c| c.rect.width } }
+            else
+              link_labels.slice!(:new_unit)
+              -> { find(:table).rect.width }
+            end
+    assert_no_changes width do
+      all(:link, exact_text: link_labels.values.sample).sample.click
+      assert_selector :table_cell, fillable: true
+    end
   end
 
   test "rebase" do
