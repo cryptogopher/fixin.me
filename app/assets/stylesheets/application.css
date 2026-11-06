@@ -157,6 +157,11 @@ input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+table {
+  border: none;
+  border-spacing: 0;
+  font-size: 0.85rem;
+}
 /* Text color of table form controls:
  *  - black for row/table forms,
  *  - inherited for internal (column specific) buttons/forms. */
@@ -457,10 +462,7 @@ header {
   padding-block: 0;
 }
 
-.tabular-form table {
-  border: none;
-  border-spacing: 0;
-}
+
 .tabular-form table td {
   border: none;
   padding-inline-start: 0.4em;
@@ -472,18 +474,9 @@ header {
 .tabular-form table td:last-child {
   padding-inline-end: 0;
 }
-.tabular-form table :is(input, select, textarea) {
-  margin-inline: 0;
-}
 
 
 /* FIXME: <button> has different height (28px) inside <td> than <a> (29px) */
-.items-table {
-  border: none;
-  border-spacing: 0;
-  font-size: 0.85rem;
-  text-align: left;
-}
 .items-table:has(> tbody > tr > td) {
   border: 1px solid var(--color-border-gray);
   border-radius: 0.25em;
@@ -597,7 +590,7 @@ header {
 .hstretch {
   /* `width` conflicts with <input>/<textarea> size defined by [size]/[cols]
    * attributes. It's best to not use these attributes (e.g. set them to 1) when
-   * setting width through stylesheet. */
+   * setting width through stylesheet. Minimum width can be set with `min-width`. */
   /* NOTE: `field-sizing` can be considered after upgrade do FF >=152 */
   width: -moz-available;
   width: stretch;
