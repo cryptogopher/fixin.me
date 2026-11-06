@@ -98,12 +98,12 @@ en:
       source_code: Get code
   measurements:
     navigation: Measurements
-    no_items: There are no measurements taken. You can Add some now.
     form:
       select_quantity: select quantities...
       taken_at_html: Measurement taken at&emsp;
     index:
       new_measurement: Add measurement
+      no_items: There are no measurements taken. You can Add some now.
   quantities:
     navigation: Quantities
     quantity:
