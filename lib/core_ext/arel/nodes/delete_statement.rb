@@ -1,4 +1,4 @@
-module CoreExt::Arel::Nodes::UpdateStatementCteUpdateAndDelete
+module CoreExt::Arel::Nodes::DeleteStatement
   attr_accessor :with
 
   def initialize(...)

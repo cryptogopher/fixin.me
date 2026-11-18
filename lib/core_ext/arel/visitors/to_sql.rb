@@ -1,4 +1,4 @@
-module CoreExt::Arel::Visitors::ToSqlCteUpdateAndDelete
+module CoreExt::Arel::Visitors::ToSql
   def visit_Arel_Nodes_DeleteStatement(o, collector)
     if o.with
       collector = visit o.with, collector

@@ -1,4 +1,4 @@
-module CoreExt::ActiveModel::Validations::NumericalityValidatesPrecision
+module CoreExt::ActiveModel::Validations::NumericalityValidator
   def validate_each(record, attr_name, value, **kwargs)
     super(record, attr_name, value, **kwargs)
 

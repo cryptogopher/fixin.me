@@ -1,4 +1,4 @@
-module CoreExt::XPath::DSL::NormalizeSpaceDefault
+module CoreExt::XPath::DSL
   def normalize_space(...)
     Capybara.default_normalize_ws ? super : current
   end

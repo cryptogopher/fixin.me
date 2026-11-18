@@ -1,4 +1,4 @@
-module CoreExt::Arel::CrudCteUpdateAndDelete
+module CoreExt::Arel::Crud
   def compile_update(...)
     um = super
     um.with = subqueries
