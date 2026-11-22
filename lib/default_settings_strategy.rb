@@ -2,12 +2,12 @@ class DefaultSettingsStrategy < ActiveRecord::Migration::DefaultStrategy
   COLUMN_DEFAULTS = {
     # TODO: all types `null: false` ?
     # TODO: references `foreign_key: {on_delete: :cascade}` ?
-    # `timestamps` - Rails defaults to `null: false, precision: true`.
+    # `timestamps` - Rails defaults to `null: false, precision: true`, which is
+    #   expected.
     # `limit:` for `text` - `text` can be theoretically up to 1GB or
     #   longer, so roughly unlimited for practical purposes. But:
     #   * the actual usable length depends on additional factors, like compile
-    #     time limits (`SQLITE_MAX_LENGTH` in SQLite), runtime settings
-    #     (`max_allowed_packet` in MySQL) and probably other,
+    #     time limits (`SQLITE_MAX_LENGTH` in SQLite) and probably other,
     #   * Rails does not report limit for `text` column types, unless it is
     #     explicitly set.
     #   The decision is to always set safe limit and enforce it by validations, to
@@ -24,20 +24,20 @@ class DefaultSettingsStrategy < ActiveRecord::Migration::DefaultStrategy
   end
   ActiveRecord::ConnectionAdapters::TableDefinition.prepend ColumnSettingsStrategy
 
-  # `force: :cascade` - does nothing on MySQL, so `force:` is useless.
   # `if_not_exists: true`/`if_exists: true` - without these options it's impossible
   #   to change migration status once migration fails partially. If `up` migration
   #   creates some, but not all objects, its status is not updated from `down` to
   #   `up`. Then it's impossible to migrate: a) up - due to `already exists`
-  #   errors and b) down - due to migration status.
+  #   errors and b) down - due to migration status. Similarily for `down`.
   MIGRATION_DEFAULTS = {
     add_check_constraint: {if_not_exists: true},
     add_column:           {if_not_exists: true},
     add_foreign_key:      {if_not_exists: true},
     add_index:            {if_not_exists: true, unique: true},
     add_timestamps:       {if_not_exists: true},
-    create_table:         {if_not_exists: true},
-    drop_table:               {if_exists: true},
+    create_join_table:  {force: :cascade},
+    create_table:       {force: :cascade},
+    drop_table:         {force: :cascade},
     remove_check_constraint:  {if_exists: true},
     remove_column:            {if_exists: true},
     remove_foreign_key:       {if_exists: true},

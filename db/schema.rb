@@ -10,27 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_01_21_230456) do
-  create_table "measurements", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_214900) do
+  create_table "measurements", force: :cascade do |t|
     t.datetime "taken_at", null: false
-    t.bigint "note_id"
+    t.integer "note_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["note_id"], name: "index_measurements_on_note_id"
     t.index ["taken_at"], name: "index_measurements_on_taken_at", unique: true
   end
 
-  create_table "notes", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
-    t.text "text", null: false
+  create_table "notes", force: :cascade do |t|
+    t.text "text", limit: 65535, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "quantities", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
-    t.bigint "user_id"
+  create_table "quantities", force: :cascade do |t|
+    t.integer "user_id"
     t.string "name", limit: 31, null: false
-    t.text "description"
-    t.bigint "parent_id"
+    t.text "description", limit: 65535
+    t.integer "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "depth", default: 0, null: false
@@ -41,30 +41,28 @@ ActiveRecord::Schema[8.1].define(version: 2025_01_21_230456) do
     t.index ["user_id"], name: "index_quantities_on_user_id"
   end
 
-  create_table "readouts", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "measurement_id"
-    t.bigint "quantity_id", null: false
+  create_table "readouts", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "measurement_id"
+    t.integer "quantity_id", null: false
     t.integer "category", default: 0, null: false
     t.float "value", limit: 53, null: false
-    t.bigint "unit_id", null: false
+    t.integer "unit_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["measurement_id", "quantity_id", "category"], name: "index_readouts_on_measurement_id_and_quantity_id_and_category", unique: true
     t.index ["measurement_id"], name: "index_readouts_on_measurement_id"
-    t.index ["quantity_id", "user_id"], name: "fk_rails_9d92eaafc6"
     t.index ["quantity_id"], name: "index_readouts_on_quantity_id"
-    t.index ["unit_id", "user_id"], name: "fk_rails_348b0fb4c5"
     t.index ["unit_id"], name: "index_readouts_on_unit_id"
     t.index ["user_id"], name: "index_readouts_on_user_id"
   end
 
-  create_table "units", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
-    t.bigint "user_id"
+  create_table "units", force: :cascade do |t|
+    t.integer "user_id"
     t.string "symbol", limit: 15, null: false
-    t.text "description"
+    t.text "description", limit: 65535
     t.float "multiplier", limit: 53, default: 1.0, null: false
-    t.bigint "base_id"
+    t.integer "base_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["base_id"], name: "index_units_on_base_id"
@@ -73,7 +71,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_01_21_230456) do
     t.index ["user_id"], name: "index_units_on_user_id"
   end
 
-  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_as_ci", force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "email", limit: 64, null: false
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false

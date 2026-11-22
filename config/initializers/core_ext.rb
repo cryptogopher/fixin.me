@@ -24,6 +24,7 @@ ActiveSupport.on_load :active_record do
   Arel::SelectManager.prepend CoreExt::Arel::SelectManager
   Arel::TreeManager::StatementMethods
     .prepend CoreExt::Arel::TreeManager::StatementMethods
+  Arel::Visitors::SQLite.prepend CoreExt::Arel::Visitors::SQLite
   Arel::Visitors::ToSql.prepend CoreExt::Arel::Visitors::ToSql
 
   # Currently not included patches for:

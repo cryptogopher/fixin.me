@@ -4,6 +4,17 @@ DESIGN
 Below is a list of design decisions. The justification is to be consulted
 whenever a change is considered, to avoid regressions.
 
+### Database engine support
+
+* currently, only SQLite is supported; the reasons for not supporting other
+  engines under consideration are outlined below:
+    * MariaDB:
+        * lack of support for Common Table Expressions (CTEs) in UPDATE and
+          DELETE statements (https://jira.mariadb.org/browse/MDEV-18511),
+    * MySQL:
+        * lack of support for the ORDER BY clause within recursive CTEs - which
+          makes it difficult to sort hierarchies using a depth-first approach.
+
 ### Data type for DB storage of numeric values (`decimal` vs `float`)
 
 * among database engines supported (by Rails), SQLite offers storage of

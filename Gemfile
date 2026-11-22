@@ -5,21 +5,9 @@ gem "rails", "~> 8.1.4"
 gem "sprockets-rails"
 gem "puma", "~> 6.0"
 gem "sassc-rails"
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem.
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
-
-# TODO: select db gems automatically?
-#   database_config = ERB.new(File.read("config/database.yml")).result
-#   YAML.load(database_config, aliases: true).values.map { |env| env["adapter"] }.uniq
-group :mysql, optional: true do
-  gem "mysql2", "~> 0.5"
-end
-group :postgresql, optional: true do
-  gem "pg", "~> 1.5"
-end
-group :sqlite, optional: true do
-  gem "sqlite3", "~> 2.7"
-end
+gem "sqlite3", "~> 2.7"
 
 gem "devise", "~> 5.0.4"
 
@@ -31,15 +19,15 @@ group :development, :test do
 end
 
 group :development do
-  # Use console on exceptions pages [https://github.com/rails/web-console]
+  # Use console on exceptions pages [https://github.com/rails/web-console].
   gem "web-console"
 
-  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
+  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler].
   # gem "rack-mini-profiler"
 end
 
 group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing].
   # TODO: move back from git after this PR is included:
   #   https://github.com/teamcapybara/capybara/pull/2862
   gem "capybara", git: "https://github.com/teamcapybara/capybara", branch: "table_row-optional-header-and-integer-locator"

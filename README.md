@@ -16,10 +16,6 @@ environment, see the _Contributing_ section below.
 * Server side:
     * Ruby interpreter, depending on the version of Rails used (see _Gemfile_),
         * https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#ruby-versions
-    * database (e.g. SQLite, MySQL >= 8.0) supporting:
-        * recursive Common Table Expressions (CTE) for SELECT/UPDATE/DELETE,
-            * MariaDB does not support CTE for UPDATE/DELETE
-              (https://jira.mariadb.org/browse/MDEV-18511)
     * for testing: browser as specified in _Client side_ requirements
 * Client side:
     * browser (e.g. Firefox >= 121) supporting:
@@ -30,20 +26,14 @@ environment, see the _Contributing_ section below.
 ### Gems
 
 On systems where development tools and libraries are not installed by default
-(such as Ubuntu), you should install them before proceeding with Ruby gems.
-Select the database client library according to the database engine you are
-planning to use:
+(such as Ubuntu), you should install them before proceeding with Ruby gems:
 
-    sudo apt install build-essential libyaml-dev libmysqlclient-dev
+    sudo apt install build-essential libyaml-dev
 
     git clone https://gitea.michalczyk.pro/fixin.me/fixin.me.git
     cd fixin.me
     bundle config --local frozen true
     bundle config --local path .gem
-
-Select which database engine gem to install (mysql, postgresql, sqlite):
-
-    bundle config --local with mysql
     bundle install
 
 ### Configuration
@@ -63,13 +53,6 @@ Precompile assets:
     RAILS_ENV=production bundle exec rails assets:precompile
 
 ### Database
-
-Grant database user and privileges:
-
-    > mysql -p
-    mysql> create user fixinme@localhost identified by 'Some-password1%';
-    mysql> grant all privileges on fixinme.* to fixinme@localhost;
-    mysql> flush privileges;
 
 Copy config template and update database configuration:
 
@@ -115,10 +98,9 @@ Contributing
 
 ### Gems
 
-Install development and testing gems, including at least MySQL and SQLite
-database adapters:
+Install development and testing gems:
 
-    bundle config --local with development test mysql sqlite
+    bundle config --local with development test
 
 #### Using gems from local git repos
 
@@ -147,28 +129,15 @@ assets.
 
 ### Database
 
-Grant database user privileges for development and test environments. Example
-below shows how to grant privileges to all databases which names start with
-`fixinme-` on MySQL:
-
-    > mysql -p
-    mysql> create user `fixinme-dev`@localhost identified by '<some password>';
-    mysql> grant all privileges on `fixinme-%`.* to `fixinme-dev`@localhost;
-    mysql> flush privileges;
-
 Dumping development data before database reset:
 
-    mysqldump -h <address> -u <user> -p --no-create-info --no-tablespaces --complete-insert <database> > tmp/data.sql
+    TODO
 
 ### Development environment
 
 Starting application server in development environment:
 
     bundle exec rails s -e development
-
-Accessing database console when more than one test db is present:
-
-    bundle exec rails dbconsole -e test --db sqlite3
 
 For running rake tasks, prepend command with environment:
 
@@ -189,14 +158,6 @@ Tests need to be run from within toplevel application directory:
 * all tests from one file, optionally with seed:
 
         bundle exec rails test test/system/users_test.rb --seed 1234
-
-* system tests for selected database configuration (if multiple present):
-
-        bundle exec rails test:system --include /^test_sqlite3_/
-
-* single system test for all database configurations (if multiple present):
-
-        bundle exec rails test:system --include /^test_\\w+_add_unit$/
 
 ### Icons
 

@@ -15,8 +15,10 @@
 /config/master.key
 /config/puma.rb
 
-# Ignore test database.
-/db/test.sqlite3
+# Ignore database files.
+/db/*.sqlite3
+/db/*.sqlite3-shm
+/db/*.sqlite3-wal
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -46,5 +48,6 @@
 /.vim
 /.viminfo
 /.webdrivers
+/.wget-hsts
 *.swp
 Session.vim
