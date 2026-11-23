@@ -1,0 +1,15 @@
+<%# locals: (record: Tag.new, **attrs) %>
+<%= tabular_fields_for record, form: attrs.dig(:data, :form) do |form| %>
+  <%- tag.tr class: "form", onkeydown: "formProcessKey(event)", **attrs do %>
+
+    <td style="--depth:<%= form.object.depth %>">
+      <%= form.text_field :label, autofocus: true, class: 'hstretch', required: true %>
+    <td><%= form.text_area :description, class: 'hstretch', escape: false, rows: 1 %>
+
+    <td><%= form.button %>
+    <td>
+      <%= image_link_to t(:discard), "close-outline", tags_path, class: 'dangerous',
+        name: :discard, onclick: render_turbo_stream('form_close', {id: attrs[:id]}) %>
+    <td><!-- TODO: add aria-disabled drag handle with proper vertical alignment? -->
+  <% end %>
+<% end %>

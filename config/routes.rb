@@ -9,6 +9,10 @@ Rails.application.routes.draw do
     member { post :reparent }
   end
 
+  resources :tags, except: [:show], path_names: {new: '(/:id)/new'} do
+    member { post :reposition }
+  end
+
   resources :units, except: [:show], path_names: {new: '(/:id)/new'} do
     member { post :rebase }
   end

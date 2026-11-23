@@ -1,0 +1,16 @@
+<% target_id = dom_target(:new, @tag.supertag || :tag) %>
+<% attrs = {record: @tag,
+            id: target_id,
+            data: {form: dom_target(target_id, :form),
+                   hidden_row: nil,
+                   link: dom_target(target_id, :link)}} %>
+
+<%= turbo_stream.disable attrs[:data][:link] -%>
+
+<%= turbo_stream.append_all 'body' do %>
+  <%- tabular_form_with model: @tag, html: {id: attrs[:data][:form]} do |form| %>
+    <%= form.hidden_field :supertag_id if @tag.supertag_id? %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.after @tag.supertag || :tag_, partial: 'form', locals: attrs %>

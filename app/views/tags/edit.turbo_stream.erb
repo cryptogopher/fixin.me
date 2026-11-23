@@ -1,0 +1,13 @@
+<% attrs = {record: @tag,
+            id: dom_target(:edit, @tag),
+            data: {form: dom_target(:edit, @tag, :form),
+                   hidden_row: dom_target(@tag),
+                   link: nil}} %>
+
+<%= turbo_stream.append_all 'body' do %>
+  <%- tabular_form_with model: @tag, html: {id: attrs[:data][:form]} do %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.hide attrs[:data][:hidden_row] %>
+<%= turbo_stream.after @tag, partial: 'form', locals: attrs -%>

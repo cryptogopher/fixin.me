@@ -1,0 +1,4 @@
+<% @ancestors.each do |ancestor| %>
+  <%= turbo_stream.replace ancestor %>
+<% end %>
+<%= turbo_stream.remove @tag %>

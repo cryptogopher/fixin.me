@@ -1,0 +1,7 @@
+<% @ancestors.each do |ancestor| %>
+  <%= turbo_stream.replace ancestor %>
+<% end %>
+<% @tags.each do |tag| %>
+  <%= turbo_stream.remove tag %>
+  <%= turbo_stream.before @before || :endmark, tag %>
+<% end %>

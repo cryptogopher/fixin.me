@@ -1,0 +1,5 @@
+<%= turbo_stream.close_form dom_target(:new, @tag.supertag || :tag) %>
+<% @ancestors.each do |ancestor| %>
+  <%= turbo_stream.replace ancestor %>
+<% end %>
+<%= turbo_stream.before @before || :endmark, @tag %>

@@ -4,14 +4,6 @@ class DefaultSettingsStrategy < ActiveRecord::Migration::DefaultStrategy
     # TODO: references `foreign_key: {on_delete: :cascade}` ?
     # `timestamps` - Rails defaults to `null: false, precision: true`, which is
     #   expected.
-    # `limit:` for `text` - `text` can be theoretically up to 1GB or
-    #   longer, so roughly unlimited for practical purposes. But:
-    #   * the actual usable length depends on additional factors, like compile
-    #     time limits (`SQLITE_MAX_LENGTH` in SQLite) and probably other,
-    #   * Rails does not report limit for `text` column types, unless it is
-    #     explicitly set.
-    #   The decision is to always set safe limit and enforce it by validations, to
-    #   avoid surprises (e.g. text truncation) when saving to dabatase.
     text: {limit: 2**16 - 1}
   }
   COLUMN_DEFAULTS.default = {}
@@ -20,6 +12,19 @@ class DefaultSettingsStrategy < ActiveRecord::Migration::DefaultStrategy
   module ColumnSettingsStrategy
     def column(name, type, **options)
       super(name, type, **COLUMN_DEFAULTS[type].merge(options))
+      # SQLite does not enforce `limit` on string/text columns by default.
+      # `text` can be theoretically up to 1GB or longer, so roughly unlimited
+      # for practical purposes. But the actual usable length depends on
+      # additional factors, like compile time limits (`SQLITE_MAX_LENGTH` in
+      # SQLite) and probably other.
+      # Limit is explicitly set to:
+      #   a) be used by views/UI (Rails does not report limit for `text` column
+      #   types, unless it is explicitly set) and
+      #   b) be enforced by database constraint (below).
+      # Length constraint is measured in codepoints (not bytes).
+      if options[:limit] && [:string, :text].include?(type)
+        check_constraint("length(#{name}) <= #{options[:limit]}", name: "#{name}_length")
+      end
     end
   end
   ActiveRecord::ConnectionAdapters::TableDefinition.prepend ColumnSettingsStrategy

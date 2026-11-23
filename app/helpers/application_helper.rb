@@ -161,8 +161,10 @@ module ApplicationHelper
     menu_tabs = [
       ['measurements', 'scale-bathroom', :restricted],
       ['quantities', 'axis-arrow', :restricted, 'right'],
+      ['tags', 'tag-multiple-outline', :restricted],
       ['units', 'weight-gram', :restricted],
-      # TODO: display users tab only if >1 user present; sole_user?/sole_admin?
+      # TODO: display users tab only if >1 user present; sole_user?/sole_admin?;
+      # change status field to proc?
       ['users', 'account-multiple-outline', :admin],
     ]
 

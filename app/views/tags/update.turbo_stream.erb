@@ -1,0 +1,4 @@
+<%= turbo_stream.close_form dom_target(:edit, @tag) %>
+<% @ancestors.push(@tag).each do |ancestor| %>
+  <%= turbo_stream.replace ancestor %>
+<% end %>

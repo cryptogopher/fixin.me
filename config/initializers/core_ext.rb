@@ -16,6 +16,9 @@ ActiveSupport.on_load :active_record do
   ActiveModel::Validations::NumericalityValidator
     .prepend CoreExt::ActiveModel::Validations::NumericalityValidator
 
+  # SELECT using window functions through SelectChain.
+  ActiveRecord::Relation.include CoreExt::ActiveRecord::QueryMethods
+
   # Temporary patch for https://github.com/rails/rails/pull/54658.
   ActiveRecord::Relation.include CoreExt::ActiveRecord::Relation
   Arel::Crud.prepend CoreExt::Arel::Crud

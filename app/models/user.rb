@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_many :readouts, dependent: :delete_all
   accepts_nested_attributes_for :readouts
   has_many :quantities, dependent: :delete_all
+  has_many :tags, dependent: :delete_all
   has_many :units, dependent: :delete_all
 
   validates :email, presence: true, uniqueness: true,

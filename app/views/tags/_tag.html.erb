@@ -1,0 +1,24 @@
+<tr id="<%= dom_target(tag) %>"
+    ondragstart="dragStart(event)" ondragend="dragEnd(event)"
+    ondragover="dragOver(event)" ondrop="drop(event)"
+    ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"
+    data-drag-path="<%= reposition_tag_path(tag) %>"
+    data-drop-id="<%= dom_target(tag) %>"
+    data-drop-id-param="<%= field_name(:tag, :supertag_id) %>">
+
+  <td style="--depth:<%= tag.depth %>">
+    <%= link_to tag, edit_tag_path(tag), class: 'link', onclick: 'this.blur();',
+      data: {turbo_stream: true} %>
+  <td><%= tag.description %>
+
+  <% if current_user.at_least(:active) %>
+    <td>
+      <%= image_link_to t('.new_subtag'), 'plus-outline', new_tag_path(tag),
+        id: dom_target(:new, tag, :link), onclick: 'this.blur();',
+        data: {turbo_stream: true} %>
+    <td>
+      <%= image_button_to_if tag.destroyable?, t('.destroy'), 'delete-outline',
+        tag_path(tag), method: :delete %>
+
+    <td class="handle" draggable="true">&#x283F
+  <% end %>

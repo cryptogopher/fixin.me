@@ -8,6 +8,9 @@ en:
       out_of_range: exceeds range of double precision floating-point format
   activerecord:
     attributes:
+      tag:
+        description: Description
+        label: Label
       quantity:
         description: Description
         name: Name
@@ -23,6 +26,14 @@ en:
         status: Status
     errors:
       models:
+        tag:
+          attributes:
+            name:
+              taken: has to be unique
+            supertag:
+              descendant_reference: cannot be changed to any of descendants
+              self_reference: of the tag cannot be the tag itself
+              user_mismatch: has to belong to the same user as tag
         unit:
           attributes:
             base:
@@ -104,6 +115,19 @@ en:
       taken_at_html: Measurement taken at&emsp;
     index:
       new_measurement: Add measurement
+  tags:
+    navigation: Tags
+    tag:
+      new_subtag: Subtag
+    index:
+      new_tag: Add tag
+      no_items: There are no configured tags. You can Add some or Import from defaults.
+    create:
+      success: Created new tag "%{tag}"
+    update:
+      success: Updated tag "%{tag}"
+    destroy:
+      success: Deleted tag "%{tag}"
   quantities:
     navigation: Quantities
     quantity:

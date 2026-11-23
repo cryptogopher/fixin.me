@@ -85,3 +85,10 @@ whenever a change is considered, to avoid regressions.
         * assuming that user input with _precision > DIG_ is as rare as in
           the range _(0, MIN)_, the decision is to choose input which requires
           the least/simplest additional code.
+
+### Other
+
+* Arel usage inside models should be avoided in favor of direct query fragments.
+  They have similar portability and are much more readable.  Anything more
+  complex, e.g. named functions not available in Rails should be extracted into
+  extensions.

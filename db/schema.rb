@@ -57,6 +57,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_214900) do
     t.index ["user_id"], name: "index_readouts_on_user_id"
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "label", limit: 32, null: false
+    t.text "description", limit: 65536
+    t.integer "supertag_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "depth", null: false
+    t.index ["id", "user_id"], name: "index_tags_on_id_and_user_id", unique: true
+    t.index ["supertag_id"], name: "index_tags_on_supertag_id"
+    t.index ["user_id", "label"], name: "index_tags_on_user_id_and_label", unique: true
+    t.index ["user_id"], name: "index_tags_on_user_id"
+    t.check_constraint "id != supertag_id", name: "self_reference"
+    t.check_constraint "length(description) <= 65536", name: "description_length"
+    t.check_constraint "length(label) <= 32", name: "label_length"
+  end
+
   create_table "units", force: :cascade do |t|
     t.integer "user_id"
     t.string "symbol", limit: 15, null: false
@@ -98,6 +115,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_214900) do
   add_foreign_key "readouts", "units", column: ["unit_id", "user_id"], primary_key: ["id", "user_id"]
   add_foreign_key "readouts", "units", on_delete: :cascade
   add_foreign_key "readouts", "users", on_delete: :cascade
+  add_foreign_key "tags", "tags", column: "supertag_id", on_delete: :cascade
+  add_foreign_key "tags", "tags", column: ["supertag_id", "user_id"], primary_key: ["id", "user_id"]
+  add_foreign_key "tags", "users", on_delete: :cascade
   add_foreign_key "units", "units", column: "base_id", on_delete: :cascade
   add_foreign_key "units", "users", on_delete: :cascade
 end
