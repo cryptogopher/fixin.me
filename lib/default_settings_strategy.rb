@@ -6,30 +6,6 @@ class DefaultSettingsStrategy < ActiveRecord::Migration::DefaultStrategy
   #   db:migrate + db:migrate VERSION=0
   #   db:reset + (multiple) db:schema:load (if schema file is used)
 
-  # TODO: remove after commit
-  #def create_table(table_name, **options, &)
-  #  result = super(table_name, **apply_defaults(:create_table, options), &)
-  #  add_constraints(table_name, columns(table_name)) unless migration.reverting?
-  #  result
-  #end
-
-  #def change_table(table_name, **options)
-  #  return super if migration.reverting?
-  #  before, result, after = columns(table_name), super, columns(table_name)
-  #  add_constraints(table_name, after - before)
-  #  remove_constraints(table_name, (before - after).map(&:name))
-  #  result
-  #end
-
-  #def drop_table(*table_names, **options)
-  #  super(*table_names, **apply_defaults(:drop_table, options))
-  #end
-
-  #def remove_column(table_name, column_name, type = nil, **options)
-  #  remove_constraints(table_name, [column_name])
-  #  super
-  #end
-
   def method_missing(method, *args, **kwargs, &)
     return super if migration.reverting?
 
@@ -106,11 +82,4 @@ class DefaultSettingsStrategy < ActiveRecord::Migration::DefaultStrategy
       remove_check_constraint(table_name, name: "#{column_name}_length")
     end
   end
-
-  # TODO: remove after commit
-  #def apply_defaults(method, options)
-  #  defaults = MIGRATION_DEFAULTS[method]
-  #  conflicts = defaults.has_key?(:if_not_exists) ? [:force] : []
-  #  defaults.merge(options.except(*conflicts))
-  #end
 end
