@@ -2,6 +2,10 @@
 # for a full overview on how database connection configuration can be specified.
 default: &default
   pool: <%= ENV.fetch('RAILS_MAX_THREADS', 3) %>
+  # Disable schema dump. It is redundant with regard to migration files and
+  # buggy (as of Rails 8.1.4 adds foreign key constraints multiple times after
+  # repeated db:schema:load).
+  schema_dump: false
 
 production:
   <<: *default

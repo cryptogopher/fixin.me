@@ -1,20 +1,17 @@
 class CreateReadouts < ActiveRecord::Migration[8.1]
   def change
     create_table :notes do |t|
-      t.text :text, null: false
-
+      t.text :text, null: false, limit: 2**16
       t.timestamps
     end
 
     create_table :measurements do |t|
-      t.datetime :taken_at, null: false
+      t.datetime :taken_at, null: false, index: {unique: true}
       #t.references :collector, foreign_key: true
       #t.references :device, foreign_key: true
       t.references :note, foreign_key: {on_delete: :nullify}
-
       t.timestamps
     end
-    add_index :measurements, :taken_at
 
     # Defining Readouts as a super-/subclass polymorphic relations for different
     # subclass data types (numeric, string, file) is not possible with proper
@@ -40,14 +37,16 @@ class CreateReadouts < ActiveRecord::Migration[8.1]
       # t.references :file
       # Possibly mutually exclusive with :unit or check constraint for:
       #   :unit is not null <=> :value is not null
-
       t.timestamps
+
+      # Constraints:
+      # * quantity + category has to be unique within measurement
+      t.index [:measurement_id, :quantity_id, :category], unique: true
+      # * quantity and unit has to belong to the same user as readout
+      t.foreign_key :quantities, column: [:quantity_id, :user_id],
+        primary_key: [:id, :user_id]
+      t.foreign_key :units, column: [:unit_id, :user_id], primary_key: [:id, :user_id]
     end
-    add_index :readouts, [:measurement_id, :quantity_id, :category]
-    add_foreign_key :readouts, :quantities, column: [:quantity_id, :user_id],
-      primary_key: [:id, :user_id]
-    add_foreign_key :readouts, :units, column: [:unit_id, :user_id],
-      primary_key: [:id, :user_id]
 
     # TODO: remove below tables after current setup verified
     #create_table :numeric_values do |t|

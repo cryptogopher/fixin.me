@@ -11,11 +11,11 @@ class CreateTags < ActiveRecord::Migration[8.1]
       t.integer :depth, null: false
 
       # Constraints:
-      #  * label has to be unique
+      # * label has to be unique
       t.index [:user_id, :label], unique: true
-      #  * supertag cannot reference self
+      # * supertag cannot reference self
       t.check_constraint 'id != supertag_id', name: :self_reference
-      #  * supertag has to belong to the same user as tag
+      # * supertag has to belong to the same user as tag
       t.index [:id, :user_id], unique: true
       t.foreign_key :tags, primary_key: [:id, :user_id],
         column: [:supertag_id, :user_id], name: :user_mismatch
